@@ -694,21 +694,33 @@ api.put('/approval-flows/:institutionId', requireAuth, requireRoles('super_admin
 // ==========================================
 // 8. Workflow Templates (SUPER ADMIN OWNED ONLY)
 // ==========================================
-api.get('/templates', requireAuth, (req: AuthenticatedRequest, res) => {
+api.get('/templates', (req: AuthenticatedRequest, res) => {
   const db = dbManager.getDb();
   let list = db.templates;
 
-  // Filter based on user's institution unless Super Admin
-  if (req.user!.role !== 'super_admin') {
-    const userInstId = req.user!.institutionId;
-    list = list.filter(t => {
-      if (t.status !== 'Published') return false;
-      if (t.eligibleInstitutions === 'all') return true;
-      return userInstId && t.eligibleInstitutions.includes(userInstId);
-    });
+  const authHeader = req.headers.authorization || (req.headers['x-auth-token'] as string);
+  if (authHeader) {
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : authHeader.trim();
+    const session = db.sessions[token];
+    if (session) {
+      const user = db.users.find(u => u.id === session.userId);
+      if (user) {
+        if (user.role !== 'super_admin') {
+          const userInstId = user.institutionId;
+          list = list.filter(t => {
+            if (t.status !== 'Published') return false;
+            if (t.eligibleInstitutions === 'all') return true;
+            return userInstId && t.eligibleInstitutions.includes(userInstId);
+          });
+        }
+        return res.json(list);
+      }
+    }
   }
 
-  res.json(list);
+  // Public/guest view: return all published templates
+  const published = list.filter(t => t.status === 'Published');
+  res.json(published);
 });
 
 // Strict check: Only Super Admin can create templates. Admins and Staff cannot!
