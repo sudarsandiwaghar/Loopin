@@ -1,5 +1,5 @@
 import { Router, Response } from 'express';
-import { dbManager } from './db.ts';
+import { dbManager, getDefaultSeedData } from './db.ts';
 import {
   AuthenticatedRequest,
   generateToken,
@@ -561,7 +561,15 @@ api.get('/hierarchy/:institutionId', requireAuth, (req: AuthenticatedRequest, re
     return res.status(403).json({ error: 'Access denied: You cannot view organograms for other institutions.' });
   }
 
-  const hierarchy = db.hierarchies[institutionId];
+  let hierarchy = db.hierarchies[institutionId];
+  if (!hierarchy) {
+    const defaults = getDefaultSeedData();
+    hierarchy = defaults.hierarchies[institutionId];
+    if (hierarchy) {
+      db.hierarchies[institutionId] = hierarchy;
+      dbManager.save();
+    }
+  }
   if (!hierarchy) {
     return res.status(404).json({ error: 'Hierarchy not found for this institution.' });
   }

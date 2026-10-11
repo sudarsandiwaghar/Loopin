@@ -603,9 +603,6 @@ export const TemplatesLandingPage: React.FC<Props> = ({
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                           <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{tpl.title}</h4>
-                          <div className="text-xs text-[#3F4A5A]/80 mt-0.5">
-                            {tpl.category} · Standard request template
-                          </div>
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">
@@ -635,9 +632,8 @@ export const TemplatesLandingPage: React.FC<Props> = ({
                         <button
                           type="button"
                           onClick={() => toggleExpandTemplate(tpl.id)}
-                          className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                          className="text-xs text-[#123B6D] hover:underline flex items-center font-medium cursor-pointer"
                         >
-                          <span>{expandedTemplateIds[tpl.id] ? '▼' : '▶'}</span>
                           <span>
                             {expandedTemplateIds[tpl.id]
                               ? 'Hide request fields and suggested approval route'

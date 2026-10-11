@@ -911,9 +911,6 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                           <div>
                             <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{tpl.title}</h4>
-                            <div className="text-xs text-[#3F4A5A]/80 mt-0.5">
-                              {tpl.category} · Standard request template
-                            </div>
                           </div>
                           <button
                             onClick={() => openApplyModal(tpl)}
@@ -927,9 +924,8 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                           <button
                             type="button"
                             onClick={() => toggleExpandTemplate(tpl.id)}
-                            className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                            className="text-xs text-[#123B6D] hover:underline flex items-center font-medium cursor-pointer"
                           >
-                            <span>{expandedTemplateIds[tpl.id] ? '▼' : '▶'}</span>
                             <span>
                               {expandedTemplateIds[tpl.id]
                                 ? 'Hide request fields and suggested approval route'
@@ -994,19 +990,18 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
               {/* Template Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredTemplates.map(tpl => (
-                  <div key={tpl.id} className="p-4 bg-white border rounded shadow-xs flex flex-col justify-between space-y-3">
+                  <div key={tpl.id} className="p-4 bg-white border border-[#E5E7EB] rounded-xl shadow-xs flex flex-col justify-between space-y-3 hover:border-[#123B6D]/40 transition-colors">
                     <div>
-                      <div className="flex justify-between items-center text-[10px] text-slate-400 mb-1">
-                        <span className="font-bold text-[#123b6d] bg-[#eaf1fb] px-1.5 py-0.5 rounded">Form {tpl.code}</span>
+                      <div className="flex justify-between items-center text-[10px] text-slate-400 mb-1.5">
+                        <span className="font-bold text-[#123b6d] bg-[#eaf1fb] px-2 py-0.5 rounded">Form {tpl.code}</span>
                         <span>{tpl.turnaround}</span>
                       </div>
-                      <h3 className="font-bold text-xs text-slate-900">{tpl.title}</h3>
-                      <p className="text-[11px] text-slate-500 mt-1 line-clamp-2">{tpl.purpose}</p>
+                      <h3 className="font-bold text-sm text-slate-900">{tpl.title}</h3>
                     </div>
 
                     <button
                       onClick={() => openApplyModal(tpl)}
-                      className="w-full py-2 bg-[#123b6d] hover:bg-[#0d2c50] text-white text-xs font-semibold rounded"
+                      className="w-full py-2 bg-[#123b6d] hover:bg-[#0d2c50] text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
                     >
                       Apply with this Template →
                     </button>

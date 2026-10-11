@@ -543,27 +543,30 @@ export const SuperAdminDashboard: React.FC<Props> = ({
         ? 'Tier 3 Department / Ops'
         : 'Tier 4 Support / Specialist';
 
+    const hasChildren = node.children && node.children.length > 0;
+
     return (
-      <li key={node.id || node.name} className="flex flex-col items-center">
+      <div key={node.id || node.name} className="flex flex-col items-center">
+        {/* Node Card */}
         <div
           draggable={node.tier > 1}
           onDragStart={e => handleDragStart(e, node.name)}
           onDragOver={e => e.preventDefault()}
           onDrop={e => handleDrop(e, node.name)}
           onClick={() => setSelectedOrgNode(node)}
-          className={`cursor-pointer px-3.5 py-2.5 rounded-lg border text-center transition-all min-w-[140px] max-w-[180px] shadow-xs relative ${
+          className={`cursor-pointer px-4 py-3 rounded-xl border text-center transition-all min-w-[155px] max-w-[195px] shadow-sm relative z-10 ${
             isSelected
-              ? 'ring-2 ring-[#123b6d] bg-white border-[#123b6d]'
+              ? 'ring-2 ring-[#123B6D] bg-white border-[#123B6D] shadow-md'
               : node.tier === 1
-              ? 'bg-[#123b6d] text-white border-[#123b6d]'
-              : 'bg-white text-slate-800 border-slate-200 hover:border-slate-300'
+              ? 'bg-[#123B6D] text-white border-[#123B6D] shadow-md'
+              : 'bg-white text-slate-800 border-slate-300 hover:border-[#123B6D]/60 hover:shadow-xs'
           }`}
         >
-          <div className="font-bold text-[11px] leading-tight truncate">
+          <div className="font-bold text-xs leading-tight truncate">
             {node.name}
           </div>
           <div
-            className={`text-[9px] mt-0.5 truncate ${
+            className={`text-[9.5px] mt-0.5 truncate ${
               node.tier === 1 && !isSelected ? 'text-white/80' : 'text-slate-500'
             }`}
           >
@@ -572,7 +575,7 @@ export const SuperAdminDashboard: React.FC<Props> = ({
 
           <div className="flex items-center justify-center gap-1.5 mt-2">
             <span
-              className={`text-[8px] font-semibold px-1.5 py-0.2 rounded ${
+              className={`text-[8px] font-semibold px-2 py-0.5 rounded-full ${
                 node.tier === 1 && !isSelected
                   ? 'bg-white/20 text-white'
                   : 'bg-slate-100 text-slate-600'
@@ -581,23 +584,61 @@ export const SuperAdminDashboard: React.FC<Props> = ({
               {tierBadge}
             </span>
             <span
-              className={`text-[8px] font-bold px-1.5 py-0.2 rounded ${
+              className={`text-[8px] font-bold px-2 py-0.5 rounded-full ${
                 node.tier === 1 && !isSelected
-                  ? 'bg-white text-[#123b6d]'
-                  : 'bg-[#edf3ff] text-[#123b6d]'
+                  ? 'bg-white text-[#123B6D]'
+                  : 'bg-[#EDF3FF] text-[#123B6D]'
               }`}
             >
-              {node.count} people
+              {node.count} {node.count === 1 ? 'person' : 'people'}
             </span>
           </div>
         </div>
 
-        {node.children && node.children.length > 0 && (
-          <ul className="flex justify-center gap-4 pt-6 relative before:absolute before:top-0 before:left-1/2 before:w-px before:h-6 before:bg-slate-300">
-            {node.children.map(child => renderTreeNode(child))}
-          </ul>
+        {/* Hierarchical Tree Connectors */}
+        {hasChildren && (
+          <div className="flex flex-col items-center w-full">
+            {/* Trunk line dropping from parent */}
+            <div className="w-0.5 h-6 bg-slate-300"></div>
+
+            {/* Sibling rows container */}
+            <div className="flex items-start justify-center gap-6 relative">
+              {node.children!.map((child, idx) => {
+                const total = node.children!.length;
+                const isFirst = idx === 0;
+                const isLast = idx === total - 1;
+                const isOnly = total === 1;
+
+                return (
+                  <div key={child.id || child.name} className="flex flex-col items-center relative pt-6">
+                    {/* Horizontal crossbar connecting sibling branches */}
+                    {!isOnly && (
+                      <div
+                        className={`absolute top-0 h-0.5 bg-slate-300 ${
+                          isFirst
+                            ? 'left-1/2 right-0'
+                            : isLast
+                            ? 'left-0 right-1/2'
+                            : 'left-0 right-0'
+                        }`}
+                      />
+                    )}
+
+                    {/* Vertical dropper line from crossbar into this child */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-slate-300"></div>
+
+                    {/* Connector dot at the junction */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-slate-400 -mt-[2px]"></div>
+
+                    {/* Recursively render child */}
+                    {renderTreeNode(child)}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         )}
-      </li>
+      </div>
     );
   };
 
@@ -1132,9 +1173,6 @@ export const SuperAdminDashboard: React.FC<Props> = ({
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                           <div>
                             <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{std.title}</h4>
-                            <div className="text-xs text-[#3F4A5A]/80 mt-0.5">
-                              {std.category} · Standard request template
-                            </div>
                           </div>
                           <button
                             onClick={() => approveStandardTemplate(std)}
@@ -1153,9 +1191,8 @@ export const SuperAdminDashboard: React.FC<Props> = ({
                           <button
                             type="button"
                             onClick={() => toggleExpandTemplate(std.id)}
-                            className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                            className="text-xs text-[#123B6D] hover:underline flex items-center font-medium cursor-pointer"
                           >
-                            <span>{expandedTemplateIds[std.id] ? '▼' : '▶'}</span>
                             <span>
                               {expandedTemplateIds[std.id]
                                 ? 'Hide request fields and suggested approval route'
@@ -1236,9 +1273,8 @@ export const SuperAdminDashboard: React.FC<Props> = ({
                           <button
                             type="button"
                             onClick={() => toggleExpandTemplate(nom.id)}
-                            className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                            className="text-xs text-[#123B6D] hover:underline flex items-center font-medium cursor-pointer"
                           >
-                            <span>{expandedTemplateIds[nom.id] ? '▼' : '▶'}</span>
                             <span>
                               {expandedTemplateIds[nom.id]
                                 ? 'Hide request fields and suggested approval route'
@@ -1309,9 +1345,6 @@ export const SuperAdminDashboard: React.FC<Props> = ({
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                           <div>
                             <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{std.title}</h4>
-                            <div className="text-xs text-[#3F4A5A]/80 mt-0.5">
-                              {std.category} · Standard request template
-                            </div>
                           </div>
                           <button
                             onClick={() => approveStandardTemplate(std)}
@@ -1330,9 +1363,8 @@ export const SuperAdminDashboard: React.FC<Props> = ({
                           <button
                             type="button"
                             onClick={() => toggleExpandTemplate(std.id)}
-                            className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                            className="text-xs text-[#123B6D] hover:underline flex items-center font-medium cursor-pointer"
                           >
-                            <span>{expandedTemplateIds[std.id] ? '▼' : '▶'}</span>
                             <span>
                               {expandedTemplateIds[std.id]
                                 ? 'Hide request fields and suggested approval route'
@@ -1413,9 +1445,8 @@ export const SuperAdminDashboard: React.FC<Props> = ({
                           <button
                             type="button"
                             onClick={() => toggleExpandTemplate(nom.id)}
-                            className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                            className="text-xs text-[#123B6D] hover:underline flex items-center font-medium cursor-pointer"
                           >
-                            <span>{expandedTemplateIds[nom.id] ? '▼' : '▶'}</span>
                             <span>
                               {expandedTemplateIds[nom.id]
                                 ? 'Hide request fields and suggested approval route'
@@ -1491,11 +1522,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
               </div>
             </div>
 
-            <div className="p-8 bg-gradient-to-b from-white to-slate-50/50 rounded-xl border border-slate-200 overflow-x-auto min-h-[300px] flex justify-center">
+            <div className="p-8 bg-gradient-to-b from-white to-slate-50/50 rounded-xl border border-slate-200 overflow-x-auto min-h-[360px] flex justify-center items-start">
               {hierarchyTree ? (
-                <ul className="flex justify-center">
+                <div className="flex justify-center min-w-max pb-4">
                   {renderTreeNode(hierarchyTree)}
-                </ul>
+                </div>
               ) : (
                 <div className="text-center py-16 text-slate-400 text-xs">Loading organogram...</div>
               )}

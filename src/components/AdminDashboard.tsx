@@ -507,9 +507,9 @@ export const AdminDashboard: React.FC<Props> = ({
                   </button>
                   <button
                     onClick={() => setIsNominateModalOpen(true)}
-                    className="px-3.5 py-2 bg-white border border-[#E5E7EB] text-[#123B6D] hover:bg-[#F3F4F6] rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-3.5 py-2 bg-white border border-[#E5E7EB] text-[#123B6D] hover:bg-[#F3F4F6] rounded-lg text-xs font-semibold shadow-xs flex items-center transition-colors cursor-pointer"
                   >
-                    <span>↗</span> Nominate Template
+                    Nominate Template
                   </button>
                 </div>
               </div>
@@ -838,9 +838,9 @@ export const AdminDashboard: React.FC<Props> = ({
 
                 <button
                   onClick={() => setIsNominateModalOpen(true)}
-                  className="px-4 py-2 bg-[#123B6D] hover:bg-[#0e2f57] text-white rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                  className="px-4 py-2 bg-[#123B6D] hover:bg-[#0e2f57] text-white rounded-lg text-xs font-semibold shadow-xs flex items-center transition-colors cursor-pointer shrink-0"
                 >
-                  <span>↗</span> Nominate Custom Template
+                  Nominate Custom Template
                 </button>
               </div>
 
@@ -864,9 +864,6 @@ export const AdminDashboard: React.FC<Props> = ({
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                           <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{tpl.title}</h4>
-                          <div className="text-xs text-[#3F4A5A]/80 mt-0.5">
-                            {tpl.category} · Standard request template
-                          </div>
                         </div>
                         <span className="px-3.5 py-1.5 bg-[#F3F4F6] text-[#123B6D] border border-[#E5E7EB] text-xs font-semibold rounded-lg shrink-0 inline-flex items-center gap-1">
                           ✓ Active on Campus
@@ -877,9 +874,8 @@ export const AdminDashboard: React.FC<Props> = ({
                         <button
                           type="button"
                           onClick={() => toggleExpandTemplate(tpl.id)}
-                          className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                          className="text-xs text-[#123B6D] hover:underline flex items-center font-medium cursor-pointer"
                         >
-                          <span>{expandedTemplateIds[tpl.id] ? '▼' : '▶'}</span>
                           <span>
                             {expandedTemplateIds[tpl.id]
                               ? 'Hide request fields and suggested approval route'
