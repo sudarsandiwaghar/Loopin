@@ -1455,6 +1455,18 @@
   ],
   "auditLogs": [
     {
+      "actorId": "usr-staff-senthil",
+      "actorName": "Dr. K. Senthil Nathan",
+      "actorRole": "staff",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "action": "USER_LOGIN",
+      "targetRecord": "senthil.nathan@sairam.edu.in",
+      "details": "User signed in successfully with role: staff.",
+      "id": "aud-1791712798191-eyg2",
+      "timestamp": "2026-10-11T09:59:58.191Z"
+    },
+    {
       "actorId": "usr-superadmin",
       "actorName": "Dr. R. Arunachalam",
       "actorRole": "super_admin",
@@ -1776,6 +1788,11 @@
       "userId": "usr-superadmin",
       "createdAt": "2026-10-11T09:10:33.556Z",
       "expiresAt": "2026-10-18T09:10:33.556Z"
+    },
+    "lp_tok_1791712798190_t9b8woepmv": {
+      "userId": "usr-staff-senthil",
+      "createdAt": "2026-10-11T09:59:58.190Z",
+      "expiresAt": "2026-10-18T09:59:58.190Z"
     }
   }
 }
