@@ -34,12 +34,14 @@ interface Props {
   currentUser: User;
   onLogout: () => void;
   onFastSwitch: (role: 'super_admin' | 'admin' | 'staff') => void;
+  onNavigateToTemplates?: () => void;
 }
 
 export const StaffDashboard: React.FC<Props> = ({
   currentUser,
   onLogout,
   onFastSwitch,
+  onNavigateToTemplates,
 }) => {
   const { showToast } = useToast();
 
@@ -356,6 +358,14 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
             </button>
 
             <button
+              onClick={() => onNavigateToTemplates ? onNavigateToTemplates() : setActiveTab('applications')}
+              className="flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors text-[#53647a] hover:bg-white/80"
+            >
+              <span className="w-4 text-center">▧</span>
+              <span>Request Templates</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('applications')}
               className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
                 activeTab === 'applications'
@@ -599,7 +609,7 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                         <p className="text-[11px] text-[#748196]">Follow your submitted applications through the campus approval route</p>
                       </div>
                       <button
-                        onClick={() => setActiveTab('applications')}
+                        onClick={() => onNavigateToTemplates ? onNavigateToTemplates() : setActiveTab('applications')}
                         className="text-xs text-[#123b6d] font-semibold hover:underline"
                       >
                         Browse templates →

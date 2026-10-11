@@ -9,11 +9,40 @@ import { StaffDashboard } from './components/StaffDashboard.tsx';
 import { User } from '../server/types.ts';
 import { HelpCircle, Database, Shield, Server, Terminal, CheckCircle2, X } from 'lucide-react';
 
+import { TemplatesLandingPage } from './components/TemplatesLandingPage.tsx';
+
 function AppContent() {
   const { showToast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
   const [isArchitectureGuideOpen, setIsArchitectureGuideOpen] = useState(false);
+  const [currentView, setCurrentView] = useState<'dashboard' | 'templates'>('dashboard');
+
+  // Sync hash routing (#templates)
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#templates') {
+        setCurrentView('templates');
+      } else {
+        setCurrentView('dashboard');
+      }
+    };
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const navigateToTemplates = () => {
+    window.location.hash = '#templates';
+    setCurrentView('templates');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToDashboard = () => {
+    window.location.hash = '';
+    setCurrentView('dashboard');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Check stored session on mount
   useEffect(() => {
@@ -48,6 +77,8 @@ function AppContent() {
     } finally {
       setStoredToken(null);
       setUser(null);
+      setCurrentView('dashboard');
+      window.location.hash = '';
       showToast('Signed out of Loopin.');
     }
   };
@@ -97,8 +128,18 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-[#f5f7fc] text-[#1b2635] flex flex-col font-sans">
-      {!user ? (
-        <LandingPage onLoginSuccess={handleLoginSuccess} />
+      {currentView === 'templates' ? (
+        <TemplatesLandingPage
+          currentUser={user}
+          onBack={navigateToDashboard}
+          onFastSwitch={handleFastSwitch}
+          onLogout={handleLogout}
+        />
+      ) : !user ? (
+        <LandingPage
+          onLoginSuccess={handleLoginSuccess}
+          onExploreTemplates={navigateToTemplates}
+        />
       ) : (
         <main className="flex-1">
           {user.role === 'super_admin' && (
@@ -107,6 +148,7 @@ function AppContent() {
               onLogout={handleLogout}
               onFastSwitch={handleFastSwitch}
               onResetDatabase={handleResetDatabase}
+              onNavigateToTemplates={navigateToTemplates}
             />
           )}
           {user.role === 'admin' && (
@@ -114,6 +156,7 @@ function AppContent() {
               currentUser={user}
               onLogout={handleLogout}
               onFastSwitch={handleFastSwitch}
+              onNavigateToTemplates={navigateToTemplates}
             />
           )}
           {user.role === 'staff' && (
@@ -121,6 +164,7 @@ function AppContent() {
               currentUser={user}
               onLogout={handleLogout}
               onFastSwitch={handleFastSwitch}
+              onNavigateToTemplates={navigateToTemplates}
             />
           )}
         </main>

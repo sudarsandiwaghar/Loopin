@@ -30,12 +30,14 @@ interface Props {
   currentUser: User;
   onLogout: () => void;
   onFastSwitch: (role: 'super_admin' | 'admin' | 'staff') => void;
+  onNavigateToTemplates?: () => void;
 }
 
 export const AdminDashboard: React.FC<Props> = ({
   currentUser,
   onLogout,
   onFastSwitch,
+  onNavigateToTemplates,
 }) => {
   const { showToast } = useToast();
 
@@ -313,7 +315,7 @@ export const AdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('templates')}
+              onClick={() => onNavigateToTemplates ? onNavigateToTemplates() : scrollToSection('templates')}
               className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
                 activeNav === 'templates'
                   ? 'bg-[#123B6D] text-white font-bold'
@@ -321,7 +323,7 @@ export const AdminDashboard: React.FC<Props> = ({
               }`}
             >
               <span className="w-4 text-center">▧</span>
-              <span>Templates</span>
+              <span>Request Templates</span>
             </button>
 
             <button
@@ -534,15 +536,21 @@ export const AdminDashboard: React.FC<Props> = ({
               <small className="text-[10px] text-[#64748b]">Moving through approval</small>
             </div>
 
-            <div className="p-3.5 bg-white rounded border border-[#e2e8f0] shadow-xs">
+            <div
+              onClick={() => onNavigateToTemplates && onNavigateToTemplates()}
+              className="p-3.5 bg-white rounded border border-[#e2e8f0] shadow-xs cursor-pointer hover:border-[#123B6D] hover:shadow-md transition-all group"
+            >
               <div className="flex justify-between text-xs text-[#64748b]">
-                <span>Active templates</span>
+                <span className="group-hover:text-[#123B6D] font-medium">Active templates</span>
                 <span className="text-[#123B6D]">▧</span>
               </div>
-              <strong className="block text-2xl font-bold text-[#123B6D] mt-1.5">
+              <strong className="block text-2xl font-bold text-[#123B6D] mt-1.5 group-hover:text-[#0e2d50]">
                 {templates.length}
               </strong>
-              <small className="text-[10px] text-[#39755d]">Available for your campus</small>
+              <div className="flex items-center justify-between text-[10px] text-[#39755d] mt-0.5">
+                <span>Available for your campus</span>
+                <span className="text-[#123B6D] font-semibold">View All →</span>
+              </div>
             </div>
           </div>
 
