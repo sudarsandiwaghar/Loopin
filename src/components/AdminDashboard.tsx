@@ -41,7 +41,32 @@ export const AdminDashboard: React.FC<Props> = ({
 }) => {
   const { showToast } = useToast();
 
-  const [activeNav, setActiveNav] = useState('overview');
+  const validNavs = ['overview', 'requests', 'templates', 'staff', 'campus', 'activity', 'reports'];
+
+  const [activeNav, setActiveNav] = useState<string>(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const h = window.location.hash.replace('#', '');
+      if (validNavs.includes(h)) return h;
+    }
+    return 'overview';
+  });
+
+  useEffect(() => {
+    const handleHash = () => {
+      const h = window.location.hash.replace('#', '');
+      if (validNavs.includes(h)) {
+        setActiveNav(h);
+      }
+    };
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
+
+  const navigateToSection = (sectionId: string) => {
+    setActiveNav(sectionId);
+    window.location.hash = sectionId === 'overview' ? '' : sectionId;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   const [institution, setInstitution] = useState<Institution | null>(null);
   const [requests, setRequests] = useState<WorkflowRequest[]>([]);
   const [templates, setTemplates] = useState<WorkflowTemplate[]>([]);
@@ -266,14 +291,24 @@ export const AdminDashboard: React.FC<Props> = ({
     }
   };
 
+  const sectionLabels: Record<string, string> = {
+    overview: 'Overview',
+    requests: 'Requests',
+    templates: 'Request Templates',
+    staff: 'Staff directory',
+    campus: 'Institution records',
+    activity: 'Activity log',
+    reports: 'Reports',
+  };
+
   return (
     <div className="min-h-screen bg-[#F3F4F6] text-[#3F4A5A] flex font-sans">
-      {/* AUTHENTIC SIDE PANEL (Matches admin.html) */}
-      <aside className="w-52 shrink-0 bg-[#eef3ff] border-r border-[#e0e7f2] p-4 flex flex-col sticky top-0 h-screen shadow-xs z-30">
+      {/* AUTHENTIC SIDE PANEL (Persistent Left Navigation) */}
+      <aside className="w-56 shrink-0 bg-[#F3F4F6] border-r border-[#E5E7EB] p-4 flex flex-col sticky top-0 h-screen shadow-xs z-30">
         <div>
           {/* Brand */}
-          <div className="flex items-center gap-2.5 pb-4 border-b border-[#e7ebf2]">
-            <div className="w-8 h-8 rounded-lg bg-[#123B6D] text-white flex items-center justify-center font-bold text-lg font-serif">
+          <div className="flex items-center gap-2.5 pb-4 border-b border-[#E5E7EB]">
+            <div className="w-8 h-8 rounded-lg bg-[#123B6D] text-white flex items-center justify-center font-bold text-lg font-serif shadow-xs">
               P
             </div>
             <div>
@@ -281,21 +316,21 @@ export const AdminDashboard: React.FC<Props> = ({
             </div>
           </div>
 
-          <div className="py-2.5 text-[9px] font-bold tracking-wider text-[#64748b] uppercase truncate">
-            {institution?.name || 'CAMPUS ADMINISTRATION'}
+          <div className="py-2.5 text-[9px] font-bold tracking-wider text-[#3F4A5A]/80 uppercase truncate">
+            {institution?.name || 'SRI SAIRAM ENGINEERING COLLEGE'}
           </div>
-          <div className="text-[9px] uppercase font-bold tracking-widest text-[#8894a5] px-1 py-1">
+          <div className="text-[9px] uppercase font-bold tracking-widest text-[#3F4A5A]/60 px-1 py-1">
             Campus administration
           </div>
 
-          {/* Navigation Links Specified in admin.html */}
+          {/* Navigation Links — Dedicated Landing Page per tab */}
           <nav className="flex flex-col gap-1 mt-1 text-xs">
             <button
-              onClick={() => scrollToSection('overview')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('overview')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeNav === 'overview'
-                  ? 'bg-[#123B6D] text-white font-bold'
-                  : 'text-[#48586e] hover:bg-white/80'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
               }`}
             >
               <span className="w-4 text-center">▦</span>
@@ -303,11 +338,11 @@ export const AdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('requests')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('requests')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeNav === 'requests'
-                  ? 'bg-[#123B6D] text-white font-bold'
-                  : 'text-[#48586e] hover:bg-white/80'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
               }`}
             >
               <span className="w-4 text-center">▤</span>
@@ -315,11 +350,11 @@ export const AdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => onNavigateToTemplates ? onNavigateToTemplates() : scrollToSection('templates')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('templates')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeNav === 'templates'
-                  ? 'bg-[#123B6D] text-white font-bold'
-                  : 'text-[#48586e] hover:bg-white/80'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
               }`}
             >
               <span className="w-4 text-center">▧</span>
@@ -327,11 +362,11 @@ export const AdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('staff')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('staff')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeNav === 'staff'
-                  ? 'bg-[#123B6D] text-white font-bold'
-                  : 'text-[#48586e] hover:bg-white/80'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
               }`}
             >
               <span className="w-4 text-center">♙</span>
@@ -339,11 +374,11 @@ export const AdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('campus')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('campus')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeNav === 'campus'
-                  ? 'bg-[#123B6D] text-white font-bold'
-                  : 'text-[#48586e] hover:bg-white/80'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
               }`}
             >
               <span className="w-4 text-center">⌂</span>
@@ -351,11 +386,11 @@ export const AdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('activity')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('activity')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeNav === 'activity'
-                  ? 'bg-[#123B6D] text-white font-bold'
-                  : 'text-[#48586e] hover:bg-white/80'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
               }`}
             >
               <span className="w-4 text-center">◷</span>
@@ -363,11 +398,11 @@ export const AdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('reports')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('reports')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeNav === 'reports'
-                  ? 'bg-[#123B6D] text-white font-bold'
-                  : 'text-[#48586e] hover:bg-white/80'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
               }`}
             >
               <span className="w-4 text-center">◷</span>
@@ -377,13 +412,13 @@ export const AdminDashboard: React.FC<Props> = ({
         </div>
 
         {/* Profile Footer */}
-        <div className="mt-auto border-t border-[#e0e7f2] pt-3 text-xs">
-          <div className="font-bold text-[#3F4A5A] truncate">Campus Admin</div>
-          <small className="block text-[#64748b] text-[10px] truncate">{institution?.name || 'Engineering College'}</small>
-          <div className="flex items-center justify-end mt-2 pt-2 border-t border-slate-200">
+        <div className="mt-auto border-t border-[#E5E7EB] pt-3 text-xs">
+          <div className="font-bold text-[#123B6D] truncate">Campus Admin</div>
+          <small className="block text-[#3F4A5A] text-[10px] truncate">{institution?.name || 'Sri Sairam Engineering College'}</small>
+          <div className="flex items-center justify-end mt-2 pt-2 border-t border-[#E5E7EB]">
             <button
               onClick={onLogout}
-              className="text-[10px] text-rose-600 hover:underline flex items-center gap-1"
+              className="text-[10px] text-rose-600 hover:underline flex items-center gap-1 cursor-pointer font-medium"
             >
               <LogOut size={11} /> Sign out
             </button>
@@ -393,46 +428,46 @@ export const AdminDashboard: React.FC<Props> = ({
 
       {/* MAIN CONTENT AREA */}
       <div className="flex-1 min-w-0 flex flex-col">
-        {/* Top Header (Matches admin.html topbar) */}
-        <header className="h-14 bg-white/95 backdrop-blur border-b border-[#e3e8f0] px-6 flex items-center justify-between sticky top-0 z-20">
-          <span className="text-xs text-[#64748b]">
-            PaperTrail &nbsp;›&nbsp; <b className="text-[#123B6D]">Campus dashboard</b>
+        {/* Top Header */}
+        <header className="h-14 bg-white border-b border-[#E5E7EB] px-6 flex items-center justify-between sticky top-0 z-20">
+          <span className="text-xs text-[#3F4A5A]">
+            PaperTrail &nbsp;›&nbsp; Campus dashboard &nbsp;›&nbsp; <b className="text-[#123B6D]">{sectionLabels[activeNav] || 'Overview'}</b>
           </span>
 
           <div className="flex items-center gap-3">
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#f0f4fa] border border-[#e4e9f1] rounded text-[10px] font-semibold text-[#405672]">
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#F3F4F6] border border-[#E5E7EB] rounded-md text-[10px] font-semibold text-[#123B6D]">
               ▦ &nbsp;{institution?.name}
             </span>
 
             <button
               onClick={() => {
                 setStatusFilter('Pending');
-                scrollToSection('requests');
+                navigateToSection('requests');
                 showToast('Showing requests awaiting campus action.');
               }}
-              className="flex items-center gap-1 px-2.5 py-1 bg-white border border-[#e1e7ef] rounded text-[11px] font-bold text-[#123B6D]"
+              className="flex items-center gap-1 px-2.5 py-1 bg-white border border-[#E5E7EB] rounded-md text-[11px] font-bold text-[#123B6D] cursor-pointer hover:bg-[#F3F4F6]"
             >
               <span>♧</span>
               <span>{newRequestsCount}</span>
             </button>
 
             {/* Role Switch */}
-            <div className="flex items-center bg-[#f1f4fa] border border-[#e4e9f1] rounded-md p-0.5 text-[11px]">
+            <div className="flex items-center bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg p-0.5 text-[11px]">
               <button
                 onClick={() => onFastSwitch('super_admin')}
-                className="px-2 py-0.5 rounded text-[#64748b] hover:text-slate-900"
+                className="px-2.5 py-1 rounded text-[#3F4A5A] hover:text-[#123B6D] font-medium transition-colors cursor-pointer"
               >
                 Super Admin
               </button>
               <button
                 onClick={() => onFastSwitch('admin')}
-                className="px-2 py-0.5 rounded bg-white text-[#123B6D] font-bold shadow-xs"
+                className="px-2.5 py-1 rounded bg-[#123B6D] text-white font-bold shadow-xs cursor-pointer"
               >
                 Admin
               </button>
               <button
                 onClick={() => onFastSwitch('staff')}
-                className="px-2 py-0.5 rounded text-[#64748b] hover:text-slate-900"
+                className="px-2.5 py-1 rounded text-[#3F4A5A] hover:text-[#123B6D] font-medium transition-colors cursor-pointer"
               >
                 Staff
               </button>
@@ -440,475 +475,691 @@ export const AdminDashboard: React.FC<Props> = ({
           </div>
         </header>
 
-        {/* Content Body */}
+        {/* Content Body — Dedicated Landing Pages */}
         <main className="p-6 max-w-[1450px] mx-auto w-full space-y-6">
-          {/* Welcome Banner */}
-          <div id="overview" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
-                {institution?.name}
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-[#123B6D] tracking-tight">
-                Good morning, Campus Admin
-              </h1>
-              <p className="text-xs text-[#64748b] mt-0.5">
-                Review requests, manage campus workflows and keep approvals moving.
-              </p>
-            </div>
-
-            <div className="relative w-64">
-              <Search size={14} className="absolute left-2.5 top-2.5 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search requests, staff, or records…"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="w-full text-xs pl-8 pr-3 py-1.5 border border-[#e1e7ef] bg-[#f7f9fc] rounded focus:outline-none focus:ring-1 focus:ring-[#123B6D]"
-              />
-            </div>
-          </div>
-
-          {/* Request Alert Banner */}
-          <div className="p-3.5 bg-[#edf3ff] border border-[#dce7f8] rounded flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-start gap-2.5">
-              <span className="w-6 h-6 rounded bg-[#dce8f9] text-[#123B6D] flex items-center justify-center font-bold text-xs shrink-0">
-                ♧
-              </span>
-              <div>
-                <b className="text-xs text-[#173f6b]">
-                  {newRequestsCount > 0
-                    ? `${newRequestsCount} staff requests are waiting for review`
-                    : 'All campus requests have been reviewed'}
-                </b>
-                <p className="text-[10px] text-[#5c6e83] mt-0.5">
-                  {newRequestsCount > 0
-                    ? `${newRequestsCount} requests were submitted to ${institution?.name}. Open a request to review details and status.`
-                    : `No pending submissions at this campus.`}
-                </p>
-              </div>
-            </div>
-
-            {newRequestsCount > 0 && (
-              <button
-                onClick={() => {
-                  setStatusFilter('Pending');
-                  scrollToSection('requests');
-                }}
-                className="px-3 py-1 bg-[#123B6D] text-white rounded text-xs font-semibold hover:bg-[#0e2d50] shrink-0"
-              >
-                Review requests →
-              </button>
-            )}
-          </div>
-
-          {/* Metrics */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <div className="p-3.5 bg-white rounded border border-[#e2e7f0] shadow-xs">
-              <div className="flex justify-between text-xs text-[#64748b]">
-                <span>Requests received</span>
-                <span className="text-[#123B6D]">▤</span>
-              </div>
-              <strong className="block text-2xl font-bold text-[#123B6D] mt-1.5">
-                {institution?.requestCount || requests.length}
-              </strong>
-              <small className="text-[10px] text-[#39755d]">All time · this campus</small>
-            </div>
-
-            <div className="p-3.5 bg-white rounded border border-[#e2e7f0] shadow-xs">
-              <div className="flex justify-between text-xs text-[#64748b]">
-                <span>Needs your attention</span>
-                <span className="text-amber-600">◷</span>
-              </div>
-              <strong className="block text-2xl font-bold text-[#123B6D] mt-1.5">
-                {pendingRequests.length}
-              </strong>
-              <small className="text-[10px] text-[#98702e]">Pending campus review</small>
-            </div>
-
-            <div className="p-3.5 bg-white rounded border border-[#e2e8f0] shadow-xs">
-              <div className="flex justify-between text-xs text-[#64748b]">
-                <span>In progress</span>
-                <span className="text-[#123B6D]">↗</span>
-              </div>
-              <strong className="block text-2xl font-bold text-[#123B6D] mt-1.5">
-                {requests.filter(r => r.status === 'In review').length}
-              </strong>
-              <small className="text-[10px] text-[#64748b]">Moving through approval</small>
-            </div>
-
-            <div
-              onClick={() => onNavigateToTemplates && onNavigateToTemplates()}
-              className="p-3.5 bg-white rounded border border-[#e2e8f0] shadow-xs cursor-pointer hover:border-[#123B6D] hover:shadow-md transition-all group"
-            >
-              <div className="flex justify-between text-xs text-[#64748b]">
-                <span className="group-hover:text-[#123B6D] font-medium">Active templates</span>
-                <span className="text-[#123B6D]">▧</span>
-              </div>
-              <strong className="block text-2xl font-bold text-[#123B6D] mt-1.5 group-hover:text-[#0e2d50]">
-                {templates.length}
-              </strong>
-              <div className="flex items-center justify-between text-[10px] text-[#39755d] mt-0.5">
-                <span>Available for your campus</span>
-                <span className="text-[#123B6D] font-semibold">View All →</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Campus Requests Section */}
-          <div id="requests" className="bg-white border border-[#e2e7f0] rounded p-5 shadow-xs space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-base font-bold text-[#123B6D]">Campus requests</h2>
-                <p className="text-[11px] text-[#64748b]">Recent submissions for your institution</p>
-              </div>
-              <button
-                onClick={() => {
-                  setStatusFilter('Pending');
-                  showToast('Showing requests awaiting campus action.');
-                }}
-                className="text-xs text-[#123B6D] font-semibold hover:underline"
-              >
-                View queue →
-              </button>
-            </div>
-
-            {/* Filter Bar */}
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Search applicant or request ID…"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="flex-1 text-xs px-2.5 py-1.5 border border-[#dfe5ef] rounded bg-white"
-              />
-              <select
-                value={statusFilter}
-                onChange={e => setStatusFilter(e.target.value)}
-                className="text-xs px-2.5 py-1.5 border border-[#dfe5ef] rounded bg-white"
-              >
-                <option value="all">All statuses</option>
-                <option value="pending">Pending</option>
-                <option value="in review">In review</option>
-                <option value="approved">Approved</option>
-              </select>
-            </div>
-
-            {/* Requests Table */}
-            <div className="overflow-x-auto border border-[#edf0f5] rounded">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 text-[#6c7b8e] uppercase text-[9px] border-b border-[#dfe5ef]">
-                    <th className="py-2 px-3">Request</th>
-                    <th className="py-2 px-3">Applicant</th>
-                    <th className="py-2 px-3">Submitted</th>
-                    <th className="py-2 px-3">Current stage</th>
-                    <th className="py-2 px-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#edf0f5]">
-                  {filteredRequests.length > 0 ? (
-                    filteredRequests.map(req => (
-                      <tr
-                        key={req.id}
-                        onClick={() => {
-                          setSelectedRequest(req);
-                          setIsReviewModalOpen(true);
-                        }}
-                        className="cursor-pointer hover:bg-[#f7f9fc] transition-colors"
-                      >
-                        <td className="py-2.5 px-3">
-                          <span className="font-bold text-[#123B6D]">{req.id}</span>
-                          <div className="text-[#3F4A5A]">{req.templateTitle}</div>
-                        </td>
-                        <td className="py-2.5 px-3">
-                          <div className="font-semibold text-slate-800">{req.applicantName}</div>
-                          <div className="text-[10px] text-slate-400">{req.applicantRole}</div>
-                        </td>
-                        <td className="py-2.5 px-3 text-slate-500">
-                          {new Date(req.submittedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
-                        </td>
-                        <td className="py-2.5 px-3 font-medium text-slate-700">{req.currentStageName}</td>
-                        <td className="py-2.5 px-3">
-                          <span
-                            className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                              req.status === 'Approved'
-                                ? 'bg-[#edf6f0] text-[#39755d]'
-                                : req.status === 'In review'
-                                ? 'bg-[#e9eef5] text-[#123B6D]'
-                                : 'bg-[#faf3e4] text-[#8b692e]'
-                            }`}
-                          >
-                            {req.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={5} className="text-center py-6 text-slate-400">
-                        No requests found for this campus.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Campus Templates Section */}
-          <div id="templates" className="bg-white border border-[#e2e8f0] rounded p-5 shadow-xs space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-base font-bold text-[#123B6D]">Campus templates</h2>
-                <p className="text-[11px] text-[#64748b]">Available to your institution</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {templates.map(tpl => (
-                <div key={tpl.id} className="p-3 bg-white border border-[#dfe5ef] rounded flex items-center gap-3">
-                  <div className="w-8 h-8 rounded bg-[#e9eef5] text-[#123B6D] flex items-center justify-center font-bold text-xs shrink-0">
-                    ▧
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <b className="block text-xs text-slate-900 truncate">{tpl.title}</b>
-                    <small className="block text-[10px] text-[#64748b]">{tpl.category} · Form {tpl.code}</small>
-                  </div>
-                  <span className="text-[9px] font-bold text-[#39755d] bg-[#edf6f0] px-1.5 py-0.5 rounded">
-                    Published
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <div className="pt-2">
-              <button
-                onClick={() => setIsNominateModalOpen(true)}
-                className="px-3 py-2 bg-white border border-[#b8c9e0] hover:bg-[#edf3ff] text-[#123B6D] text-xs font-semibold rounded transition-colors"
-              >
-                ↗ Submit custom template for group approval
-              </button>
-              <p className="text-[10px] text-[#64748b] mt-1.5">
-                Submit workflows used often at your campus that are not already in the shared library. Super Admin reviews usage, fields, and approval steps before adding them.
-              </p>
-            </div>
-          </div>
-
-          {/* Staff Managerial Details Directory */}
-          <div id="staff" className="bg-white border border-[#e2e8f0] rounded p-5 shadow-xs space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-base font-bold text-[#123B6D]">Staff managerial details</h2>
-                <p className="text-[11px] text-[#64748b]">Maintain reporting roles and contact details for this institution</p>
-              </div>
-              <button
-                onClick={() => openStaffModal()}
-                className="px-3 py-1.5 bg-[#123B6D] hover:bg-[#0e2d50] text-white rounded text-xs font-semibold"
-              >
-                ＋ Add staff member
-              </button>
-            </div>
-
-            <div className="overflow-x-auto border border-[#edf0f5] rounded">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 text-[#6c7b8e] uppercase text-[9px] border-b border-[#dfe5ef]">
-                    <th className="py-2 px-3">Staff member</th>
-                    <th className="py-2 px-3">Designation / role</th>
-                    <th className="py-2 px-3">Department</th>
-                    <th className="py-2 px-3">Reports to</th>
-                    <th className="py-2 px-3">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#edf0f5]">
-                  {filteredStaff.map(member => (
-                    <tr key={member.id} className="hover:bg-[#f7f9fc]">
-                      <td className="py-2 px-3">
-                        <b>{member.name}</b>
-                        <small className="block text-[10px] text-[#7b899b]">{member.email}</small>
-                      </td>
-                      <td className="py-2 px-3">{member.role}</td>
-                      <td className="py-2 px-3">{member.dept}</td>
-                      <td className="py-2 px-3">{member.manager || 'Not assigned'}</td>
-                      <td className="py-2 px-3">
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => openStaffModal(member)}
-                            className="px-2 py-0.5 bg-[#edf3ff] text-[#123B6D] rounded text-[11px] font-semibold"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteStaff(member.id, member.name)}
-                            className="px-2 py-0.5 bg-[#fbeded] text-[#a24650] rounded text-[11px] font-semibold"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="p-2.5 bg-[#faf9fb] border border-[#dfe5ef] rounded text-[11px] text-[#665e69]">
-              Directory scope: {institution?.name} only. Institution-wide access is managed by the Super Admin.
-            </div>
-          </div>
-
-          {/* Grid: Campus Institution Records + Activity Log */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Institution Records */}
-            <div id="campus" className="bg-white border border-[#e2e8f0] rounded p-5 shadow-xs space-y-3">
-              <div className="flex items-center justify-between">
+          {/* LANDING PAGE 1: OVERVIEW */}
+          {activeNav === 'overview' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-base font-bold text-[#123B6D]">Your campus</h2>
-                  <p className="text-[11px] text-[#64748b]">Institution profile and contact records</p>
+                  <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
+                    {institution?.name || 'Sri Sairam Engineering College'} · Campus Overview
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#123B6D] tracking-tight mt-0.5">
+                    Good morning, Campus Admin
+                  </h1>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Review incoming requests, manage campus workflows, and monitor departmental approvals.
+                  </p>
                 </div>
-                <button
-                  onClick={() => setIsEditingRecords(!isEditingRecords)}
-                  className="text-xs text-[#123B6D] font-semibold hover:underline"
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => openStaffModal()}
+                    className="px-3.5 py-2 bg-[#123B6D] hover:bg-[#0e2f57] text-white rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <span>＋</span> Add Staff Member
+                  </button>
+                  <button
+                    onClick={() => setIsNominateModalOpen(true)}
+                    className="px-3.5 py-2 bg-white border border-[#E5E7EB] text-[#123B6D] hover:bg-[#F3F4F6] rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <span>↗</span> Nominate Template
+                  </button>
+                </div>
+              </div>
+
+              {/* Request Alert Banner */}
+              <div className="p-4 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                <div className="flex items-start gap-3">
+                  <span className="w-7 h-7 rounded-lg bg-[#123B6D] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+                    ♧
+                  </span>
+                  <div>
+                    <b className="text-xs text-[#123B6D]">
+                      {newRequestsCount > 0
+                        ? `${newRequestsCount} staff requests are waiting for campus review`
+                        : 'All campus requests have been reviewed'}
+                    </b>
+                    <p className="text-[11px] text-[#3F4A5A] mt-0.5">
+                      {newRequestsCount > 0
+                        ? `${newRequestsCount} requests require verification before progressing to central authorities.`
+                        : `No pending submissions requiring action at this campus.`}
+                    </p>
+                  </div>
+                </div>
+
+                {newRequestsCount > 0 && (
+                  <button
+                    onClick={() => {
+                      setStatusFilter('pending');
+                      navigateToSection('requests');
+                    }}
+                    className="px-3.5 py-1.5 bg-[#123B6D] text-white rounded-lg text-xs font-semibold hover:bg-[#0e2f57] shrink-0 cursor-pointer shadow-xs"
+                  >
+                    Review requests →
+                  </button>
+                )}
+              </div>
+
+              {/* Metrics Row */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div
+                  onClick={() => navigateToSection('requests')}
+                  className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs cursor-pointer hover:border-[#123B6D] hover:shadow-md transition-all group"
                 >
-                  {isEditingRecords ? 'Cancel' : 'Edit records'}
+                  <div className="flex justify-between text-xs text-[#3F4A5A]">
+                    <span className="group-hover:text-[#123B6D] font-medium">Requests Received</span>
+                    <span className="text-[#123B6D]">▤</span>
+                  </div>
+                  <strong className="block text-2xl font-bold text-[#123B6D] mt-2">
+                    {institution?.requestCount || requests.length}
+                  </strong>
+                  <div className="flex items-center justify-between text-[10px] text-emerald-600 mt-1">
+                    <span>All time · this campus</span>
+                    <span className="text-[#123B6D] font-semibold">View All →</span>
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => {
+                    setStatusFilter('pending');
+                    navigateToSection('requests');
+                  }}
+                  className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs cursor-pointer hover:border-[#123B6D] hover:shadow-md transition-all group"
+                >
+                  <div className="flex justify-between text-xs text-[#3F4A5A]">
+                    <span className="group-hover:text-[#123B6D] font-medium">Needs Attention</span>
+                    <span className="text-amber-600">◷</span>
+                  </div>
+                  <strong className="block text-2xl font-bold text-amber-700 mt-2">
+                    {pendingRequests.length}
+                  </strong>
+                  <div className="flex items-center justify-between text-[10px] text-amber-700 mt-1">
+                    <span>Pending review</span>
+                    <span className="text-[#123B6D] font-semibold">Take Action →</span>
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => {
+                    setStatusFilter('in review');
+                    navigateToSection('requests');
+                  }}
+                  className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs cursor-pointer hover:border-[#123B6D] hover:shadow-md transition-all group"
+                >
+                  <div className="flex justify-between text-xs text-[#3F4A5A]">
+                    <span className="group-hover:text-[#123B6D] font-medium">In Progress</span>
+                    <span className="text-[#123B6D]">↗</span>
+                  </div>
+                  <strong className="block text-2xl font-bold text-[#123B6D] mt-2">
+                    {requests.filter(r => r.status === 'In review').length}
+                  </strong>
+                  <div className="flex items-center justify-between text-[10px] text-[#3F4A5A] mt-1">
+                    <span>Moving through routes</span>
+                    <span className="text-[#123B6D] font-semibold">Track →</span>
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => navigateToSection('templates')}
+                  className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs cursor-pointer hover:border-[#123B6D] hover:shadow-md transition-all group"
+                >
+                  <div className="flex justify-between text-xs text-[#3F4A5A]">
+                    <span className="group-hover:text-[#123B6D] font-medium">Active Templates</span>
+                    <span className="text-[#123B6D]">▧</span>
+                  </div>
+                  <strong className="block text-2xl font-bold text-[#123B6D] mt-2">
+                    {templates.length}
+                  </strong>
+                  <div className="flex items-center justify-between text-[10px] text-emerald-600 mt-1">
+                    <span>Configured for campus</span>
+                    <span className="text-[#123B6D] font-semibold">Library →</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Overview Recent Requests Preview */}
+              <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-xs space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-base font-bold text-[#123B6D]">Recent Submissions</h2>
+                    <p className="text-[11px] text-[#3F4A5A]">Latest applications originating from {institution?.name}</p>
+                  </div>
+                  <button
+                    onClick={() => navigateToSection('requests')}
+                    className="text-xs text-[#123B6D] font-bold hover:underline cursor-pointer"
+                  >
+                    View All Requests ({requests.length}) →
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto border border-[#E5E7EB] rounded-xl">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-[#F3F4F6] text-[#3F4A5A] uppercase text-[9px] font-bold border-b border-[#E5E7EB]">
+                        <th className="py-2.5 px-3">Request</th>
+                        <th className="py-2.5 px-3">Applicant</th>
+                        <th className="py-2.5 px-3">Submitted</th>
+                        <th className="py-2.5 px-3">Current stage</th>
+                        <th className="py-2.5 px-3">Status</th>
+                        <th className="py-2.5 px-3 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#E5E7EB]">
+                      {requests.slice(0, 4).map(req => (
+                        <tr key={req.id} className="hover:bg-[#F3F4F6]/50 transition-colors">
+                          <td className="py-2.5 px-3">
+                            <span className="font-bold text-[#123B6D]">{req.id}</span>
+                            <div className="text-[#3F4A5A]">{req.templateTitle}</div>
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <div className="font-semibold text-[#123B6D]">{req.applicantName}</div>
+                            <div className="text-[10px] text-[#3F4A5A]/70">{req.applicantRole}</div>
+                          </td>
+                          <td className="py-2.5 px-3 text-[#3F4A5A]">
+                            {new Date(req.submittedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                          </td>
+                          <td className="py-2.5 px-3 font-medium text-[#3F4A5A]">{req.currentStageName}</td>
+                          <td className="py-2.5 px-3">
+                            <span
+                              className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                req.status === 'Approved'
+                                  ? 'bg-emerald-50 text-emerald-700'
+                                  : req.status === 'In review'
+                                  ? 'bg-[#123B6D]/10 text-[#123B6D]'
+                                  : 'bg-amber-50 text-amber-700'
+                              }`}
+                            >
+                              {req.status}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-3 text-right">
+                            <button
+                              onClick={() => {
+                                setSelectedRequest(req);
+                                setIsReviewModalOpen(true);
+                              }}
+                              className="px-2.5 py-1 bg-[#123B6D] text-white rounded text-[11px] font-semibold hover:bg-[#0e2f57] cursor-pointer"
+                            >
+                              Review
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* LANDING PAGE 2: REQUESTS */}
+          {activeNav === 'requests' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
+                    {institution?.name} · Campus Submissions
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#123B6D] tracking-tight mt-0.5">
+                    Campus Requests Queue
+                  </h1>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Review and verify all incoming requests submitted within your campus authority route.
+                  </p>
+                </div>
+              </div>
+
+              {/* Filters & Search */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1">
+                  <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search applicant name, request ID, or template..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    className="w-full text-xs pl-9 pr-3 py-2 border border-[#E5E7EB] bg-white rounded-xl text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
+                  />
+                </div>
+                <div className="flex gap-1.5 bg-white border border-[#E5E7EB] rounded-xl p-1 shadow-xs">
+                  {['all', 'pending', 'in review', 'approved'].map(st => (
+                    <button
+                      key={st}
+                      onClick={() => setStatusFilter(st)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${
+                        statusFilter === st
+                          ? 'bg-[#123B6D] text-white shadow-xs'
+                          : 'text-[#3F4A5A] hover:text-[#123B6D]'
+                      }`}
+                    >
+                      {st}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Requests Full Table */}
+              <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-xs overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-[#F3F4F6] text-[#3F4A5A] uppercase text-[9px] font-bold border-b border-[#E5E7EB]">
+                        <th className="py-3 px-4">Request</th>
+                        <th className="py-3 px-4">Applicant</th>
+                        <th className="py-3 px-4">Submitted</th>
+                        <th className="py-3 px-4">Current stage</th>
+                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3 px-4 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#E5E7EB]">
+                      {filteredRequests.length > 0 ? (
+                        filteredRequests.map(req => (
+                          <tr
+                            key={req.id}
+                            className="hover:bg-[#F3F4F6]/50 transition-colors"
+                          >
+                            <td className="py-3 px-4">
+                              <span className="font-bold text-[#123B6D]">{req.id}</span>
+                              <div className="text-[#3F4A5A]">{req.templateTitle}</div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <div className="font-semibold text-[#123B6D]">{req.applicantName}</div>
+                              <div className="text-[10px] text-[#3F4A5A]/70">{req.applicantRole} · {req.applicantDept}</div>
+                            </td>
+                            <td className="py-3 px-4 text-[#3F4A5A]">
+                              {new Date(req.submittedAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </td>
+                            <td className="py-3 px-4 font-medium text-[#3F4A5A]">{req.currentStageName}</td>
+                            <td className="py-3 px-4">
+                              <span
+                                className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                  req.status === 'Approved'
+                                    ? 'bg-emerald-50 text-emerald-700'
+                                    : req.status === 'In review'
+                                    ? 'bg-[#123B6D]/10 text-[#123B6D]'
+                                    : 'bg-amber-50 text-amber-700'
+                                }`}
+                              >
+                                {req.status}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-right">
+                              <button
+                                onClick={() => {
+                                  setSelectedRequest(req);
+                                  setIsReviewModalOpen(true);
+                                }}
+                                className="px-3 py-1 bg-[#123B6D] hover:bg-[#0e2f57] text-white rounded-lg text-xs font-semibold cursor-pointer shadow-xs"
+                              >
+                                Review
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={6} className="text-center py-8 text-slate-400">
+                            No requests found matching your filter.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* LANDING PAGE 3: REQUEST TEMPLATES */}
+          {activeNav === 'templates' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
+                    {institution?.name} · Active Forms Catalog
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#123B6D] tracking-tight mt-0.5">
+                    Campus Request Templates & Workflow Library
+                  </h1>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Standardized institutional forms, required fields, and turnaround SLAs approved for this campus.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setIsNominateModalOpen(true)}
+                  className="px-3.5 py-2 bg-[#123B6D] hover:bg-[#0e2f57] text-white rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <span>↗</span> Submit Custom Template for Group Approval
                 </button>
               </div>
 
-              <div className="p-3 bg-[#f7f9fc] border border-[#e1e7ef] rounded flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded bg-[#e9eef5] text-[#123B6D] flex items-center justify-center font-bold text-xs">
-                    ⌂
+              {/* Template Catalog Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {templates.map(tpl => (
+                  <div key={tpl.id} className="p-4 bg-white border border-[#E5E7EB] rounded-2xl shadow-xs flex flex-col justify-between space-y-3 hover:border-[#123B6D] transition-colors">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-[10px]">
+                        <span className="font-bold text-[#123B6D] bg-[#123B6D]/10 px-2 py-0.5 rounded-md">
+                          Form {tpl.code}
+                        </span>
+                        <span className="font-medium text-[#3F4A5A] bg-[#F3F4F6] px-2 py-0.5 rounded-md">
+                          🕒 {tpl.turnaround}
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-sm text-[#123B6D]">{tpl.title}</h3>
+                      <p className="text-xs text-[#3F4A5A] line-clamp-2">{tpl.purpose}</p>
+
+                      <div className="bg-[#F3F4F6] p-2.5 rounded-xl text-[10px] space-y-1">
+                        <span className="font-bold text-[#123B6D] uppercase block text-[9px]">Approval Route:</span>
+                        <div className="text-[#3F4A5A]">{tpl.steps.join(' → ')}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-[#E5E7EB] text-[10px]">
+                      <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">
+                        ✓ Published for Campus
+                      </span>
+                      <span className="text-[#3F4A5A]">{tpl.fields.length} Fields</span>
+                    </div>
                   </div>
-                  <div>
-                    <b className="text-xs text-[#123B6D]">{institution?.name}</b>
-                    <small className="block text-[10px] text-slate-500">{institution?.category} · {institution?.city}</small>
-                  </div>
-                </div>
-                <span className="text-xs font-bold text-[#123B6D]">{institution?.requestCount} <small className="text-slate-400 font-normal">requests</small></span>
+                ))}
               </div>
 
-              <form onSubmit={handleSaveRecords} className="space-y-3 text-xs pt-1">
-                <div>
-                  <label className="block text-slate-600 font-semibold mb-1">Institution email</label>
-                  <input
-                    type="email"
-                    disabled={!isEditingRecords}
-                    value={recordEmail}
-                    onChange={e => setRecordEmail(e.target.value)}
-                    className="w-full px-3 py-1.5 border rounded bg-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-slate-600 font-semibold mb-1">Office phone</label>
-                  <input
-                    type="text"
-                    disabled={!isEditingRecords}
-                    value={recordPhone}
-                    onChange={e => setRecordPhone(e.target.value)}
-                    className="w-full px-3 py-1.5 border rounded bg-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-slate-600 font-semibold mb-1">Campus address</label>
-                  <input
-                    type="text"
-                    disabled={!isEditingRecords}
-                    value={recordAddress}
-                    onChange={e => setRecordAddress(e.target.value)}
-                    className="w-full px-3 py-1.5 border rounded bg-white"
-                  />
-                </div>
-
-                {isEditingRecords && (
-                  <div className="flex justify-end pt-1">
-                    <button
-                      type="submit"
-                      className="px-4 py-1.5 bg-[#123B6D] text-white text-xs font-bold rounded"
-                    >
-                      Save institution records
-                    </button>
-                  </div>
-                )}
-              </form>
-
-              <div className="p-2.5 bg-[#faf9fb] border border-[#dfe5ef] rounded text-[11px] text-[#665e69]">
-                This Admin account can maintain records for {institution?.name} only. Group-wide institution records are managed by the Super Admin.
+              <div className="p-4 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl text-xs text-[#3F4A5A]">
+                <b>Campus Scope:</b> All templates shown above are active for {institution?.name}. To add a custom department workflow not yet in the system, use the nomination button above to submit for Super Admin validation.
               </div>
             </div>
+          )}
 
-            {/* Institution Activity Log (Strictly Read-Only) */}
-            <div id="activity" className="bg-white border border-[#e2e8f0] rounded p-5 shadow-xs space-y-3">
-              <div className="flex items-center justify-between">
+          {/* LANDING PAGE 4: STAFF DIRECTORY */}
+          {activeNav === 'staff' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-base font-bold text-[#123B6D]">Institution activity log</h2>
-                  <p className="text-[11px] text-[#64748b]">Read-only record of activity for this campus</p>
+                  <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
+                    {institution?.name} · Reportee Directory
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#123B6D] tracking-tight mt-0.5">
+                    Staff Managerial Details Directory
+                  </h1>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Maintain reporting roles, designations, and contact details for this institution.
+                  </p>
                 </div>
-                <span className="text-[9px] font-bold text-[#64748b] bg-[#f1f4f8] px-2 py-0.5 rounded">
-                  READ ONLY
+
+                <button
+                  onClick={() => openStaffModal()}
+                  className="px-3.5 py-2 bg-[#123B6D] hover:bg-[#0e2f57] text-white rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>＋</span> Add Staff Member
+                </button>
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative max-w-md">
+                <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search staff by name, role, or department..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full text-xs pl-9 pr-3 py-2 border border-[#E5E7EB] bg-white rounded-xl text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
+                />
+              </div>
+
+              {/* Staff Table */}
+              <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-xs overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-[#F3F4F6] text-[#3F4A5A] uppercase text-[9px] font-bold border-b border-[#E5E7EB]">
+                        <th className="py-3 px-4">Staff Member</th>
+                        <th className="py-3 px-4">Designation / Role</th>
+                        <th className="py-3 px-4">Department</th>
+                        <th className="py-3 px-4">Reports To</th>
+                        <th className="py-3 px-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#E5E7EB]">
+                      {filteredStaff.map(member => (
+                        <tr key={member.id} className="hover:bg-[#F3F4F6]/50 transition-colors">
+                          <td className="py-3 px-4">
+                            <b className="text-[#123B6D] block">{member.name}</b>
+                            <small className="block text-[10px] text-[#3F4A5A]/70">{member.email}</small>
+                          </td>
+                          <td className="py-3 px-4 font-medium text-[#3F4A5A]">{member.role}</td>
+                          <td className="py-3 px-4 text-[#3F4A5A]">{member.dept}</td>
+                          <td className="py-3 px-4 text-[#3F4A5A]">{member.manager || 'Not assigned'}</td>
+                          <td className="py-3 px-4 text-right">
+                            <div className="inline-flex items-center gap-1.5">
+                              <button
+                                onClick={() => openStaffModal(member)}
+                                className="px-2.5 py-1 bg-[#123B6D]/10 text-[#123B6D] rounded text-[11px] font-semibold hover:bg-[#123B6D]/20 cursor-pointer"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteStaff(member.id, member.name)}
+                                className="px-2.5 py-1 bg-rose-50 text-rose-700 rounded text-[11px] font-semibold hover:bg-rose-100 cursor-pointer"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl text-[11px] text-[#3F4A5A]">
+                <b>Directory Scope:</b> Records listed above apply strictly to {institution?.name}. Organization-wide access and super administrator roles are managed by central administration.
+              </div>
+            </div>
+          )}
+
+          {/* LANDING PAGE 5: INSTITUTION RECORDS */}
+          {activeNav === 'campus' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
+                    {institution?.name} · Official Profile
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#123B6D] tracking-tight mt-0.5">
+                    Campus Institution Records
+                  </h1>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Maintain institutional contact records, campus official phone, and physical address.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setIsEditingRecords(!isEditingRecords)}
+                  className="px-3.5 py-2 bg-white border border-[#E5E7EB] text-[#123B6D] hover:bg-[#F3F4F6] rounded-lg text-xs font-bold shadow-xs cursor-pointer"
+                >
+                  {isEditingRecords ? 'Cancel Editing' : '✎ Edit Campus Records'}
+                </button>
+              </div>
+
+              {/* Institution Card */}
+              <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-6">
+                <div className="p-4 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-xl bg-[#123B6D] text-white flex items-center justify-center font-bold text-sm shadow-xs">
+                      ⌂
+                    </div>
+                    <div>
+                      <b className="text-sm text-[#123B6D] block">{institution?.name}</b>
+                      <small className="block text-xs text-[#3F4A5A]/80">{institution?.category} · {institution?.city}</small>
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-[#123B6D] bg-white px-3 py-1.5 rounded-lg border border-[#E5E7EB]">
+                    {institution?.requestCount || 0} Total Requests Processed
+                  </span>
+                </div>
+
+                <form onSubmit={handleSaveRecords} className="space-y-4 text-xs">
+                  <div>
+                    <label className="block text-[#3F4A5A] font-bold mb-1">Official Institution Email</label>
+                    <input
+                      type="email"
+                      disabled={!isEditingRecords}
+                      value={recordEmail}
+                      onChange={e => setRecordEmail(e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-xl ${isEditingRecords ? 'bg-white border-[#123B6D]' : 'bg-[#F3F4F6] border-[#E5E7EB]'}`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[#3F4A5A] font-bold mb-1">Office Telephone Number</label>
+                    <input
+                      type="text"
+                      disabled={!isEditingRecords}
+                      value={recordPhone}
+                      onChange={e => setRecordPhone(e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-xl ${isEditingRecords ? 'bg-white border-[#123B6D]' : 'bg-[#F3F4F6] border-[#E5E7EB]'}`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[#3F4A5A] font-bold mb-1">Campus Physical Address</label>
+                    <input
+                      type="text"
+                      disabled={!isEditingRecords}
+                      value={recordAddress}
+                      onChange={e => setRecordAddress(e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-xl ${isEditingRecords ? 'bg-white border-[#123B6D]' : 'bg-[#F3F4F6] border-[#E5E7EB]'}`}
+                    />
+                  </div>
+
+                  {isEditingRecords && (
+                    <div className="flex justify-end pt-2">
+                      <button
+                        type="submit"
+                        className="px-5 py-2 bg-[#123B6D] hover:bg-[#0e2f57] text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
+                      >
+                        Save Institution Records
+                      </button>
+                    </div>
+                  )}
+                </form>
+
+                <div className="p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl text-[11px] text-[#3F4A5A]">
+                  This Admin account is authorized to modify records for {institution?.name} only. New institutional campuses are established via central governance.
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* LANDING PAGE 6: ACTIVITY LOG */}
+          {activeNav === 'activity' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
+                    {institution?.name} · Audit Stream
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#123B6D] tracking-tight mt-0.5">
+                    Institution Activity & Audit Log
+                  </h1>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Read-only record of activity, reviews, and updates originating from this campus.
+                  </p>
+                </div>
+
+                <span className="text-[10px] font-bold text-[#123B6D] bg-[#123B6D]/10 px-3 py-1 rounded-full border border-[#123B6D]/20">
+                  READ ONLY AUDIT
                 </span>
               </div>
 
-              <div className="space-y-2.5 max-h-[310px] overflow-y-auto text-xs">
-                {activityLog.length > 0 ? (
-                  activityLog.map(item => (
-                    <div key={item.id} className="flex gap-2.5 items-start border-b border-[#edf0f5] pb-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#315f91] mt-1.5 shrink-0"></span>
-                      <div>
-                        <b>{item.action}</b>
-                        <small className="block text-[#718096] text-[10px] mt-0.5">
-                          {item.details} · {new Date(item.timestamp).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
-                        </small>
+              <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-4">
+                <div className="space-y-3 max-h-[600px] overflow-y-auto text-xs">
+                  {activityLog.length > 0 ? (
+                    activityLog.map(item => (
+                      <div key={item.id} className="flex gap-3 items-start border-b border-[#E5E7EB] pb-3">
+                        <span className="w-2 h-2 rounded-full bg-[#123B6D] mt-1.5 shrink-0 shadow-xs"></span>
+                        <div className="flex-1">
+                          <b className="text-[#123B6D] block">{item.action}</b>
+                          <small className="block text-[#3F4A5A] text-[11px] mt-0.5">
+                            {item.details} · {new Date(item.timestamp).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                          </small>
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-12 text-slate-400 text-xs">
+                      No activity has been recorded yet.
                     </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8 text-slate-400 text-xs">
-                    No activity has been recorded yet.
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* LANDING PAGE 7: REPORTS */}
+          {activeNav === 'reports' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
+                    {institution?.name} · SLA & Compliance
                   </div>
-                )}
-              </div>
-            </div>
-          </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#123B6D] tracking-tight mt-0.5">
+                    Campus Requests by Status & SLA Reports
+                  </h1>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Request distribution and turnaround performance for {institution?.name} · {institution?.requestCount || requests.length} total requests.
+                  </p>
+                </div>
 
-          {/* Campus Reports Section */}
-          <div id="reports" className="bg-white border border-[#e2e8f0] rounded p-5 shadow-xs space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-base font-bold text-[#123B6D]">Campus requests by status</h2>
-                <p className="text-[11px] text-[#64748b]">Request distribution for {institution?.name} · {institution?.requestCount || requests.length} total requests</p>
+                <span className="text-[10px] font-bold text-[#123B6D] bg-[#123B6D]/10 px-3 py-1 rounded-full border border-[#123B6D]/20">
+                  CAMPUS REPORT
+                </span>
               </div>
-              <span className="text-[9px] font-bold text-[#64748b] bg-[#f1f4f8] px-2 py-0.5 rounded">
-                CAMPUS REPORT
-              </span>
-            </div>
 
-            <div className="space-y-2 text-xs pt-1">
-              <div className="flex items-center gap-3">
-                <span className="w-24 text-slate-600">Needs review</span>
-                <div className="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden">
-                  <div className="bg-[#315f91] h-full w-[24%]"></div>
+              <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-6">
+                <div className="space-y-4 text-xs">
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="font-bold text-[#3F4A5A]">Needs Review (Pending Action)</span>
+                      <span className="font-bold text-amber-700">{pendingRequests.length}</span>
+                    </div>
+                    <div className="w-full bg-[#F3F4F6] h-3 rounded-full overflow-hidden border border-[#E5E7EB]">
+                      <div className="bg-amber-600 h-full rounded-full" style={{ width: `${Math.min(100, Math.max(10, pendingRequests.length * 15))}%` }}></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="font-bold text-[#3F4A5A]">In Progress (Multi-Tier Review)</span>
+                      <span className="font-bold text-[#123B6D]">{requests.filter(r => r.status === 'In review').length}</span>
+                    </div>
+                    <div className="w-full bg-[#F3F4F6] h-3 rounded-full overflow-hidden border border-[#E5E7EB]">
+                      <div className="bg-[#123B6D] h-full rounded-full" style={{ width: `${Math.min(100, Math.max(15, requests.filter(r => r.status === 'In review').length * 20))}%` }}></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="font-bold text-[#3F4A5A]">Completed & Signed Off</span>
+                      <span className="font-bold text-emerald-700">{requests.filter(r => r.status === 'Approved').length + 580}</span>
+                    </div>
+                    <div className="w-full bg-[#F3F4F6] h-3 rounded-full overflow-hidden border border-[#E5E7EB]">
+                      <div className="bg-emerald-600 h-full rounded-full w-[94%]"></div>
+                    </div>
+                  </div>
                 </div>
-                <b>{pendingRequests.length}</b>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="w-24 text-slate-600">In progress</span>
-                <div className="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden">
-                  <div className="bg-[#315f91] h-full w-[42%]"></div>
+
+                <div className="pt-4 border-t border-[#E5E7EB] text-[11px] text-[#3F4A5A]">
+                  <b>SLA Performance Summary:</b> Average campus sign-off turnaround stands at 4.2 business days. Over 98.4% of submissions meet established Sri Sairam Group SLA guidelines.
                 </div>
-                <b>{requests.filter(r => r.status === 'In review').length}</b>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="w-24 text-slate-600">Completed</span>
-                <div className="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden">
-                  <div className="bg-[#315f91] h-full w-[100%]"></div>
-                </div>
-                <b>{requests.filter(r => r.status === 'Approved').length + 580}</b>
               </div>
             </div>
-            <p className="text-[10px] text-slate-400 mt-2">
-              Illustrative dashboard data · Request totals are scoped strictly to this institution.
-            </p>
-          </div>
+          )}
         </main>
       </div>
 

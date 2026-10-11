@@ -151,19 +151,21 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f7fc] text-[#1b2635] flex flex-col font-sans">
-      {currentView === 'templates' ? (
-        <TemplatesLandingPage
-          currentUser={user}
-          onBack={navigateToDashboard}
-          onFastSwitch={handleFastSwitch}
-          onLogout={handleLogout}
-        />
-      ) : !user ? (
-        <LandingPage
-          onLoginSuccess={handleLoginSuccess}
-          onExploreTemplates={navigateToTemplates}
-        />
+    <div className="min-h-screen bg-[#F3F4F6] text-[#3F4A5A] flex flex-col font-sans">
+      {!user ? (
+        currentView === 'templates' ? (
+          <TemplatesLandingPage
+            currentUser={null}
+            onBack={navigateToDashboard}
+            onFastSwitch={handleFastSwitch}
+            onLogout={handleLogout}
+          />
+        ) : (
+          <LandingPage
+            onLoginSuccess={handleLoginSuccess}
+            onExploreTemplates={navigateToTemplates}
+          />
+        )
       ) : (
         <main className="flex-1">
           {user.role === 'super_admin' && (
@@ -172,7 +174,6 @@ function AppContent() {
               onLogout={handleLogout}
               onFastSwitch={handleFastSwitch}
               onResetDatabase={handleResetDatabase}
-              onNavigateToTemplates={navigateToTemplates}
             />
           )}
           {user.role === 'admin' && (
@@ -180,7 +181,6 @@ function AppContent() {
               currentUser={user}
               onLogout={handleLogout}
               onFastSwitch={handleFastSwitch}
-              onNavigateToTemplates={navigateToTemplates}
             />
           )}
           {user.role === 'staff' && (
@@ -188,7 +188,6 @@ function AppContent() {
               currentUser={user}
               onLogout={handleLogout}
               onFastSwitch={handleFastSwitch}
-              onNavigateToTemplates={navigateToTemplates}
             />
           )}
         </main>

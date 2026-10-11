@@ -46,7 +46,26 @@ export const SuperAdminDashboard: React.FC<Props> = ({
 }) => {
   const { showToast } = useToast();
 
-  const [activeNav, setActiveNav] = useState('overview');
+  const validNavs = ['overview', 'requests', 'templates', 'promotions', 'hierarchy', 'approval-route', 'schools', 'admins', 'reports'];
+
+  const [activeNav, setActiveNav] = useState<string>(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const h = window.location.hash.replace('#', '');
+      if (validNavs.includes(h)) return h;
+    }
+    return 'overview';
+  });
+
+  useEffect(() => {
+    const handleHash = () => {
+      const h = window.location.hash.replace('#', '');
+      if (validNavs.includes(h)) {
+        setActiveNav(h);
+      }
+    };
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   // Data states
   const [institutions, setInstitutions] = useState<Institution[]>([]);
@@ -188,13 +207,12 @@ export const SuperAdminDashboard: React.FC<Props> = ({
     return (node.count || 0) + (node.children || []).reduce((sum, c) => sum + countPeople(c), 0);
   };
 
-  const scrollToSection = (sectionId: string) => {
+  const navigateToSection = (sectionId: string) => {
     setActiveNav(sectionId);
-    const el = document.getElementById(sectionId);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    window.location.hash = `#${sectionId}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  const scrollToSection = navigateToSection;
 
   // Add Institution
   const handleAddSchool = async (e: React.FormEvent) => {
@@ -579,35 +597,35 @@ export const SuperAdminDashboard: React.FC<Props> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f7fc] text-[#1b2635] flex font-sans">
+    <div className="min-h-screen bg-[#F3F4F6] text-[#3F4A5A] flex font-sans">
       {/* AUTHENTIC SIDE PANEL (Matches super-admin.html) */}
-      <aside className="w-52 shrink-0 bg-white border-r border-[#e5eaf2] p-4 flex flex-col sticky top-0 h-screen shadow-xs z-30">
+      <aside className="w-56 shrink-0 bg-[#F3F4F6] border-r border-[#E5E7EB] p-4 flex flex-col sticky top-0 h-screen shadow-xs z-30">
         <div>
           {/* Brand */}
-          <div className="flex items-center gap-2.5 pb-4 border-b border-[#e7ebf2]">
-            <div className="w-8 h-8 rounded-lg bg-[#eaf1ff] text-[#173f6b] flex items-center justify-center font-serif font-bold text-lg">
+          <div className="flex items-center gap-2.5 pb-4 border-b border-[#E5E7EB]">
+            <div className="w-8 h-8 rounded-lg bg-[#123B6D] text-white flex items-center justify-center font-serif font-bold text-lg shadow-xs">
               P
             </div>
             <div>
-              <b className="text-lg font-bold text-[#1c2f48] tracking-tight">PaperTrail</b>
+              <b className="text-lg font-bold text-[#123B6D] tracking-tight">PaperTrail</b>
             </div>
           </div>
 
-          <div className="py-2.5 text-[9px] font-bold tracking-wider text-[#68778b] uppercase">
+          <div className="py-2.5 text-[9px] font-bold tracking-wider text-[#3F4A5A]/80 uppercase">
             GLOBAL ADMINISTRATION
           </div>
-          <div className="text-[9px] uppercase font-bold tracking-widest text-[#8592a4] px-1 py-1">
+          <div className="text-[9px] uppercase font-bold tracking-widest text-[#3F4A5A]/60 px-1 py-1">
             Platform
           </div>
 
           {/* Navigation Options Specified in HTML */}
           <nav className="flex flex-col gap-1 mt-1 text-xs">
             <button
-              onClick={() => scrollToSection('overview')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('overview')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors ${
                 activeNav === 'overview'
-                  ? 'bg-[#173f6b] text-white font-bold'
-                  : 'text-[#44536a] hover:bg-slate-100'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80'
               }`}
             >
               <span className="w-4 text-center">▦</span>
@@ -615,11 +633,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('requests')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('requests')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors ${
                 activeNav === 'requests'
-                  ? 'bg-[#173f6b] text-white font-bold'
-                  : 'text-[#44536a] hover:bg-slate-100'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80'
               }`}
             >
               <span className="w-4 text-center">▤</span>
@@ -627,11 +645,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => onNavigateToTemplates ? onNavigateToTemplates() : scrollToSection('templates')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('templates')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors ${
                 activeNav === 'templates'
-                  ? 'bg-[#173f6b] text-white font-bold'
-                  : 'text-[#44536a] hover:bg-slate-100'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80'
               }`}
             >
               <span className="w-4 text-center">▧</span>
@@ -639,11 +657,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('promotions')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('promotions')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors ${
                 activeNav === 'promotions'
-                  ? 'bg-[#173f6b] text-white font-bold'
-                  : 'text-[#44536a] hover:bg-slate-100'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80'
               }`}
             >
               <span className="w-4 text-center">✓</span>
@@ -651,11 +669,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('hierarchy')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('hierarchy')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors ${
                 activeNav === 'hierarchy'
-                  ? 'bg-[#173f6b] text-white font-bold'
-                  : 'text-[#44536a] hover:bg-slate-100'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80'
               }`}
             >
               <span className="w-4 text-center">⇣</span>
@@ -663,11 +681,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('approval-route')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('approval-route')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors ${
                 activeNav === 'approval-route'
-                  ? 'bg-[#173f6b] text-white font-bold'
-                  : 'text-[#44536a] hover:bg-slate-100'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80'
               }`}
             >
               <span className="w-4 flex items-center justify-center">
@@ -687,11 +705,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('schools')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('schools')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors ${
                 activeNav === 'schools'
-                  ? 'bg-[#173f6b] text-white font-bold'
-                  : 'text-[#44536a] hover:bg-slate-100'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80'
               }`}
             >
               <span className="w-4 text-center">⌂</span>
@@ -699,11 +717,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('admins')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('admins')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors ${
                 activeNav === 'admins'
-                  ? 'bg-[#173f6b] text-white font-bold'
-                  : 'text-[#44536a] hover:bg-slate-100'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80'
               }`}
             >
               <span className="w-4 text-center">♙</span>
@@ -711,11 +729,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => scrollToSection('reports')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => navigateToSection('reports')}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors ${
                 activeNav === 'reports'
-                  ? 'bg-[#173f6b] text-white font-bold'
-                  : 'text-[#44536a] hover:bg-slate-100'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80'
               }`}
             >
               <span className="w-4 text-center">◷</span>
@@ -725,20 +743,20 @@ export const SuperAdminDashboard: React.FC<Props> = ({
         </div>
 
         {/* Profile Footer in Sidebar */}
-        <div className="mt-auto border-t border-[#e7ebf2] pt-3 text-xs">
-          <div className="font-bold text-[#1b2635] truncate">{currentUser.name}</div>
-          <small className="block text-[#68778b] text-[10px]">Organization-wide access</small>
-          <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100">
+        <div className="mt-auto border-t border-[#E5E7EB] pt-3 text-xs">
+          <div className="font-bold text-[#123B6D] truncate">{currentUser.name}</div>
+          <small className="block text-[#3F4A5A]/80 text-[10px]">Organization-wide access</small>
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#E5E7EB]">
             <button
               onClick={onResetDatabase}
               title="Reset Database to Seed"
-              className="text-[10px] text-amber-700 hover:underline flex items-center gap-1"
+              className="text-[10px] text-amber-700 hover:underline flex items-center gap-1 font-medium cursor-pointer"
             >
               <RotateCcw size={11} /> Reset DB
             </button>
             <button
               onClick={onLogout}
-              className="text-[10px] text-rose-600 hover:underline flex items-center gap-1"
+              className="text-[10px] text-rose-600 hover:underline flex items-center gap-1 font-medium cursor-pointer"
             >
               <LogOut size={11} /> Sign out
             </button>
@@ -749,28 +767,39 @@ export const SuperAdminDashboard: React.FC<Props> = ({
       {/* MAIN CONTENT AREA */}
       <div className="flex-1 min-w-0 flex flex-col">
         {/* Top Header */}
-        <header className="h-14 bg-white/95 backdrop-blur border-b border-[#e2e8f1] px-6 flex items-center justify-between sticky top-0 z-20">
-          <span className="text-xs text-[#617188]">
-            PaperTrail &nbsp;›&nbsp; <b className="text-slate-800">Super Admin dashboard</b>
+        <header className="h-14 bg-white/95 backdrop-blur border-b border-[#E5E7EB] px-6 flex items-center justify-between sticky top-0 z-20">
+          <span className="text-xs text-[#3F4A5A]">
+            PaperTrail &nbsp;›&nbsp; Super Admin dashboard &nbsp;›&nbsp;{' '}
+            <b className="text-[#123B6D]">
+              {activeNav === 'overview' && 'Overview'}
+              {activeNav === 'requests' && 'All requests'}
+              {activeNav === 'templates' && 'Request Templates'}
+              {activeNav === 'promotions' && 'Template approvals'}
+              {activeNav === 'hierarchy' && 'Organogram'}
+              {activeNav === 'approval-route' && 'Approval flow'}
+              {activeNav === 'schools' && 'Colleges & schools'}
+              {activeNav === 'admins' && 'Admin accounts'}
+              {activeNav === 'reports' && 'Reports'}
+            </b>
           </span>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center bg-[#f1f4fa] border border-[#e4e9f1] rounded-md p-0.5 text-[11px]">
+            <div className="flex items-center bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg p-0.5 text-[11px]">
               <button
                 onClick={() => onFastSwitch('super_admin')}
-                className="px-2.5 py-1 rounded bg-white text-[#173f6b] font-bold shadow-xs"
+                className="px-2.5 py-1 rounded-md bg-[#123B6D] text-white font-bold shadow-xs"
               >
                 Super Admin
               </button>
               <button
                 onClick={() => onFastSwitch('admin')}
-                className="px-2.5 py-1 rounded text-[#617188] hover:text-slate-900"
+                className="px-2.5 py-1 rounded-md text-[#3F4A5A] hover:text-[#123B6D] font-medium transition-colors"
               >
                 Admin
               </button>
               <button
                 onClick={() => onFastSwitch('staff')}
-                className="px-2.5 py-1 rounded text-[#617188] hover:text-slate-900"
+                className="px-2.5 py-1 rounded-md text-[#3F4A5A] hover:text-[#123B6D] font-medium transition-colors"
               >
                 Staff
               </button>
@@ -779,109 +808,177 @@ export const SuperAdminDashboard: React.FC<Props> = ({
         </header>
 
         {/* Content Body */}
-        <main className="p-6 max-w-[1450px] mx-auto w-full space-y-8">
-          {/* Overview Section */}
-          <div id="overview" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="text-[10px] uppercase font-bold text-[#173f6b] tracking-wider">
-                Organization overview
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-[#1b2635] tracking-tight">
-                Good morning, Super Admin
-              </h1>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Manage requests, templates, approval routes, and all institution campuses.
-              </p>
-            </div>
+        <main className="p-6 max-w-[1450px] mx-auto w-full">
+          {/* Overview Landing Page */}
+          {activeNav === 'overview' && (
+            <div className="space-y-6 animate-fade-in">
+              <div id="overview" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
+                    Organization overview
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#123B6D] tracking-tight">
+                    Good morning, Super Admin
+                  </h1>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Central governance for requests, workflow templates, approval routes, and all multi-campus institutions.
+                  </p>
+                </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setIsAddSchoolOpen(true)}
-                className="px-3.5 py-2 bg-[#173f6b] hover:bg-[#0e2d50] text-white rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors"
-              >
-                <Plus size={15} />
-                Add Institution
-              </button>
-              <button
-                onClick={() => setIsTemplateBuilderOpen(true)}
-                className="px-3.5 py-2 bg-white border border-[#b8c9e0] text-[#173f6b] hover:bg-[#edf3ff] rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors"
-              >
-                <Plus size={15} />
-                Create Template
-              </button>
-            </div>
-          </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setIsAddSchoolOpen(true)}
+                    className="px-3.5 py-2 bg-[#123B6D] hover:bg-[#0e2f57] text-white rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Plus size={15} />
+                    Add Institution
+                  </button>
+                  <button
+                    onClick={() => setIsTemplateBuilderOpen(true)}
+                    className="px-3.5 py-2 bg-white border border-[#E5E7EB] text-[#123B6D] hover:bg-[#F3F4F6] rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Plus size={15} />
+                    Create Template
+                  </button>
+                </div>
+              </div>
 
-          {/* Metrics Row */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <div className="p-4 bg-white rounded-xl border border-[#e2e8f0] shadow-xs">
-              <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>Total Requests</span>
-                <FileCheck size={16} className="text-[#173f6b]" />
-              </div>
-              <div className="text-2xl font-bold text-[#1b2635] mt-2">
-                {requests.length.toLocaleString()}
-              </div>
-              <div className="text-[10px] text-emerald-600 mt-0.5">
-                ↑ 12% organization-wide activity
-              </div>
-            </div>
+              {/* Metrics Row */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div
+                  onClick={() => navigateToSection('requests')}
+                  className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs cursor-pointer hover:border-[#123B6D] hover:shadow-md transition-all group"
+                >
+                  <div className="flex items-center justify-between text-xs text-[#3F4A5A]">
+                    <span className="group-hover:text-[#123B6D] font-medium">Total Requests</span>
+                    <FileCheck size={16} className="text-[#123B6D]" />
+                  </div>
+                  <div className="text-2xl font-bold text-[#123B6D] mt-2">
+                    {requests.length.toLocaleString()}
+                  </div>
+                  <div className="text-[10px] text-emerald-600 mt-0.5 flex items-center justify-between">
+                    <span>↑ 12% organization-wide</span>
+                    <span className="text-[#123B6D] font-semibold text-[10px]">View All →</span>
+                  </div>
+                </div>
 
-            <div className="p-4 bg-white rounded-xl border border-[#e2e8f0] shadow-xs">
-              <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>Awaiting Action</span>
-                <Clock size={16} className="text-amber-600" />
-              </div>
-              <div className="text-2xl font-bold text-[#1b2635] mt-2">
-                {requests.filter(r => r.status === 'Pending' || r.status === 'In review').length}
-              </div>
-              <div className="text-[10px] text-amber-700 mt-0.5">
-                Across all active campus queues
-              </div>
-            </div>
+                <div
+                  onClick={() => navigateToSection('requests')}
+                  className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs cursor-pointer hover:border-[#123B6D] hover:shadow-md transition-all group"
+                >
+                  <div className="flex items-center justify-between text-xs text-[#3F4A5A]">
+                    <span className="group-hover:text-[#123B6D] font-medium">Awaiting Action</span>
+                    <Clock size={16} className="text-amber-600" />
+                  </div>
+                  <div className="text-2xl font-bold text-amber-700 mt-2">
+                    {requests.filter(r => r.status === 'Pending' || r.status === 'In review').length}
+                  </div>
+                  <div className="text-[10px] text-amber-700 mt-0.5 flex items-center justify-between">
+                    <span>Active campus queues</span>
+                    <span className="text-[#123B6D] font-semibold text-[10px]">Review →</span>
+                  </div>
+                </div>
 
-            <div
-              onClick={() => onNavigateToTemplates && onNavigateToTemplates()}
-              className="p-4 bg-white rounded-xl border border-[#e2e8f0] shadow-xs cursor-pointer hover:border-[#173f6b] hover:shadow-md transition-all group"
-            >
-              <div className="flex items-center justify-between text-xs text-slate-500">
-                <span className="group-hover:text-[#173f6b] font-medium">Active Templates</span>
-                <GitBranch size={16} className="text-[#173f6b]" />
-              </div>
-              <div className="text-2xl font-bold text-[#1b2635] mt-2 group-hover:text-[#173f6b]">
-                {templates.filter(t => t.status === 'Published').length}
-              </div>
-              <div className="text-[10px] text-slate-500 mt-0.5 flex items-center justify-between">
-                <span>Super Admin shared workflows</span>
-                <span className="text-[#173f6b] font-semibold text-[11px]">Explore Hub →</span>
-              </div>
-            </div>
+                <div
+                  onClick={() => navigateToSection('templates')}
+                  className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs cursor-pointer hover:border-[#123B6D] hover:shadow-md transition-all group"
+                >
+                  <div className="flex items-center justify-between text-xs text-[#3F4A5A]">
+                    <span className="group-hover:text-[#123B6D] font-medium">Request Templates</span>
+                    <GitBranch size={16} className="text-[#123B6D]" />
+                  </div>
+                  <div className="text-2xl font-bold text-[#123B6D] mt-2">
+                    {templates.filter(t => t.status === 'Published').length}
+                  </div>
+                  <div className="text-[10px] text-[#3F4A5A] mt-0.5 flex items-center justify-between">
+                    <span>Standardized workflows</span>
+                    <span className="text-[#123B6D] font-semibold text-[10px]">Open Directory →</span>
+                  </div>
+                </div>
 
-            <div className="p-4 bg-white rounded-xl border border-[#e2e8f0] shadow-xs">
-              <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>Institutions</span>
-                <Building2 size={16} className="text-[#173f6b]" />
+                <div
+                  onClick={() => navigateToSection('schools')}
+                  className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs cursor-pointer hover:border-[#123B6D] hover:shadow-md transition-all group"
+                >
+                  <div className="flex items-center justify-between text-xs text-[#3F4A5A]">
+                    <span className="group-hover:text-[#123B6D] font-medium">Institutions</span>
+                    <Building2 size={16} className="text-[#123B6D]" />
+                  </div>
+                  <div className="text-2xl font-bold text-[#123B6D] mt-2">
+                    {institutions.length}
+                  </div>
+                  <div className="text-[10px] text-[#3F4A5A] mt-0.5 flex items-center justify-between">
+                    <span>Connected campuses</span>
+                    <span className="text-[#123B6D] font-semibold text-[10px]">Manage →</span>
+                  </div>
+                </div>
               </div>
-              <div className="text-2xl font-bold text-[#1b2635] mt-2">
-                {institutions.length}
-              </div>
-              <div className="text-[10px] text-slate-500 mt-0.5">
-                Campus groups connected
-              </div>
-            </div>
-          </div>
 
-          {/* All Requests Table Section */}
-          <div id="requests" className="bg-white border border-[#e2e8f0] rounded-xl p-5 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h2 className="text-base font-bold text-[#1b2635]">All requests</h2>
-                <p className="text-xs text-slate-500">Organization-wide submissions and current status</p>
+              {/* Module Quick Jump Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <div
+                  onClick={() => navigateToSection('templates')}
+                  className="p-4 bg-white rounded-xl border border-[#E5E7EB] hover:border-[#123B6D] cursor-pointer transition-all shadow-xs"
+                >
+                  <div className="flex items-center gap-2 font-bold text-sm text-[#123B6D]">
+                    <span className="text-base">▧</span>
+                    Request Templates Directory
+                  </div>
+                  <p className="text-xs text-[#3F4A5A] mt-1">
+                    Manage all group-approved templates, SLA turnarounds, and 4-tier approval pipelines.
+                  </p>
+                  <span className="text-[11px] font-semibold text-[#123B6D] mt-2 inline-block">
+                    View Landing Page &rarr;
+                  </span>
+                </div>
+
+                <div
+                  onClick={() => navigateToSection('hierarchy')}
+                  className="p-4 bg-white rounded-xl border border-[#E5E7EB] hover:border-[#123B6D] cursor-pointer transition-all shadow-xs"
+                >
+                  <div className="flex items-center gap-2 font-bold text-sm text-[#123B6D]">
+                    <span className="text-base">⇣</span>
+                    Multi-Tier Organograms
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Visual reporting lines for CEO, Principals, Deans, HoDs, and academic staff across campuses.
+                  </p>
+                  <span className="text-[11px] font-semibold text-[#123B6D] mt-2 inline-block">
+                    View Landing Page &rarr;
+                  </span>
+                </div>
+
+                <div
+                  onClick={() => navigateToSection('reports')}
+                  className="p-4 bg-white rounded-xl border border-[#E5E7EB] hover:border-[#123B6D] cursor-pointer transition-all shadow-xs"
+                >
+                  <div className="flex items-center gap-2 font-bold text-sm text-[#123B6D]">
+                    <span className="text-base">◷</span>
+                    Audit Trail & Reports
+                  </div>
+                  <p className="text-xs text-[#3F4A5A] mt-1">
+                    Immutable append-only event logs tracking every approval, delegation, and configuration update.
+                  </p>
+                  <span className="text-[11px] font-semibold text-[#123B6D] mt-2 inline-block">
+                    View Landing Page &rarr;
+                  </span>
+                </div>
               </div>
-              <span className="text-[11px] font-semibold text-slate-500 bg-slate-50 px-2.5 py-1 rounded-md border">
-                Showing {filteredRequests.length} requests
-              </span>
             </div>
+          )}
+
+          {/* All Requests Landing Page */}
+          {activeNav === 'requests' && (
+            <div id="requests" className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-xs space-y-4 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-base font-bold text-[#123B6D]">All requests</h2>
+                  <p className="text-xs text-[#3F4A5A]">Organization-wide submissions and real-time approval status</p>
+                </div>
+                <span className="text-[11px] font-semibold text-[#3F4A5A] bg-[#F3F4F6] px-2.5 py-1 rounded-md border border-[#E5E7EB]">
+                  Showing {filteredRequests.length} requests
+                </span>
+              </div>
 
             {/* Filters Bar */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -983,54 +1080,136 @@ export const SuperAdminDashboard: React.FC<Props> = ({
               </table>
             </div>
           </div>
+          )}
 
-          {/* Workflow Templates Section */}
-          <div id="templates" className="bg-white border border-[#e2e8f0] rounded-xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-base font-bold text-[#1b2635]">Workflow templates</h2>
-                <p className="text-xs text-slate-500">Across all institutions · Super Admin configured</p>
-              </div>
-              <div className="flex items-center gap-2">
-                {onNavigateToTemplates && (
-                  <button
-                    onClick={onNavigateToTemplates}
-                    className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#173f6b] rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-slate-200"
-                  >
-                    <span>Open Full Templates Hub ↗</span>
-                  </button>
-                )}
+          {/* Request Templates Landing Page */}
+          {activeNav === 'templates' && (
+            <div id="templates" className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
+                    Loopin Institutional Request Governance & SLA Engine
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#123B6D] tracking-tight mt-0.5">
+                    Workflow & Request Templates Directory
+                  </h2>
+                  <p className="text-xs text-[#3F4A5A] mt-1">
+                    Standardized multi-tier approval routes, mandatory form fields, turnaround service level agreements (SLAs), and campus eligibility criteria across Sri Sairam Group.
+                  </p>
+                </div>
                 <button
                   onClick={() => setIsTemplateBuilderOpen(true)}
-                  className="px-3 py-1.5 bg-[#173f6b] text-white rounded-lg text-xs font-semibold hover:bg-[#0e2d50]"
+                  className="px-4 py-2 bg-[#123B6D] hover:bg-[#0e2f57] text-white rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
                 >
-                  + Create Template
+                  <Plus size={15} />
+                  Create New Template
                 </button>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {templates.map(tpl => (
-                <div key={tpl.id} className="p-3.5 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
-                  <div className="flex justify-between items-start">
-                    <span className="font-bold text-xs text-slate-900 truncate">{tpl.title}</span>
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded">
-                      {tpl.status}
-                    </span>
-                  </div>
-                  <div className="text-[10px] text-slate-500">
-                    {tpl.category} · {tpl.steps.length} sequential steps
-                  </div>
-                  <div className="text-[10px] text-slate-400 truncate">
-                    Code: {tpl.code} · Turnaround: {tpl.turnaround}
-                  </div>
+              {/* Stats Row */}
+              <div className="grid grid-cols-3 gap-3 p-4 bg-[#F3F4F6] rounded-xl border border-[#E5E7EB] text-center">
+                <div>
+                  <div className="text-2xl font-bold text-[#123B6D]">{templates.length}</div>
+                  <div className="text-[10px] uppercase font-bold text-[#3F4A5A]/80 tracking-wider mt-0.5">Active Forms</div>
                 </div>
-              ))}
-            </div>
-          </div>
+                <div className="border-x border-[#E5E7EB]">
+                  <div className="text-2xl font-bold text-[#123B6D]">100%</div>
+                  <div className="text-[10px] uppercase font-bold text-[#3F4A5A]/80 tracking-wider mt-0.5">Digital Trail</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-[#123B6D]">2–5d</div>
+                  <div className="text-[10px] uppercase font-bold text-[#3F4A5A]/80 tracking-wider mt-0.5">Avg SLA</div>
+                </div>
+              </div>
 
-          {/* Template Approvals Section */}
-          <div id="promotions" className="bg-white border border-[#e2e8f0] rounded-xl p-6 shadow-xs space-y-6">
+              {/* Template Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {templates.map(tpl => (
+                  <div key={tpl.id} className="p-4 bg-white border border-[#E5E7EB] rounded-xl space-y-3 hover:border-[#123B6D] hover:shadow-md transition-all flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 bg-[#F3F4F6] text-[#123B6D] rounded border border-[#E5E7EB]">
+                          {tpl.code || 'FORM'}
+                        </span>
+                        <span className="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
+                          <Clock size={11} className="text-slate-400" /> {tpl.turnaround}
+                        </span>
+                      </div>
+                      <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
+                        {tpl.category}
+                      </div>
+                      <h3 className="font-bold text-sm text-[#123B6D] leading-snug">
+                        {tpl.title}
+                      </h3>
+                      <p className="text-xs text-[#3F4A5A] line-clamp-2">
+                        {tpl.description || 'Standard institutional workflow template.'}
+                      </p>
+
+                      {/* Sequential Chain */}
+                      <div className="pt-2">
+                        <div className="text-[9px] uppercase font-bold tracking-wider text-[#3F4A5A]/80 mb-1.5">
+                          Sequential Approval Chain: ({tpl.steps.length} Stages)
+                        </div>
+                        <div className="flex flex-wrap items-center gap-1 text-[10px]">
+                          {tpl.steps.map((step, idx) => (
+                            <React.Fragment key={idx}>
+                              <span className="px-2 py-0.5 bg-[#F3F4F6] border border-[#E5E7EB] rounded text-[#3F4A5A] font-medium">
+                                {idx + 1}. {step.role}
+                              </span>
+                              {idx < tpl.steps.length - 1 && (
+                                <span className="text-slate-400">→</span>
+                              )}
+                            </React.Fragment>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-[#E5E7EB] flex items-center justify-between text-[11px] text-[#3F4A5A]">
+                      <span>{tpl.fields.length} Form Fields</span>
+                      <button
+                        onClick={() => {
+                          showToast(`Template specification loaded: ${tpl.title}`);
+                        }}
+                        className="px-2.5 py-1 text-xs font-semibold text-[#123B6D] hover:bg-[#F3F4F6] rounded-md transition-colors cursor-pointer"
+                      >
+                        View Details &rarr;
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Standard Specification Catalog */}
+              <div className="pt-4 border-t border-[#E5E7EB] space-y-3">
+                <h3 className="font-bold text-sm text-[#123B6D]">
+                  Standard Specification Catalog (Sri Sairam Reference)
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {standardTemplates.map(std => (
+                    <div key={std.id} className="p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg text-xs space-y-1.5">
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-[#123B6D]">{std.title}</span>
+                        <span className="text-[10px] px-1.5 py-0.5 bg-white border border-[#E5E7EB] rounded text-[#3F4A5A]">
+                          {std.category}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-[#3F4A5A]">
+                        <b>Mandatory Fields:</b> {std.fields.join(', ')}
+                      </div>
+                      <div className="text-[11px] text-[#3F4A5A]">
+                        <b>Required Approvers:</b> {std.steps.join(' → ')}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Template Approvals Landing Page */}
+          {activeNav === 'promotions' && (
+            <div id="promotions" className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-6 animate-fade-in">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-bold text-[#1b2635]">Admin template requests & Library</h2>
@@ -1124,9 +1303,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
               </div>
             </div>
           </div>
+          )}
 
-          {/* Organogram Section */}
-          <div id="hierarchy" className="bg-white border border-[#e2e8f0] rounded-xl p-6 shadow-xs space-y-4">
+          {/* Organogram Landing Page */}
+          {activeNav === 'hierarchy' && (
+            <div id="hierarchy" className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-4 animate-fade-in">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h2 className="text-lg font-bold text-[#1b2635]">College administration organogram</h2>
@@ -1214,9 +1395,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
               </div>
             </div>
           </div>
+          )}
 
-          {/* Approval Flow Section */}
-          <div id="approval-route" className="bg-white border border-[#e2e8f0] rounded-xl p-6 shadow-xs space-y-4">
+          {/* Approval Flow Landing Page */}
+          {activeNav === 'approval-route' && (
+            <div id="approval-route" className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-4 animate-fade-in">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-bold text-[#1b2635]">Group-wide approval flow</h2>
@@ -1286,9 +1469,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
               </button>
             </div>
           </div>
+          )}
 
-          {/* Colleges & Schools Directory */}
-          <div id="schools" className="bg-white border border-[#e2e8f0] rounded-xl p-5 shadow-xs space-y-4">
+          {/* Colleges & Schools Directory Landing Page */}
+          {activeNav === 'schools' && (
+            <div id="schools" className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-xs space-y-4 animate-fade-in">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-base font-bold text-[#1b2635]">Colleges & schools ({institutions.length})</h2>
@@ -1334,9 +1519,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
               ))}
             </div>
           </div>
+          )}
 
-          {/* Institution Admin Accounts */}
-          <div id="admins" className="bg-white border border-[#e2e8f0] rounded-xl p-5 shadow-xs space-y-4">
+          {/* Institution Admin Accounts Landing Page */}
+          {activeNav === 'admins' && (
+            <div id="admins" className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-xs space-y-4 animate-fade-in">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-base font-bold text-[#1b2635]">Institution Admin accounts</h2>
@@ -1386,9 +1573,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
               ))}
             </div>
           </div>
+          )}
 
-          {/* Reports & Analytics */}
-          <div id="reports" className="bg-white border border-[#e2e8f0] rounded-xl p-6 shadow-xs space-y-4">
+          {/* Reports & Analytics Landing Page */}
+          {activeNav === 'reports' && (
+            <div id="reports" className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-4 animate-fade-in">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-bold text-[#1b2635]">Request analytics</h2>
@@ -1478,6 +1667,7 @@ export const SuperAdminDashboard: React.FC<Props> = ({
               </div>
             </div>
           </div>
+          )}
         </main>
       </div>
 

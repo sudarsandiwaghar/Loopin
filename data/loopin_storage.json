@@ -1455,6 +1455,66 @@
   ],
   "auditLogs": [
     {
+      "actorId": "usr-staff-senthil",
+      "actorName": "Dr. K. Senthil Nathan",
+      "actorRole": "staff",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "action": "USER_LOGIN",
+      "targetRecord": "senthil.nathan@sairam.edu.in",
+      "details": "User signed in successfully with role: staff.",
+      "id": "aud-1791699858158-uptm",
+      "timestamp": "2026-10-11T06:24:18.158Z"
+    },
+    {
+      "actorId": "usr-admin-eng",
+      "actorName": "K. Parthiban",
+      "actorRole": "admin",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "action": "USER_LOGIN",
+      "targetRecord": "admin@sairam.edu.in",
+      "details": "User signed in successfully with role: admin.",
+      "id": "aud-1791699843344-ut30",
+      "timestamp": "2026-10-11T06:24:03.344Z"
+    },
+    {
+      "actorId": "usr-superadmin",
+      "actorName": "Dr. R. Arunachalam",
+      "actorRole": "super_admin",
+      "institutionId": null,
+      "institutionName": null,
+      "action": "USER_LOGIN",
+      "targetRecord": "superadmin@sairam.group",
+      "details": "User signed in successfully with role: super_admin.",
+      "id": "aud-1791699841632-j2t6",
+      "timestamp": "2026-10-11T06:24:01.632Z"
+    },
+    {
+      "actorId": "usr-admin-eng",
+      "actorName": "K. Parthiban",
+      "actorRole": "admin",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "action": "USER_LOGIN",
+      "targetRecord": "admin@sairam.edu.in",
+      "details": "User signed in successfully with role: admin.",
+      "id": "aud-1791699838646-dlus",
+      "timestamp": "2026-10-11T06:23:58.646Z"
+    },
+    {
+      "actorId": "usr-superadmin",
+      "actorName": "Dr. R. Arunachalam",
+      "actorRole": "super_admin",
+      "institutionId": null,
+      "institutionName": null,
+      "action": "USER_LOGIN",
+      "targetRecord": "superadmin@sairam.group",
+      "details": "User signed in successfully with role: super_admin.",
+      "id": "aud-1791699700229-fo47",
+      "timestamp": "2026-10-11T06:21:40.229Z"
+    },
+    {
       "id": "aud-001",
       "actorId": "usr-superadmin",
       "actorName": "Dr. R. Arunachalam (CEO)",
@@ -1504,5 +1564,31 @@
     }
   ],
   "drafts": [],
-  "sessions": {}
+  "sessions": {
+    "lp_tok_1791699700227_eb27nhba67": {
+      "userId": "usr-superadmin",
+      "createdAt": "2026-10-11T06:21:40.228Z",
+      "expiresAt": "2026-10-18T06:21:40.228Z"
+    },
+    "lp_tok_1791699838646_pb91cmdwld": {
+      "userId": "usr-admin-eng",
+      "createdAt": "2026-10-11T06:23:58.646Z",
+      "expiresAt": "2026-10-18T06:23:58.646Z"
+    },
+    "lp_tok_1791699841632_umbf3k6igw": {
+      "userId": "usr-superadmin",
+      "createdAt": "2026-10-11T06:24:01.632Z",
+      "expiresAt": "2026-10-18T06:24:01.632Z"
+    },
+    "lp_tok_1791699843344_wfuttzmx5c": {
+      "userId": "usr-admin-eng",
+      "createdAt": "2026-10-11T06:24:03.344Z",
+      "expiresAt": "2026-10-18T06:24:03.344Z"
+    },
+    "lp_tok_1791699858158_tfrf9omjf4": {
+      "userId": "usr-staff-senthil",
+      "createdAt": "2026-10-11T06:24:18.158Z",
+      "expiresAt": "2026-10-18T06:24:18.158Z"
+    }
+  }
 }

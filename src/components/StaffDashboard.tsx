@@ -45,7 +45,22 @@ export const StaffDashboard: React.FC<Props> = ({
 }) => {
   const { showToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'home' | 'applications' | 'inbox' | 'settings'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'templates' | 'applications' | 'inbox' | 'settings'>(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#templates') return 'templates';
+    return 'home';
+  });
+  const [templateView, setTemplateView] = useState<'cards' | 'catalog'>('cards');
+
+  useEffect(() => {
+    const handleHash = () => {
+      if (window.location.hash === '#templates') {
+        setActiveTab('templates');
+      }
+    };
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
+
   const [requests, setRequests] = useState<WorkflowRequest[]>([]);
   const [templates, setTemplates] = useState<WorkflowTemplate[]>([]);
   const [drafts, setDrafts] = useState<SavedDraft[]>([]);
@@ -307,50 +322,51 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
     showToast(`Receipt downloaded for ${req.id}`);
   };
 
-  const tabLabels = {
+  const tabLabels: Record<string, string> = {
     home: 'Dashboard / My Requests',
+    templates: 'Request Templates Directory',
     applications: 'New application',
     inbox: 'Approvals inbox',
     settings: 'Settings / Profile',
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] text-[#27364a] flex font-sans">
-      {/* AUTHENTIC SIDE PANEL (Matches staff.html sidebar) */}
-      <aside className="w-56 shrink-0 bg-[#edf3ff] border-r border-[#e1e8f3] p-4 flex flex-col sticky top-0 h-screen shadow-xs z-30">
+    <div className="min-h-screen bg-[#F3F4F6] text-[#3F4A5A] flex font-sans">
+      {/* AUTHENTIC SIDE PANEL (Persistent Left Navigation) */}
+      <aside className="w-56 shrink-0 bg-[#F3F4F6] border-r border-[#E5E7EB] p-4 flex flex-col sticky top-0 h-screen shadow-xs z-30">
         <div>
           {/* Brand */}
-          <div className="flex items-center gap-2.5 pb-4 border-b border-[#dfe7f3]">
-            <div className="w-9 h-9 rounded-lg bg-[#123b6d] text-white flex items-center justify-center font-bold text-xl">
+          <div className="flex items-center gap-2.5 pb-4 border-b border-[#E5E7EB]">
+            <div className="w-9 h-9 rounded-lg bg-[#123B6D] text-white flex items-center justify-center font-bold text-xl shadow-xs">
               L
             </div>
             <div>
-              <strong className="text-xl font-bold text-[#123b6d] tracking-tight">Loopin</strong>
+              <strong className="text-xl font-bold text-[#123B6D] tracking-tight">Loopin</strong>
             </div>
           </div>
 
           {/* Active Workspace */}
-          <div className="my-3.5 p-2.5 bg-[#f8faff] border border-[#dfe7f3] rounded-lg">
-            <small className="block text-[9px] uppercase tracking-wider text-[#748196]">
+          <div className="my-3.5 p-2.5 bg-white border border-[#E5E7EB] rounded-lg shadow-xs">
+            <small className="block text-[9px] uppercase tracking-wider text-[#3F4A5A]/70 font-semibold">
               Active institution
             </small>
-            <b className="text-[10px] text-[#40546d] block truncate">
+            <b className="text-[10px] text-[#123B6D] block truncate font-bold">
               {currentUser.institutionName || 'Sri Sairam Engineering College'}
             </b>
           </div>
 
-          <div className="text-[9px] uppercase font-bold tracking-widest text-[#8995a6] px-1 py-1">
+          <div className="text-[9px] uppercase font-bold tracking-widest text-[#3F4A5A]/80 px-1 py-1">
             Staff workspace
           </div>
 
-          {/* Navigation Links Specified in staff.html */}
+          {/* Navigation Links — Dedicated Landing Page per tab */}
           <nav className="flex flex-col gap-1 mt-1 text-xs">
             <button
-              onClick={() => setActiveTab('home')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => { setActiveTab('home'); window.location.hash = ''; }}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeTab === 'home'
-                  ? 'bg-[#123b6d] text-white font-bold'
-                  : 'text-[#53647a] hover:bg-white/80'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
               }`}
             >
               <span className="w-4 text-center">▦</span>
@@ -358,19 +374,23 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
             </button>
 
             <button
-              onClick={() => onNavigateToTemplates ? onNavigateToTemplates() : setActiveTab('applications')}
-              className="flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors text-[#53647a] hover:bg-white/80"
+              onClick={() => { setActiveTab('templates'); window.location.hash = '#templates'; }}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
+                activeTab === 'templates'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
+              }`}
             >
               <span className="w-4 text-center">▧</span>
               <span>Request Templates</span>
             </button>
 
             <button
-              onClick={() => setActiveTab('applications')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => { setActiveTab('applications'); window.location.hash = ''; }}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeTab === 'applications'
-                  ? 'bg-[#123b6d] text-white font-bold'
-                  : 'text-[#53647a] hover:bg-white/80'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
               }`}
             >
               <span className="w-4 text-center">＋</span>
@@ -378,11 +398,11 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
             </button>
 
             <button
-              onClick={() => setActiveTab('inbox')}
-              className={`flex items-center justify-between px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => { setActiveTab('inbox'); window.location.hash = ''; }}
+              className={`flex items-center justify-between px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeTab === 'inbox'
-                  ? 'bg-[#123b6d] text-white font-bold'
-                  : 'text-[#53647a] hover:bg-white/80'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
               }`}
             >
               <div className="flex items-center gap-2.5">
@@ -391,7 +411,7 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
               </div>
               {inboxTasks.length > 0 && (
                 <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${
-                  activeTab === 'inbox' ? 'bg-white text-[#123b6d]' : 'bg-[#bd4e5b] text-white'
+                  activeTab === 'inbox' ? 'bg-white text-[#123B6D]' : 'bg-[#123B6D] text-white'
                 }`}>
                   {inboxTasks.length}
                 </span>
@@ -399,11 +419,11 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
             </button>
 
             <button
-              onClick={() => setActiveTab('settings')}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md font-medium text-left transition-colors ${
+              onClick={() => { setActiveTab('settings'); window.location.hash = ''; }}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeTab === 'settings'
-                  ? 'bg-[#123b6d] text-white font-bold'
-                  : 'text-[#53647a] hover:bg-white/80'
+                  ? 'bg-[#123B6D] text-white font-bold shadow-xs'
+                  : 'text-[#3F4A5A] hover:bg-white/80 hover:text-[#123B6D]'
               }`}
             >
               <span className="w-4 flex items-center justify-center">
@@ -425,18 +445,18 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
         </div>
 
         {/* Profile Footer in Sidebar */}
-        <div className="mt-auto border-t border-[#dfe7f3] pt-3 text-xs flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-[#dce8f8] text-[#123b6d] flex items-center justify-center font-bold text-xs shrink-0">
+        <div className="mt-auto border-t border-[#E5E7EB] pt-3 text-xs flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full bg-[#123B6D]/10 text-[#123B6D] flex items-center justify-center font-bold text-xs shrink-0 border border-[#123B6D]/20">
             {currentUser.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
           </div>
           <div className="min-w-0 flex-1">
-            <b className="block text-[11px] text-[#27364a] truncate">{currentUser.name}</b>
-            <small className="block text-[9px] text-[#748196] truncate">{currentUser.designation}</small>
+            <b className="block text-[11px] text-[#123B6D] truncate">{currentUser.name}</b>
+            <small className="block text-[9px] text-[#3F4A5A] truncate">{currentUser.designation}</small>
           </div>
           <button
             onClick={onLogout}
             title="Sign out"
-            className="text-slate-400 hover:text-rose-600 p-1"
+            className="text-slate-400 hover:text-rose-600 p-1 cursor-pointer"
           >
             <LogOut size={13} />
           </button>
@@ -445,14 +465,14 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
 
       {/* MAIN CONTENT AREA */}
       <div className="flex-1 min-w-0 flex flex-col">
-        {/* Top Header (Matches staff.html topbar) */}
-        <header className="h-14 bg-white/95 backdrop-blur border-b border-[#e2e8f0] px-6 flex items-center justify-between sticky top-0 z-20">
-          <span className="text-xs text-[#748196]">
-            Staff Portal &nbsp;›&nbsp; <b className="text-[#1d2f45]">{tabLabels[activeTab]}</b>
+        {/* Top Header */}
+        <header className="h-14 bg-white border-b border-[#E5E7EB] px-6 flex items-center justify-between sticky top-0 z-20">
+          <span className="text-xs text-[#3F4A5A]">
+            Staff Portal &nbsp;›&nbsp; <b className="text-[#123B6D]">{tabLabels[activeTab]}</b>
           </span>
 
           <div className="flex items-center gap-3">
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#f7f9fc] border border-[#e2e8f0] rounded text-[10px] text-[#52657e]">
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#F3F4F6] border border-[#E5E7EB] rounded-md text-[10px] text-[#3F4A5A] font-medium">
               ▦ &nbsp;{currentUser.institutionName}
             </span>
 
@@ -460,42 +480,42 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
               <Search size={13} className="absolute left-2.5 top-2.5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Search portal..."
                 value={globalSearch}
                 onChange={e => setGlobalSearch(e.target.value)}
-                className="w-full text-xs pl-7 pr-2.5 py-1.5 border border-[#e2e8f0] bg-[#f9fafc] rounded focus:outline-none"
+                className="w-full text-xs pl-7 pr-2.5 py-1.5 border border-[#E5E7EB] bg-[#F3F4F6] text-[#3F4A5A] rounded-md focus:outline-none focus:ring-1 focus:ring-[#123B6D]"
               />
             </div>
 
             <button
-              onClick={() => setActiveTab('inbox')}
-              className="flex items-center gap-1 px-2.5 py-1 bg-white border border-[#e2e8f0] rounded text-xs font-semibold text-[#123b6d]"
+              onClick={() => { setActiveTab('inbox'); window.location.hash = ''; }}
+              className="flex items-center gap-1 px-2.5 py-1 bg-white border border-[#E5E7EB] rounded-md text-xs font-semibold text-[#123B6D] cursor-pointer hover:bg-[#F3F4F6]"
             >
               <span>♧</span>
               {inboxTasks.length > 0 && (
-                <span className="w-3.5 h-3.5 rounded-full bg-[#bd4e5b] text-white text-[8px] flex items-center justify-center font-bold">
+                <span className="w-3.5 h-3.5 rounded-full bg-[#123B6D] text-white text-[8px] flex items-center justify-center font-bold">
                   {inboxTasks.length}
                 </span>
               )}
             </button>
 
             {/* Role Switch */}
-            <div className="flex items-center bg-[#f8f9fc] border border-[#e2e8f0] rounded-md p-0.5 text-[11px]">
+            <div className="flex items-center bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg p-0.5 text-[11px]">
               <button
                 onClick={() => onFastSwitch('super_admin')}
-                className="px-2 py-0.5 rounded text-[#748196] hover:text-slate-900"
+                className="px-2.5 py-1 rounded text-[#3F4A5A] hover:text-[#123B6D] font-medium transition-colors cursor-pointer"
               >
                 Super Admin
               </button>
               <button
                 onClick={() => onFastSwitch('admin')}
-                className="px-2 py-0.5 rounded text-[#748196] hover:text-slate-900"
+                className="px-2.5 py-1 rounded text-[#3F4A5A] hover:text-[#123B6D] font-medium transition-colors cursor-pointer"
               >
                 Admin
               </button>
               <button
                 onClick={() => onFastSwitch('staff')}
-                className="px-2 py-0.5 rounded bg-white text-[#123b6d] font-bold shadow-xs"
+                className="px-2.5 py-1 rounded bg-[#123B6D] text-white font-bold shadow-xs cursor-pointer"
               >
                 Staff
               </button>
@@ -802,6 +822,240 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* TAB: DEDICATED REQUEST TEMPLATES DIRECTORY LANDING PAGE */}
+          {activeTab === 'templates' && (
+            <div className="space-y-6 animate-fade-in">
+              {/* Directory Hero Banner */}
+              <div className="bg-[#123B6D] text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-md">
+                <div className="relative z-10 max-w-3xl space-y-3">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-xs text-[11px] font-semibold text-white/90 border border-white/20">
+                    <span>⚙</span> Loopin Institutional Request Governance & SLA Engine
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                    Workflow & Request Templates Directory
+                  </h1>
+                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
+                    Explore standardized multi-tier approval routes, mandatory form fields, turnaround service level agreements (SLAs), and campus eligibility criteria across Sri Sairam Group institutions.
+                  </p>
+                </div>
+
+                {/* SLA Badges */}
+                <div className="mt-6 pt-6 border-t border-white/15 grid grid-cols-3 gap-3 sm:gap-6 max-w-md">
+                  <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 text-center border border-white/15">
+                    <div className="text-xl sm:text-2xl font-black text-white">{templates.length || 6}</div>
+                    <div className="text-[10px] uppercase font-bold text-white/70 tracking-wider mt-0.5">Active Forms</div>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 text-center border border-white/15">
+                    <div className="text-xl sm:text-2xl font-black text-white">100%</div>
+                    <div className="text-[10px] uppercase font-bold text-white/70 tracking-wider mt-0.5">Digital Trail</div>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-xs rounded-xl p-3 text-center border border-white/15">
+                    <div className="text-xl sm:text-2xl font-black text-white">2–5d</div>
+                    <div className="text-[10px] uppercase font-bold text-white/70 tracking-wider mt-0.5">Avg. SLA</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* View Switcher & Search Bar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center bg-white border border-[#E5E7EB] rounded-xl p-1 shadow-xs">
+                  <button
+                    onClick={() => setTemplateView('cards')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      templateView === 'cards'
+                        ? 'bg-[#123B6D] text-white shadow-xs'
+                        : 'text-[#3F4A5A] hover:text-[#123B6D]'
+                    }`}
+                  >
+                    All Active Templates ({templates.length})
+                  </button>
+                  <button
+                    onClick={() => setTemplateView('catalog')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      templateView === 'catalog'
+                        ? 'bg-[#123B6D] text-white shadow-xs'
+                        : 'text-[#3F4A5A] hover:text-[#123B6D]'
+                    }`}
+                  >
+                    Standard Specification Catalog (6)
+                  </button>
+                </div>
+
+                <div className="relative w-full sm:w-72">
+                  <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search templates by code, title, category..."
+                    value={globalSearch}
+                    onChange={e => setGlobalSearch(e.target.value)}
+                    className="w-full text-xs pl-9 pr-3 py-2 border border-[#E5E7EB] bg-white text-[#3F4A5A] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
+                  />
+                </div>
+              </div>
+
+              {/* Category Filter Pills */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <span className="text-[10px] uppercase font-bold text-[#3F4A5A]/70 mr-1">Category:</span>
+                {['All', 'Faculty & Leave', 'Research & Grants', 'Finance & Accounts', 'Events & Infrastructure', 'Clearance & NOC', 'Academic & Exams', 'People & HR'].map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setCategoryFilter(cat)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                      categoryFilter === cat
+                        ? 'bg-[#123B6D] text-white shadow-xs'
+                        : 'bg-white border border-[#E5E7EB] text-[#3F4A5A] hover:border-[#123B6D] hover:text-[#123B6D]'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              {/* View 1: Card Grid */}
+              {templateView === 'cards' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {templates
+                    .filter(t => categoryFilter === 'All' || t.category === categoryFilter || (categoryFilter === 'Finance & Accounts' && t.category === 'Finance'))
+                    .filter(t => {
+                      if (!globalSearch.trim()) return true;
+                      const q = globalSearch.toLowerCase();
+                      return (
+                        t.title.toLowerCase().includes(q) ||
+                        t.code.toLowerCase().includes(q) ||
+                        t.category.toLowerCase().includes(q) ||
+                        t.purpose.toLowerCase().includes(q)
+                      );
+                    })
+                    .map(tpl => (
+                      <div
+                        key={tpl.id}
+                        className="bg-white rounded-2xl border border-[#E5E7EB] hover:border-[#123B6D] hover:shadow-lg transition-all p-5 flex flex-col justify-between space-y-4 group"
+                      >
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="px-2 py-0.5 rounded-md bg-[#123B6D]/10 text-[#123B6D] text-[10px] font-bold tracking-wide">
+                              Form {tpl.code}
+                            </span>
+                            <span className="text-[10px] font-medium text-[#3F4A5A] flex items-center gap-1 bg-[#F3F4F6] px-2 py-0.5 rounded-md">
+                              <Clock size={11} className="text-[#123B6D]" /> {tpl.turnaround}
+                            </span>
+                          </div>
+
+                          <div>
+                            <span className="text-[10px] uppercase font-bold text-[#3F4A5A]/60 tracking-wider">
+                              {tpl.category}
+                            </span>
+                            <h3 className="text-base font-bold text-[#123B6D] group-hover:text-[#0e2f57] transition-colors leading-snug mt-0.5">
+                              {tpl.title}
+                            </h3>
+                          </div>
+
+                          <p className="text-xs text-[#3F4A5A] line-clamp-3 leading-relaxed">
+                            {tpl.purpose}
+                          </p>
+
+                          {/* Approval Stages Preview */}
+                          <div className="bg-[#F3F4F6] rounded-xl p-3 space-y-1.5 border border-[#E5E7EB]">
+                            <div className="text-[9px] uppercase font-bold text-[#3F4A5A]/70 tracking-wider">
+                              Multi-Tier Approval Route:
+                            </div>
+                            <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-[#3F4A5A]">
+                              {tpl.steps.map((st, sidx) => (
+                                <span key={sidx} className="flex items-center gap-1">
+                                  <span className="font-semibold text-[#123B6D]">{sidx + 1}. {st}</span>
+                                  {sidx < tpl.steps.length - 1 && <span className="text-slate-400">→</span>}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 text-[10px] text-[#3F4A5A]/80">
+                            <span>📋 {tpl.fields.length} Required Fields</span>
+                            <span>·</span>
+                            <span>📎 {tpl.attachments.length} Attachments</span>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => openApplyModal(tpl)}
+                          className="w-full py-2.5 bg-[#123B6D] hover:bg-[#0e2f57] text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <span>Apply with this Template</span>
+                          <span>→</span>
+                        </button>
+                      </div>
+                    ))}
+                </div>
+              )}
+
+              {/* View 2: Specification Catalog Table */}
+              {templateView === 'catalog' && (
+                <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-xs overflow-hidden">
+                  <div className="p-4 bg-[#F3F4F6] border-b border-[#E5E7EB] flex items-center justify-between">
+                    <div>
+                      <h3 className="font-bold text-sm text-[#123B6D]">Standard Institutional Specification Catalog</h3>
+                      <p className="text-[11px] text-[#3F4A5A]">Mandatory fields and sequential approval chains per Loopin specification.</p>
+                    </div>
+                    <span className="text-xs font-bold text-[#123B6D] bg-white px-2.5 py-1 rounded-lg border border-[#E5E7EB]">
+                      6 Standard Templates
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead>
+                        <tr className="bg-slate-50 text-[#3F4A5A] uppercase text-[9px] font-bold border-b border-[#E5E7EB]">
+                          <th className="py-3 px-4">Template & Code</th>
+                          <th className="py-3 px-4">Category</th>
+                          <th className="py-3 px-4">SLA Turnaround</th>
+                          <th className="py-3 px-4">Mandatory Fields</th>
+                          <th className="py-3 px-4">Sequential Approval Route</th>
+                          <th className="py-3 px-4">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#E5E7EB]">
+                        {templates.map(tpl => (
+                          <tr key={tpl.id} className="hover:bg-[#F3F4F6]/60 transition-colors">
+                            <td className="py-3 px-4">
+                              <span className="font-bold text-[#123B6D] block">{tpl.title}</span>
+                              <span className="text-[10px] text-[#3F4A5A]/70 font-mono">Form {tpl.code}</span>
+                            </td>
+                            <td className="py-3 px-4 font-medium text-[#3F4A5A]">
+                              {tpl.category}
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className="inline-flex items-center gap-1 font-semibold text-[#123B6D] bg-[#F3F4F6] px-2 py-0.5 rounded-md text-[10px]">
+                                <Clock size={11} /> {tpl.turnaround}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-[#3F4A5A] max-w-xs">
+                              <div className="text-[11px] truncate">
+                                {tpl.fields.map(f => f.name).join(', ')}
+                              </div>
+                            </td>
+                            <td className="py-3 px-4 text-[#3F4A5A] max-w-sm">
+                              <div className="text-[11px]">
+                                {tpl.steps.join(' → ')}
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <button
+                                onClick={() => openApplyModal(tpl)}
+                                className="px-3 py-1.5 bg-[#123B6D] hover:bg-[#0e2f57] text-white font-bold rounded-lg text-xs cursor-pointer shadow-xs whitespace-nowrap"
+                              >
+                                Apply →
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
