@@ -76,6 +76,11 @@ export const AdminDashboard: React.FC<Props> = ({
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [expandedTemplateIds, setExpandedTemplateIds] = useState<Record<string, boolean>>({});
+
+  const toggleExpandTemplate = (id: string) => {
+    setExpandedTemplateIds(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   // Modals
   const [isStaffModalOpen, setIsStaffModalOpen] = useState(false);
@@ -815,62 +820,93 @@ export const AdminDashboard: React.FC<Props> = ({
 
           {/* LANDING PAGE 3: REQUEST TEMPLATES */}
           {activeNav === 'templates' && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-6 animate-fade-in">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
-                    {institution?.name} · Active Forms Catalog
+                  <div className="flex items-center gap-2.5">
+                    <h2 className="text-xl sm:text-2xl font-bold text-[#123B6D] tracking-tight">
+                      Admin template requests
+                    </h2>
+                    <span className="text-xs font-semibold text-[#123B6D] bg-[#F3F4F6] px-2.5 py-0.5 rounded-full border border-[#E5E7EB]">
+                      {templates.length} active
+                    </span>
                   </div>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-[#123B6D] tracking-tight mt-0.5">
-                    Campus Request Templates & Workflow Library
-                  </h1>
                   <p className="text-xs text-[#3F4A5A] mt-0.5">
-                    Standardized institutional forms, required fields, and turnaround SLAs approved for this campus.
+                    Frequently used custom workflows for {institution?.name}
                   </p>
                 </div>
 
                 <button
                   onClick={() => setIsNominateModalOpen(true)}
-                  className="px-3.5 py-2 bg-[#123B6D] hover:bg-[#0e2f57] text-white rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-[#123B6D] hover:bg-[#0e2f57] text-white rounded-lg text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
                 >
-                  <span>↗</span> Submit Custom Template for Group Approval
+                  <span>↗</span> Nominate Custom Template
                 </button>
               </div>
 
-              {/* Template Catalog Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {templates.map(tpl => (
-                  <div key={tpl.id} className="p-4 bg-white border border-[#E5E7EB] rounded-2xl shadow-xs flex flex-col justify-between space-y-3 hover:border-[#123B6D] transition-colors">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-[10px]">
-                        <span className="font-bold text-[#123B6D] bg-[#123B6D]/10 px-2 py-0.5 rounded-md">
-                          Form {tpl.code}
-                        </span>
-                        <span className="font-medium text-[#3F4A5A] bg-[#F3F4F6] px-2 py-0.5 rounded-md">
-                          🕒 {tpl.turnaround}
+              {/* Standard Templates from Loopin_Request_Templates */}
+              <div className="space-y-4 pt-1">
+                <div>
+                  <h3 className="font-bold text-sm text-[#123B6D]">
+                    Standard templates from Loopin_Request_Templates
+                  </h3>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Review these supplied request formats and add the ones your institutions should share.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {templates.map(tpl => (
+                    <div
+                      key={tpl.id}
+                      className="p-4 sm:p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-xs space-y-3 hover:border-[#123B6D]/40 transition-colors"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                          <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{tpl.title}</h4>
+                          <div className="text-xs text-[#3F4A5A]/80 mt-0.5">
+                            {tpl.category} · Standard request template
+                          </div>
+                        </div>
+                        <span className="px-3.5 py-1.5 bg-[#F3F4F6] text-[#123B6D] border border-[#E5E7EB] text-xs font-semibold rounded-lg shrink-0 inline-flex items-center gap-1">
+                          ✓ Active on Campus
                         </span>
                       </div>
-                      <h3 className="font-bold text-sm text-[#123B6D]">{tpl.title}</h3>
-                      <p className="text-xs text-[#3F4A5A] line-clamp-2">{tpl.purpose}</p>
 
-                      <div className="bg-[#F3F4F6] p-2.5 rounded-xl text-[10px] space-y-1">
-                        <span className="font-bold text-[#123B6D] uppercase block text-[9px]">Approval Route:</span>
-                        <div className="text-[#3F4A5A]">{tpl.steps.join(' → ')}</div>
+                      <div className="border-t border-[#E5E7EB] pt-2">
+                        <button
+                          type="button"
+                          onClick={() => toggleExpandTemplate(tpl.id)}
+                          className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                        >
+                          <span>{expandedTemplateIds[tpl.id] ? '▼' : '▶'}</span>
+                          <span>
+                            {expandedTemplateIds[tpl.id]
+                              ? 'Hide request fields and suggested approval route'
+                              : 'View request fields and suggested approval route'}
+                          </span>
+                        </button>
+
+                        {expandedTemplateIds[tpl.id] && (
+                          <div className="mt-2.5 p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg text-xs text-[#3F4A5A] space-y-1.5 animate-fade-in">
+                            <div>
+                              <span className="font-bold text-[#123B6D]">Mandatory Fields: </span>
+                              <span>{tpl.fields.map(f => f.name).join(', ')}</span>
+                            </div>
+                            <div>
+                              <span className="font-bold text-[#123B6D]">Suggested Approval Route: </span>
+                              <span>{tpl.steps.join(' → ')}</span>
+                            </div>
+                            <div>
+                              <span className="font-bold text-[#123B6D]">Turnaround SLA: </span>
+                              <span>{tpl.turnaround}</span>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
-
-                    <div className="flex items-center justify-between pt-2 border-t border-[#E5E7EB] text-[10px]">
-                      <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">
-                        ✓ Published for Campus
-                      </span>
-                      <span className="text-[#3F4A5A]">{tpl.fields.length} Fields</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="p-4 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl text-xs text-[#3F4A5A]">
-                <b>Campus Scope:</b> All templates shown above are active for {institution?.name}. To add a custom department workflow not yet in the system, use the nomination button above to submit for Super Admin validation.
+                  ))}
+                </div>
               </div>
             </div>
           )}

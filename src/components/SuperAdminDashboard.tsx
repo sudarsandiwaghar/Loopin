@@ -94,6 +94,11 @@ export const SuperAdminDashboard: React.FC<Props> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [campusFilter, setCampusFilter] = useState('all');
+  const [expandedTemplateIds, setExpandedTemplateIds] = useState<Record<string, boolean>>({});
+
+  const toggleExpandTemplate = (id: string) => {
+    setExpandedTemplateIds(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   // New Institution form
   const [newSchoolName, setNewSchoolName] = useState('');
@@ -1087,14 +1092,16 @@ export const SuperAdminDashboard: React.FC<Props> = ({
             <div id="templates" className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-6 animate-fade-in">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
-                    Loopin Institutional Request Governance & SLA Engine
+                  <div className="flex items-center gap-2.5">
+                    <h2 className="text-xl sm:text-2xl font-bold text-[#123B6D] tracking-tight">
+                      Admin template requests
+                    </h2>
+                    <span className="text-xs font-semibold text-[#123B6D] bg-[#F3F4F6] px-2.5 py-0.5 rounded-full border border-[#E5E7EB]">
+                      {nominations.filter(n => n.status === 'pending').length} pending
+                    </span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-[#123B6D] tracking-tight mt-0.5">
-                    Workflow & Request Templates Directory
-                  </h2>
-                  <p className="text-xs text-[#3F4A5A] mt-1">
-                    Standardized multi-tier approval routes, mandatory form fields, turnaround service level agreements (SLAs), and campus eligibility criteria across Sri Sairam Group.
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Frequently used custom workflows awaiting Super Admin review
                   </p>
                 </div>
                 <button
@@ -1106,102 +1113,159 @@ export const SuperAdminDashboard: React.FC<Props> = ({
                 </button>
               </div>
 
-              {/* Stats Row */}
-              <div className="grid grid-cols-3 gap-3 p-4 bg-[#F3F4F6] rounded-xl border border-[#E5E7EB] text-center">
+              {/* Standard Templates from Loopin_Request_Templates */}
+              <div className="space-y-4 pt-1">
                 <div>
-                  <div className="text-2xl font-bold text-[#123B6D]">{templates.length}</div>
-                  <div className="text-[10px] uppercase font-bold text-[#3F4A5A]/80 tracking-wider mt-0.5">Active Forms</div>
+                  <h3 className="font-bold text-sm text-[#123B6D]">
+                    Standard templates from Loopin_Request_Templates
+                  </h3>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Review these supplied request formats and add the ones your institutions should share. Custom templates submitted by Admins appear in the review queue below.
+                  </p>
                 </div>
-                <div className="border-x border-[#E5E7EB]">
-                  <div className="text-2xl font-bold text-[#123B6D]">100%</div>
-                  <div className="text-[10px] uppercase font-bold text-[#3F4A5A]/80 tracking-wider mt-0.5">Digital Trail</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-[#123B6D]">2–5d</div>
-                  <div className="text-[10px] uppercase font-bold text-[#3F4A5A]/80 tracking-wider mt-0.5">Avg SLA</div>
+
+                <div className="space-y-3">
+                  {standardTemplates.map(std => {
+                    const added = templates.some(t => t.title.toLowerCase() === std.title.toLowerCase());
+                    return (
+                      <div key={std.id} className="p-4 sm:p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-xs space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div>
+                            <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{std.title}</h4>
+                            <div className="text-xs text-[#3F4A5A]/80 mt-0.5">
+                              {std.category} · Standard request template
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => approveStandardTemplate(std)}
+                            disabled={added}
+                            className={`px-4 py-2 border rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer shrink-0 ${
+                              added
+                                ? 'bg-[#F3F4F6] text-[#3F4A5A]/60 border-[#E5E7EB] cursor-not-allowed'
+                                : 'bg-white border-[#E5E7EB] text-[#123B6D] hover:bg-[#F3F4F6]'
+                            }`}
+                          >
+                            {added ? 'Added to General' : 'Approve & add to General'}
+                          </button>
+                        </div>
+
+                        <div className="border-t border-[#E5E7EB] pt-2">
+                          <button
+                            type="button"
+                            onClick={() => toggleExpandTemplate(std.id)}
+                            className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                          >
+                            <span>{expandedTemplateIds[std.id] ? '▼' : '▶'}</span>
+                            <span>
+                              {expandedTemplateIds[std.id]
+                                ? 'Hide request fields and suggested approval route'
+                                : 'View request fields and suggested approval route'}
+                            </span>
+                          </button>
+
+                          {expandedTemplateIds[std.id] && (
+                            <div className="mt-2.5 p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg text-xs text-[#3F4A5A] space-y-1.5 animate-fade-in">
+                              <div>
+                                <span className="font-bold text-[#123B6D]">Mandatory Fields: </span>
+                                <span>{std.fields.join(', ')}</span>
+                              </div>
+                              <div>
+                                <span className="font-bold text-[#123B6D]">Suggested Approval Route: </span>
+                                <span>{std.steps.join(' → ')}</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Template Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {templates.map(tpl => (
-                  <div key={tpl.id} className="p-4 bg-white border border-[#E5E7EB] rounded-xl space-y-3 hover:border-[#123B6D] hover:shadow-md transition-all flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-start gap-2">
-                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 bg-[#F3F4F6] text-[#123B6D] rounded border border-[#E5E7EB]">
-                          {tpl.code || 'FORM'}
-                        </span>
-                        <span className="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
-                          <Clock size={11} className="text-slate-400" /> {tpl.turnaround}
-                        </span>
-                      </div>
-                      <div className="text-[10px] uppercase font-bold text-[#123B6D] tracking-wider">
-                        {tpl.category}
-                      </div>
-                      <h3 className="font-bold text-sm text-[#123B6D] leading-snug">
-                        {tpl.title}
-                      </h3>
-                      <p className="text-xs text-[#3F4A5A] line-clamp-2">
-                        {tpl.description || 'Standard institutional workflow template.'}
-                      </p>
+              {/* Custom Templates submitted by Admins Review Queue */}
+              <div className="space-y-4 pt-4 border-t border-[#E5E7EB]">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-sm text-[#123B6D]">
+                    Custom Templates Submitted by Campus Admins
+                  </h3>
+                  <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                    {nominations.filter(n => n.status === 'pending').length} Custom Pending
+                  </span>
+                </div>
 
-                      {/* Sequential Chain */}
-                      <div className="pt-2">
-                        <div className="text-[9px] uppercase font-bold tracking-wider text-[#3F4A5A]/80 mb-1.5">
-                          Sequential Approval Chain: ({tpl.steps.length} Stages)
-                        </div>
-                        <div className="flex flex-wrap items-center gap-1 text-[10px]">
-                          {tpl.steps.map((step, idx) => (
-                            <React.Fragment key={idx}>
-                              <span className="px-2 py-0.5 bg-[#F3F4F6] border border-[#E5E7EB] rounded text-[#3F4A5A] font-medium">
-                                {idx + 1}. {step.role}
+                <div className="space-y-3">
+                  {nominations.length > 0 ? (
+                    nominations.map(nom => (
+                      <div key={nom.id} className="p-4 sm:p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-xs space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{nom.title}</h4>
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 uppercase">
+                                {nom.status}
                               </span>
-                              {idx < tpl.steps.length - 1 && (
-                                <span className="text-slate-400">→</span>
-                              )}
-                            </React.Fragment>
-                          ))}
+                            </div>
+                            <div className="text-xs text-[#3F4A5A]/80 mt-0.5">
+                              {nom.category} · {nom.institution} · Custom template
+                            </div>
+                          </div>
+
+                          {nom.status === 'pending' ? (
+                            <div className="flex items-center gap-2 shrink-0">
+                              <button
+                                onClick={() => reviewNomination(nom.id, 'declined')}
+                                className="px-3 py-1.5 text-xs text-rose-600 border border-rose-200 hover:bg-rose-50 rounded-lg font-semibold transition-colors cursor-pointer"
+                              >
+                                Decline
+                              </button>
+                              <button
+                                onClick={() => reviewNomination(nom.id, 'approved')}
+                                className="px-4 py-2 border border-[#E5E7EB] bg-white text-[#123B6D] hover:bg-[#F3F4F6] text-xs font-semibold rounded-lg shadow-xs transition-colors cursor-pointer"
+                              >
+                                Approve & add to General
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-xs font-semibold text-[#3F4A5A]/60 px-3 py-1 bg-[#F3F4F6] rounded-lg">
+                              {nom.status === 'approved' ? 'Approved & Added' : 'Declined'}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="border-t border-[#E5E7EB] pt-2">
+                          <button
+                            type="button"
+                            onClick={() => toggleExpandTemplate(nom.id)}
+                            className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                          >
+                            <span>{expandedTemplateIds[nom.id] ? '▼' : '▶'}</span>
+                            <span>
+                              {expandedTemplateIds[nom.id]
+                                ? 'Hide request fields and suggested approval route'
+                                : 'View request fields and suggested approval route'}
+                            </span>
+                          </button>
+
+                          {expandedTemplateIds[nom.id] && (
+                            <div className="mt-2.5 p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg text-xs text-[#3F4A5A] space-y-1.5 animate-fade-in">
+                              <div>
+                                <span className="font-bold text-[#123B6D]">Mandatory Fields: </span>
+                                <span>{nom.details.fields.join(', ')}</span>
+                              </div>
+                              <div>
+                                <span className="font-bold text-[#123B6D]">Suggested Approval Route: </span>
+                                <span>{nom.details.steps.join(' → ')}</span>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-6 text-slate-400 text-xs bg-[#F3F4F6] rounded-xl border border-[#E5E7EB]">
+                      No custom templates are waiting for group approval.
                     </div>
-
-                    <div className="pt-3 border-t border-[#E5E7EB] flex items-center justify-between text-[11px] text-[#3F4A5A]">
-                      <span>{tpl.fields.length} Form Fields</span>
-                      <button
-                        onClick={() => {
-                          showToast(`Template specification loaded: ${tpl.title}`);
-                        }}
-                        className="px-2.5 py-1 text-xs font-semibold text-[#123B6D] hover:bg-[#F3F4F6] rounded-md transition-colors cursor-pointer"
-                      >
-                        View Details &rarr;
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Standard Specification Catalog */}
-              <div className="pt-4 border-t border-[#E5E7EB] space-y-3">
-                <h3 className="font-bold text-sm text-[#123B6D]">
-                  Standard Specification Catalog (Sri Sairam Reference)
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {standardTemplates.map(std => (
-                    <div key={std.id} className="p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg text-xs space-y-1.5">
-                      <div className="flex justify-between items-center">
-                        <span className="font-bold text-[#123B6D]">{std.title}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 bg-white border border-[#E5E7EB] rounded text-[#3F4A5A]">
-                          {std.category}
-                        </span>
-                      </div>
-                      <div className="text-[11px] text-[#3F4A5A]">
-                        <b>Mandatory Fields:</b> {std.fields.join(', ')}
-                      </div>
-                      <div className="text-[11px] text-[#3F4A5A]">
-                        <b>Required Approvers:</b> {std.steps.join(' → ')}
-                      </div>
-                    </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>
@@ -1210,99 +1274,178 @@ export const SuperAdminDashboard: React.FC<Props> = ({
           {/* Template Approvals Landing Page */}
           {activeNav === 'promotions' && (
             <div id="promotions" className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-6 animate-fade-in">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-[#1b2635]">Admin template requests & Library</h2>
-                <p className="text-xs text-slate-500">
-                  Review custom workflows submitted by Campus Admins, and approve standard templates into the shared library.
-                </p>
-              </div>
-              <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
-                {nominations.filter(n => n.status === 'pending').length} Custom Pending
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Custom Nominations */}
-              <div className="border border-slate-200 rounded-xl p-4 bg-[#fafcff] space-y-3">
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                  Custom Templates Submitted by Campus Admins
-                </h3>
-                <div className="space-y-2.5">
-                  {nominations.length > 0 ? (
-                    nominations.map(nom => (
-                      <div key={nom.id} className="p-3 bg-white border border-slate-200 rounded-lg space-y-2">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <b className="text-xs text-slate-900">{nom.title}</b>
-                            <div className="text-[10px] text-slate-500">
-                              {nom.category} · {nom.uses} uses · {nom.institution}
-                            </div>
-                          </div>
-                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700">
-                            {nom.status.toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="text-[10px] bg-slate-50 p-2 rounded text-slate-600">
-                          <div><b>Route:</b> {nom.details.steps.join(' → ')}</div>
-                          <div><b>Fields:</b> {nom.details.fields.join(', ')}</div>
-                        </div>
-                        {nom.status === 'pending' && (
-                          <div className="flex justify-end gap-2 pt-1">
-                            <button
-                              onClick={() => reviewNomination(nom.id, 'declined')}
-                              className="px-2 py-1 text-[11px] text-rose-600 border border-rose-200 rounded"
-                            >
-                              Decline
-                            </button>
-                            <button
-                              onClick={() => reviewNomination(nom.id, 'approved')}
-                              className="px-3 py-1 text-[11px] bg-[#173f6b] text-white rounded font-bold"
-                            >
-                              Approve & Add to General
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-6 text-slate-400 text-xs">
-                      No custom templates are waiting for group approval.
-                    </div>
-                  )}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <h2 className="text-xl sm:text-2xl font-bold text-[#123B6D] tracking-tight">
+                      Admin template requests
+                    </h2>
+                    <span className="text-xs font-semibold text-[#123B6D] bg-[#F3F4F6] px-2.5 py-0.5 rounded-full border border-[#E5E7EB]">
+                      {nominations.filter(n => n.status === 'pending').length} pending
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Frequently used custom workflows awaiting Super Admin review
+                  </p>
                 </div>
               </div>
 
-              {/* Standard Templates */}
-              <div className="border border-slate-200 rounded-xl p-4 bg-[#fafcff] space-y-3">
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                  Standard Templates from Loopin_Request_Templates
-                </h3>
-                <div className="space-y-2 max-h-[340px] overflow-y-auto">
+              {/* Standard Templates from Loopin_Request_Templates */}
+              <div className="space-y-4 pt-1">
+                <div>
+                  <h3 className="font-bold text-sm text-[#123B6D]">
+                    Standard templates from Loopin_Request_Templates
+                  </h3>
+                  <p className="text-xs text-[#3F4A5A] mt-0.5">
+                    Review these supplied request formats and add the ones your institutions should share. Custom templates submitted by Admins appear in the review queue below.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
                   {standardTemplates.map(std => {
                     const added = templates.some(t => t.title.toLowerCase() === std.title.toLowerCase());
                     return (
-                      <div key={std.id} className="p-3 bg-white border border-slate-200 rounded-lg flex items-center justify-between gap-3">
-                        <div>
-                          <div className="text-xs font-bold text-slate-900">{std.title}</div>
-                          <div className="text-[10px] text-slate-500">{std.category} · {std.steps.length} stages</div>
+                      <div key={std.id} className="p-4 sm:p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-xs space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div>
+                            <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{std.title}</h4>
+                            <div className="text-xs text-[#3F4A5A]/80 mt-0.5">
+                              {std.category} · Standard request template
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => approveStandardTemplate(std)}
+                            disabled={added}
+                            className={`px-4 py-2 border rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer shrink-0 ${
+                              added
+                                ? 'bg-[#F3F4F6] text-[#3F4A5A]/60 border-[#E5E7EB] cursor-not-allowed'
+                                : 'bg-white border-[#E5E7EB] text-[#123B6D] hover:bg-[#F3F4F6]'
+                            }`}
+                          >
+                            {added ? 'Added to General' : 'Approve & add to General'}
+                          </button>
                         </div>
-                        <button
-                          onClick={() => approveStandardTemplate(std)}
-                          disabled={added}
-                          className={`px-2.5 py-1 text-[11px] rounded font-semibold ${
-                            added ? 'bg-slate-100 text-slate-400' : 'bg-[#173f6b] text-white'
-                          }`}
-                        >
-                          {added ? 'Added' : 'Approve & Add'}
-                        </button>
+
+                        <div className="border-t border-[#E5E7EB] pt-2">
+                          <button
+                            type="button"
+                            onClick={() => toggleExpandTemplate(std.id)}
+                            className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                          >
+                            <span>{expandedTemplateIds[std.id] ? '▼' : '▶'}</span>
+                            <span>
+                              {expandedTemplateIds[std.id]
+                                ? 'Hide request fields and suggested approval route'
+                                : 'View request fields and suggested approval route'}
+                            </span>
+                          </button>
+
+                          {expandedTemplateIds[std.id] && (
+                            <div className="mt-2.5 p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg text-xs text-[#3F4A5A] space-y-1.5 animate-fade-in">
+                              <div>
+                                <span className="font-bold text-[#123B6D]">Mandatory Fields: </span>
+                                <span>{std.fields.join(', ')}</span>
+                              </div>
+                              <div>
+                                <span className="font-bold text-[#123B6D]">Suggested Approval Route: </span>
+                                <span>{std.steps.join(' → ')}</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     );
                   })}
                 </div>
               </div>
+
+              {/* Custom Templates submitted by Admins Review Queue */}
+              <div className="space-y-4 pt-4 border-t border-[#E5E7EB]">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-sm text-[#123B6D]">
+                    Custom Templates Submitted by Campus Admins
+                  </h3>
+                  <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                    {nominations.filter(n => n.status === 'pending').length} Custom Pending
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {nominations.length > 0 ? (
+                    nominations.map(nom => (
+                      <div key={nom.id} className="p-4 sm:p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-xs space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{nom.title}</h4>
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 uppercase">
+                                {nom.status}
+                              </span>
+                            </div>
+                            <div className="text-xs text-[#3F4A5A]/80 mt-0.5">
+                              {nom.category} · {nom.institution} · Custom template
+                            </div>
+                          </div>
+
+                          {nom.status === 'pending' ? (
+                            <div className="flex items-center gap-2 shrink-0">
+                              <button
+                                onClick={() => reviewNomination(nom.id, 'declined')}
+                                className="px-3 py-1.5 text-xs text-rose-600 border border-rose-200 hover:bg-rose-50 rounded-lg font-semibold transition-colors cursor-pointer"
+                              >
+                                Decline
+                              </button>
+                              <button
+                                onClick={() => reviewNomination(nom.id, 'approved')}
+                                className="px-4 py-2 border border-[#E5E7EB] bg-white text-[#123B6D] hover:bg-[#F3F4F6] text-xs font-semibold rounded-lg shadow-xs transition-colors cursor-pointer"
+                              >
+                                Approve & add to General
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-xs font-semibold text-[#3F4A5A]/60 px-3 py-1 bg-[#F3F4F6] rounded-lg">
+                              {nom.status === 'approved' ? 'Approved & Added' : 'Declined'}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="border-t border-[#E5E7EB] pt-2">
+                          <button
+                            type="button"
+                            onClick={() => toggleExpandTemplate(nom.id)}
+                            className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                          >
+                            <span>{expandedTemplateIds[nom.id] ? '▼' : '▶'}</span>
+                            <span>
+                              {expandedTemplateIds[nom.id]
+                                ? 'Hide request fields and suggested approval route'
+                                : 'View request fields and suggested approval route'}
+                            </span>
+                          </button>
+
+                          {expandedTemplateIds[nom.id] && (
+                            <div className="mt-2.5 p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg text-xs text-[#3F4A5A] space-y-1.5 animate-fade-in">
+                              <div>
+                                <span className="font-bold text-[#123B6D]">Mandatory Fields: </span>
+                                <span>{nom.details.fields.join(', ')}</span>
+                              </div>
+                              <div>
+                                <span className="font-bold text-[#123B6D]">Suggested Approval Route: </span>
+                                <span>{nom.details.steps.join(' → ')}</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-6 text-slate-400 text-xs bg-[#F3F4F6] rounded-xl border border-[#E5E7EB]">
+                      No custom templates are waiting for group approval.
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
           )}
 
           {/* Organogram Landing Page */}

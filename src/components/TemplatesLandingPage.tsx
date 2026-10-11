@@ -57,6 +57,11 @@ export const TemplatesLandingPage: React.FC<Props> = ({
   const [selectedSla, setSelectedSla] = useState<string>('All');
   const [institutionFilter, setInstitutionFilter] = useState<string>('all');
   const [activeTab, setActiveTab] = useState<'all' | 'standards' | 'nominations'>('all');
+  const [expandedTemplateIds, setExpandedTemplateIds] = useState<Record<string, boolean>>({});
+
+  const toggleExpandTemplate = (id: string) => {
+    setExpandedTemplateIds(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   // Modals & Drawers
   const [inspectTemplate, setInspectTemplate] = useState<WorkflowTemplate | null>(null);
@@ -376,34 +381,19 @@ export const TemplatesLandingPage: React.FC<Props> = ({
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-sky-400/10 rounded-full blur-2xl pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto relative z-10 space-y-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-3 max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-sky-200 text-xs font-semibold backdrop-blur-sm">
-                <Sparkles size={13} className="text-sky-300" />
-                <span>Loopin Institutional Request Governance & SLA Engine</span>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1 max-w-3xl">
+              <div className="flex items-center gap-2.5">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
+                  Admin template requests
+                </h1>
+                <span className="text-xs font-semibold text-white/90 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/20">
+                  {templates.length} available
+                </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
-                Workflow & Request Templates Directory
-              </h1>
-              <p className="text-white/80 text-sm sm:text-base leading-relaxed">
-                Explore standardized multi-tier approval routes, mandatory form fields, turnaround service level agreements (SLAs), and campus eligibility criteria across Sri Sairam Group institutions.
+              <p className="text-white/80 text-xs sm:text-sm">
+                Frequently used custom workflows awaiting review and submission
               </p>
-            </div>
-
-            {/* Quick Metrics Bar */}
-            <div className="flex items-center gap-3 bg-white/10 border border-white/15 rounded-xl p-3 backdrop-blur-md shrink-0">
-              <div className="text-center px-3 border-r border-white/15">
-                <div className="text-2xl font-extrabold text-white">{templates.length}</div>
-                <div className="text-[10px] text-white/70 uppercase font-semibold">Active Forms</div>
-              </div>
-              <div className="text-center px-3 border-r border-white/15">
-                <div className="text-2xl font-extrabold text-sky-300">100%</div>
-                <div className="text-[10px] text-white/70 uppercase font-semibold">Digital Trail</div>
-              </div>
-              <div className="text-center px-3">
-                <div className="text-2xl font-extrabold text-emerald-300">2–5d</div>
-                <div className="text-[10px] text-white/70 uppercase font-semibold">Avg. SLA</div>
-              </div>
             </div>
           </div>
 
@@ -598,7 +588,7 @@ export const TemplatesLandingPage: React.FC<Props> = ({
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="space-y-3">
                 {filteredTemplates.map(tpl => {
                   const isEligible =
                     !currentUser?.institutionId ||
@@ -608,99 +598,68 @@ export const TemplatesLandingPage: React.FC<Props> = ({
                   return (
                     <div
                       key={tpl.id}
-                      className="bg-white border border-slate-200 rounded-xl hover:border-[#123b6d]/50 hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
+                      className="p-4 sm:p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-xs space-y-3 hover:border-[#123B6D]/40 transition-colors"
                     >
-                      {/* Card Header & Badges */}
-                      <div className="p-5 space-y-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="px-2.5 py-0.5 bg-blue-50 text-[#123b6d] border border-blue-200 rounded-md font-mono text-[10px] font-bold">
-                            {tpl.code || 'TPL'}
-                          </span>
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full">
-                            <Clock size={11} className="text-slate-400" />
-                            {tpl.turnaround || '3–5 days'}
-                          </span>
-                        </div>
-
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                          <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                            {tpl.category || 'General'}
-                          </div>
-                          <h3 className="text-base font-bold text-slate-900 group-hover:text-[#123b6d] transition-colors mt-0.5">
-                            {tpl.title}
-                          </h3>
-                          <p className="text-xs text-slate-600 mt-1 line-clamp-2 leading-relaxed">
-                            {tpl.purpose || 'Official institutional workflow for multi-campus review and audit.'}
-                          </p>
-                        </div>
-
-                        {/* Sequential Approval Flow Path */}
-                        <div className="pt-2 border-t border-slate-100 space-y-1.5">
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
-                            <span>Sequential Approval Chain:</span>
-                            <span className="text-[#123b6d]">{tpl.steps?.length || 0} Stages</span>
-                          </div>
-                          <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[11px]">
-                            {tpl.steps && tpl.steps.length > 0 ? (
-                              tpl.steps.map((st, idx) => (
-                                <React.Fragment key={idx}>
-                                  <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded font-medium shrink-0 border border-slate-200">
-                                    {idx + 1}. {st}
-                                  </span>
-                                  {idx < tpl.steps.length - 1 && (
-                                    <span className="text-slate-300 shrink-0">→</span>
-                                  )}
-                                </React.Fragment>
-                              ))
-                            ) : (
-                              <span className="text-slate-400 text-xs italic">Standard HOD → Principal routing</span>
-                            )}
+                          <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{tpl.title}</h4>
+                          <div className="text-xs text-[#3F4A5A]/80 mt-0.5">
+                            {tpl.category} · Standard request template
                           </div>
                         </div>
 
-                        {/* Metadata Pills */}
-                        <div className="flex items-center gap-2 pt-1 text-[10px] text-slate-500">
-                          <span className="bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
-                            {tpl.fields?.length || 0} Form Fields
-                          </span>
-                          <span className="bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
-                            {tpl.attachments?.length || 0} Attachments
-                          </span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          {currentUser?.role === 'staff' && onApplyTemplate && (
+                            <button
+                              onClick={() => onApplyTemplate(tpl)}
+                              disabled={!isEligible}
+                              className={`px-4 py-2 border rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer ${
+                                isEligible
+                                  ? 'border-[#E5E7EB] bg-white text-[#123B6D] hover:bg-[#F3F4F6]'
+                                  : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
+                              }`}
+                            >
+                              Apply with this template
+                            </button>
+                          )}
+                          <button
+                            onClick={() => setInspectTemplate(tpl)}
+                            className="px-3 py-2 bg-[#F3F4F6] hover:bg-[#E5E7EB] text-[#3F4A5A] text-xs font-medium rounded-lg transition-colors cursor-pointer"
+                          >
+                            View Details
+                          </button>
                         </div>
                       </div>
 
-                      {/* Card Footer Actions */}
-                      <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+                      <div className="border-t border-[#E5E7EB] pt-2">
                         <button
-                          onClick={() => setInspectTemplate(tpl)}
-                          className="flex-1 py-2 px-3 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                          type="button"
+                          onClick={() => toggleExpandTemplate(tpl.id)}
+                          className="text-xs text-[#123B6D] hover:underline flex items-center gap-1 font-medium cursor-pointer"
                         >
-                          <Eye size={13} className="text-slate-400" />
-                          <span>View Details</span>
+                          <span>{expandedTemplateIds[tpl.id] ? '▼' : '▶'}</span>
+                          <span>
+                            {expandedTemplateIds[tpl.id]
+                              ? 'Hide request fields and suggested approval route'
+                              : 'View request fields and suggested approval route'}
+                          </span>
                         </button>
 
-                        {/* If user is staff and eligible, allow starting request */}
-                        {currentUser?.role === 'staff' && onApplyTemplate && (
-                          <button
-                            onClick={() => onApplyTemplate(tpl)}
-                            disabled={!isEligible}
-                            className={`flex-1 py-2 px-3 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors ${
-                              isEligible
-                                ? 'bg-[#123b6d] hover:bg-[#0e2d50]'
-                                : 'bg-slate-300 cursor-not-allowed text-slate-500'
-                            }`}
-                          >
-                            <span>Apply Now →</span>
-                          </button>
-                        )}
-
-                        {currentUser?.role === 'super_admin' && (
-                          <button
-                            onClick={() => setInspectTemplate(tpl)}
-                            className="py-2 px-3 bg-[#123b6d] hover:bg-[#0e2d50] text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1"
-                          >
-                            <span>Configure</span>
-                          </button>
+                        {expandedTemplateIds[tpl.id] && (
+                          <div className="mt-2.5 p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg text-xs text-[#3F4A5A] space-y-1.5 animate-fade-in">
+                            <div>
+                              <span className="font-bold text-[#123B6D]">Mandatory Fields: </span>
+                              <span>{tpl.fields?.map(f => typeof f === 'string' ? f : f.name).join(', ')}</span>
+                            </div>
+                            <div>
+                              <span className="font-bold text-[#123B6D]">Suggested Approval Route: </span>
+                              <span>{tpl.steps?.join(' → ')}</span>
+                            </div>
+                            <div>
+                              <span className="font-bold text-[#123B6D]">Turnaround SLA: </span>
+                              <span>{tpl.turnaround}</span>
+                            </div>
+                          </div>
                         )}
                       </div>
                     </div>
