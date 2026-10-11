@@ -198,6 +198,8 @@ begin
     'loopin_hierarchies', 'loopin_hierarchy_logs', 'loopin_approval_flows', 'loopin_templates',
     'loopin_template_nominations', 'loopin_requests', 'loopin_audit_logs', 'loopin_sessions'
   ]) loop
-    execute format('create policy if not exists "Allow all on %I" on %I for all using (true) with check (true);', t, t);
+    execute format('drop policy if exists "Allow all on %I" on %I;', t, t);
+    execute format('create policy "Allow all on %I" on %I for all using (true) with check (true);', t, t);
   end loop;
 end $$;
+
