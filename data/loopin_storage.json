@@ -1,0 +1,1508 @@
+{
+  "institutions": [
+    {
+      "id": "inst-sairam-eng",
+      "name": "Sri Sairam Engineering College",
+      "category": "Engineering",
+      "city": "Chennai",
+      "email": "admin@sairam.edu.in",
+      "phone": "+91 44 2251 2222",
+      "address": "Sai Leo Nagar, Chennai – 600 044",
+      "requestCount": 642,
+      "status": "Active",
+      "createdAt": "2026-01-10T09:00:00Z"
+    },
+    {
+      "id": "inst-sairam-tech",
+      "name": "Sri Sairam Institute of Technology",
+      "category": "Technology",
+      "city": "Chennai",
+      "email": "admin@saitechnology.edu.in",
+      "phone": "+91 44 2251 2333",
+      "address": "Sai Leo Nagar, West Tambaram, Chennai – 600 044",
+      "requestCount": 421,
+      "status": "Active",
+      "createdAt": "2026-01-12T09:00:00Z"
+    },
+    {
+      "id": "inst-sairam-siddha",
+      "name": "Sri Sairam Siddha Medical College",
+      "category": "Medical",
+      "city": "Chennai",
+      "email": "admin@sairamsiddha.edu.in",
+      "phone": "+91 44 2251 2444",
+      "address": "Sai Leo Nagar, Tambaram, Chennai – 600 044",
+      "requestCount": 221,
+      "status": "Active",
+      "createdAt": "2026-01-15T09:00:00Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "usr-superadmin",
+      "email": "superadmin@sairam.group",
+      "passwordHash": "admin123",
+      "name": "Dr. R. Arunachalam",
+      "role": "super_admin",
+      "institutionId": null,
+      "institutionName": null,
+      "designation": "Group CEO & Principal Trustee",
+      "department": "Central Executive Council",
+      "employeeCode": "EXEC-001",
+      "status": "Active",
+      "createdAt": "2026-01-01T08:00:00Z"
+    },
+    {
+      "id": "usr-admin-eng",
+      "email": "admin@sairam.edu.in",
+      "passwordHash": "admin123",
+      "name": "K. Parthiban",
+      "role": "admin",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "designation": "Campus Administrator",
+      "department": "Administration",
+      "employeeCode": "ADM-ENG-01",
+      "status": "Active",
+      "createdAt": "2026-01-05T08:00:00Z"
+    },
+    {
+      "id": "usr-admin-tech",
+      "email": "admin@saitechnology.edu.in",
+      "passwordHash": "admin123",
+      "name": "V. Sundar",
+      "role": "admin",
+      "institutionId": "inst-sairam-tech",
+      "institutionName": "Sri Sairam Institute of Technology",
+      "designation": "Campus Administrator",
+      "department": "Administration",
+      "employeeCode": "ADM-TECH-01",
+      "status": "Active",
+      "createdAt": "2026-01-06T08:00:00Z"
+    },
+    {
+      "id": "usr-admin-siddha",
+      "email": "admin@sairamsiddha.edu.in",
+      "passwordHash": "admin123",
+      "name": "Dr. N. Balamurugan",
+      "role": "admin",
+      "institutionId": "inst-sairam-siddha",
+      "institutionName": "Sri Sairam Siddha Medical College",
+      "designation": "Campus Administrator",
+      "department": "Administration",
+      "employeeCode": "ADM-MED-01",
+      "status": "Active",
+      "createdAt": "2026-01-07T08:00:00Z"
+    },
+    {
+      "id": "usr-staff-senthil",
+      "email": "senthil.nathan@sairam.edu.in",
+      "passwordHash": "staff123",
+      "name": "Dr. K. Senthil Nathan",
+      "role": "staff",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "designation": "Assistant Professor",
+      "department": "Computer Science & Engineering",
+      "employeeCode": "STAFF-20418",
+      "manager": "Dr. K. Meenakshi (Head of Department)",
+      "status": "Active",
+      "preferences": {
+        "notifyAssigned": true,
+        "notifyDaily": true,
+        "notifyUrgent": true,
+        "channel": "Email and in-app"
+      },
+      "delegation": {
+        "enabled": false
+      },
+      "createdAt": "2026-01-10T08:00:00Z"
+    },
+    {
+      "id": "usr-staff-ananya",
+      "email": "ananya.sundaram@sairam.edu.in",
+      "passwordHash": "staff123",
+      "name": "Ananya Sundaram",
+      "role": "staff",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "designation": "Assistant Professor (Senior Grade)",
+      "department": "Electronics & Communication Engineering",
+      "employeeCode": "STAFF-20352",
+      "manager": "Dr. K. Meenakshi (Head of Department)",
+      "status": "Active",
+      "createdAt": "2026-01-10T08:00:00Z"
+    },
+    {
+      "id": "usr-staff-hod",
+      "email": "meenakshi@sairam.edu.in",
+      "passwordHash": "staff123",
+      "name": "Dr. K. Meenakshi",
+      "role": "staff",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "designation": "Head of Department",
+      "department": "Electronics & Communication Engineering",
+      "employeeCode": "HOD-ECE-01",
+      "manager": "Principal",
+      "status": "Active",
+      "createdAt": "2026-01-02T08:00:00Z"
+    },
+    {
+      "id": "usr-staff-dean",
+      "email": "rajendran@sairam.edu.in",
+      "passwordHash": "staff123",
+      "name": "Dr. S. Rajendran",
+      "role": "staff",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "designation": "Dean Academics & Research",
+      "department": "Academic Office",
+      "employeeCode": "DEAN-ACAD-01",
+      "manager": "Principal",
+      "status": "Active",
+      "createdAt": "2026-01-02T08:00:00Z"
+    },
+    {
+      "id": "usr-staff-finance",
+      "email": "kavitha@sairam.edu.in",
+      "passwordHash": "staff123",
+      "name": "M. Kavitha",
+      "role": "staff",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "designation": "Finance Officer",
+      "department": "Finance Office",
+      "employeeCode": "FIN-004",
+      "manager": "Administrative Officer",
+      "status": "Active",
+      "createdAt": "2026-01-03T08:00:00Z"
+    },
+    {
+      "id": "usr-staff-principal",
+      "email": "principal@sairam.edu.in",
+      "passwordHash": "staff123",
+      "name": "Dr. J. Raja",
+      "role": "staff",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "designation": "Principal",
+      "department": "Principal Secretariat",
+      "employeeCode": "EXEC-PRIN-01",
+      "manager": "CEO",
+      "status": "Active",
+      "createdAt": "2026-01-01T08:00:00Z"
+    }
+  ],
+  "staffDetails": [
+    {
+      "id": "staff-det-1",
+      "institutionId": "inst-sairam-eng",
+      "name": "Dr. K. Meenakshi",
+      "role": "Head of Department",
+      "dept": "Electronics & Communication Engineering",
+      "manager": "Principal",
+      "email": "meenakshi@sairam.edu.in",
+      "updatedAt": "2026-03-01T10:00:00Z"
+    },
+    {
+      "id": "staff-det-2",
+      "institutionId": "inst-sairam-eng",
+      "name": "Dr. S. Rajendran",
+      "role": "Dean Academics",
+      "dept": "Academic Office",
+      "manager": "Principal",
+      "email": "rajendran@sairam.edu.in",
+      "updatedAt": "2026-03-01T10:00:00Z"
+    },
+    {
+      "id": "staff-det-3",
+      "institutionId": "inst-sairam-eng",
+      "name": "Prof. V. Anitha",
+      "role": "Faculty Coordinator",
+      "dept": "Computer Science & Engineering",
+      "manager": "Head of Department",
+      "email": "anitha@sairam.edu.in",
+      "updatedAt": "2026-03-02T10:00:00Z"
+    },
+    {
+      "id": "staff-det-4",
+      "institutionId": "inst-sairam-eng",
+      "name": "R. Prakash",
+      "role": "Administrative Officer",
+      "dept": "Administration",
+      "manager": "Campus Admin",
+      "email": "prakash@sairam.edu.in",
+      "updatedAt": "2026-03-02T10:00:00Z"
+    },
+    {
+      "id": "staff-det-5",
+      "institutionId": "inst-sairam-eng",
+      "name": "M. Kavitha",
+      "role": "Finance Officer",
+      "dept": "Finance",
+      "manager": "Administrative Officer",
+      "email": "kavitha@sairam.edu.in",
+      "updatedAt": "2026-03-03T10:00:00Z"
+    }
+  ],
+  "hierarchies": {
+    "inst-sairam-eng": {
+      "id": "h-eng-ceo",
+      "name": "CEO",
+      "role": "Chief Executive Officer",
+      "tier": 1,
+      "count": 1,
+      "children": [
+        {
+          "id": "h-eng-principal",
+          "name": "Principal",
+          "role": "Academic & Institutional Head",
+          "tier": 1,
+          "count": 1,
+          "children": [
+            {
+              "id": "h-eng-dean-acad",
+              "name": "Dean Academics & Research",
+              "role": "Academic Leadership",
+              "tier": 2,
+              "count": 1,
+              "children": [
+                {
+                  "id": "h-eng-hods",
+                  "name": "Heads of Departments",
+                  "role": "Department Leadership",
+                  "tier": 2,
+                  "count": 8,
+                  "children": [
+                    {
+                      "id": "h-eng-faculty",
+                      "name": "Faculty & Researchers",
+                      "role": "Teaching & Research Staff",
+                      "tier": 3,
+                      "count": 120,
+                      "children": [
+                        {
+                          "id": "h-eng-lab-assistants",
+                          "name": "Lab Assistants",
+                          "role": "Technical Support",
+                          "tier": 4,
+                          "count": 24
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "h-eng-vp",
+              "name": "Vice Principal",
+              "role": "Institutional Administration",
+              "tier": 2,
+              "count": 1,
+              "children": [
+                {
+                  "id": "h-eng-placement",
+                  "name": "Placement & Career Head",
+                  "role": "Corporate Training",
+                  "tier": 3,
+                  "count": 4
+                },
+                {
+                  "id": "h-eng-library",
+                  "name": "Chief Librarian",
+                  "role": "Information Services",
+                  "tier": 3,
+                  "count": 6
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "h-eng-cao",
+          "name": "CAO",
+          "role": "Chief Administrative Officer",
+          "tier": 2,
+          "count": 1,
+          "children": [
+            {
+              "id": "h-eng-finance",
+              "name": "Financial Management Office",
+              "role": "Finance Officer & Comptroller",
+              "tier": 2,
+              "count": 1,
+              "children": [
+                {
+                  "id": "h-eng-accounts",
+                  "name": "Accounts & Audit Team",
+                  "role": "Financial Operations",
+                  "tier": 3,
+                  "count": 5
+                },
+                {
+                  "id": "h-eng-cashiers",
+                  "name": "Fee Collection & Cashiers",
+                  "role": "Cash Management",
+                  "tier": 4,
+                  "count": 3
+                }
+              ]
+            },
+            {
+              "id": "h-eng-admin-off",
+              "name": "Administrative Officer",
+              "role": "Campus Operations Officer",
+              "tier": 2,
+              "count": 1,
+              "children": [
+                {
+                  "id": "h-eng-estate",
+                  "name": "Estate & Infrastructure Manager",
+                  "role": "Maintenance & Security",
+                  "tier": 3,
+                  "count": 8
+                },
+                {
+                  "id": "h-eng-transport",
+                  "name": "Transport Manager",
+                  "role": "Fleet Operations",
+                  "tier": 3,
+                  "count": 6
+                },
+                {
+                  "id": "h-eng-clerks",
+                  "name": "Records & Office Clerks",
+                  "role": "Documentation",
+                  "tier": 4,
+                  "count": 9
+                }
+              ]
+            },
+            {
+              "id": "h-eng-incubation",
+              "name": "Incubation Head",
+              "role": "Innovation & Startup Center",
+              "tier": 2,
+              "count": 1,
+              "children": [
+                {
+                  "id": "h-eng-mentors",
+                  "name": "External Mentors & Advisors",
+                  "role": "Advisory Panel (Configurable)",
+                  "tier": 3,
+                  "count": 5
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "inst-sairam-tech": {
+      "id": "h-tech-dir",
+      "name": "Institute Director",
+      "role": "Executive Head",
+      "tier": 1,
+      "count": 1,
+      "children": [
+        {
+          "id": "h-tech-prin",
+          "name": "Principal",
+          "role": "Academic Head",
+          "tier": 1,
+          "count": 1,
+          "children": [
+            {
+              "id": "h-tech-deans",
+              "name": "Dean Academics",
+              "role": "Curriculum & R&D",
+              "tier": 2,
+              "count": 1,
+              "children": [
+                {
+                  "id": "h-tech-hods",
+                  "name": "Department HoDs",
+                  "role": "Department Leadership",
+                  "tier": 2,
+                  "count": 6,
+                  "children": [
+                    {
+                      "id": "h-tech-fac",
+                      "name": "Faculty & Lab Coordinators",
+                      "role": "Academic Operations",
+                      "tier": 3,
+                      "count": 95
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "h-tech-admin",
+          "name": "Administrative Officer",
+          "role": "Operations & Facilities",
+          "tier": 2,
+          "count": 1,
+          "children": [
+            {
+              "id": "h-tech-ops",
+              "name": "Campus Services & Technicians",
+              "role": "Local Technical Services",
+              "tier": 3,
+              "count": 18
+            }
+          ]
+        }
+      ]
+    },
+    "inst-sairam-siddha": {
+      "id": "h-med-prin",
+      "name": "Principal & Medical Superintendent",
+      "role": "Clinical & Institutional Executive",
+      "tier": 1,
+      "count": 1,
+      "children": [
+        {
+          "id": "h-med-dean",
+          "name": "Dean of Medical Studies",
+          "role": "Medical Academic Leadership",
+          "tier": 2,
+          "count": 1,
+          "children": [
+            {
+              "id": "h-med-clinical-heads",
+              "name": "Clinical Department Heads",
+              "role": "Hospital & Department Units",
+              "tier": 2,
+              "count": 6,
+              "children": [
+                {
+                  "id": "h-med-doctors",
+                  "name": "Resident Physicians & Tutors",
+                  "role": "Medical Faculty & Hospital Staff",
+                  "tier": 3,
+                  "count": 52
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "h-med-hosp-admin",
+          "name": "Hospital Administrator",
+          "role": "Hospital Services & Pharmacy",
+          "tier": 2,
+          "count": 1,
+          "children": [
+            {
+              "id": "h-med-nursing",
+              "name": "Nursing & Dispensing Leads",
+              "role": "Healthcare Operations",
+              "tier": 3,
+              "count": 34
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "hierarchyLogs": [
+    {
+      "id": "hlog-1",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "action": "Hierarchy initialized",
+      "detail": "Standard Tier 1-4 reporting structure configured by Super Admin",
+      "status": "Updated",
+      "actorName": "Dr. R. Arunachalam (Super Admin)",
+      "time": "2026-01-05 09:00"
+    },
+    {
+      "id": "hlog-2",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "action": "Tier 3 structure adjusted",
+      "detail": "External Incubation Mentors reporting line confirmed under CAO",
+      "status": "Updated",
+      "actorName": "Dr. R. Arunachalam (Super Admin)",
+      "time": "2026-02-14 11:30"
+    }
+  ],
+  "approvalFlows": {
+    "global": [
+      {
+        "id": "step-1",
+        "name": "Faculty / Staff Applicant",
+        "role": "Submit request",
+        "locked": true
+      },
+      {
+        "id": "step-2",
+        "name": "Department Head (HoD)",
+        "role": "Academic recommendation"
+      },
+      {
+        "id": "step-3",
+        "name": "Dean Academics & Research",
+        "role": "Research council review"
+      },
+      {
+        "id": "step-4",
+        "name": "Finance Officer",
+        "role": "Policy and budget check"
+      },
+      {
+        "id": "step-5",
+        "name": "Principal / Governing Authority",
+        "role": "Final decision"
+      }
+    ],
+    "inst-sairam-eng": [
+      {
+        "id": "step-1",
+        "name": "Faculty / Staff Applicant",
+        "role": "Submit request",
+        "locked": true
+      },
+      {
+        "id": "step-2",
+        "name": "Department Head (HoD)",
+        "role": "Academic recommendation"
+      },
+      {
+        "id": "step-3",
+        "name": "Dean Academics & Research",
+        "role": "Research council review"
+      },
+      {
+        "id": "step-4",
+        "name": "Finance Officer",
+        "role": "Policy and budget check"
+      },
+      {
+        "id": "step-5",
+        "name": "Principal / Governing Authority",
+        "role": "Final decision"
+      }
+    ],
+    "inst-sairam-tech": [
+      {
+        "id": "step-1",
+        "name": "Faculty / Staff Applicant",
+        "role": "Submit request",
+        "locked": true
+      },
+      {
+        "id": "step-2",
+        "name": "Department Head (HoD)",
+        "role": "Academic recommendation"
+      },
+      {
+        "id": "step-3",
+        "name": "Dean Academics & Research",
+        "role": "Research council review"
+      },
+      {
+        "id": "step-4",
+        "name": "Finance Officer",
+        "role": "Policy and budget check"
+      },
+      {
+        "id": "step-5",
+        "name": "Principal / Governing Authority",
+        "role": "Final decision"
+      }
+    ],
+    "inst-sairam-siddha": [
+      {
+        "id": "step-1",
+        "name": "Faculty / Staff Applicant",
+        "role": "Submit request",
+        "locked": true
+      },
+      {
+        "id": "step-2",
+        "name": "Department Head (HoD)",
+        "role": "Academic recommendation"
+      },
+      {
+        "id": "step-3",
+        "name": "Dean Academics & Research",
+        "role": "Research council review"
+      },
+      {
+        "id": "step-4",
+        "name": "Finance Officer",
+        "role": "Policy and budget check"
+      },
+      {
+        "id": "step-5",
+        "name": "Principal / Governing Authority",
+        "role": "Final decision"
+      }
+    ]
+  },
+  "templates": [
+    {
+      "id": "tpl-od-travel",
+      "title": "International Conference On-Duty (OD) Leave & Travel Grant",
+      "category": "Faculty & Leave",
+      "code": "PT-AC-014",
+      "turnaround": "5–7 working days",
+      "purpose": "Request on-duty leave and eligible travel grant support for presenting an accepted research paper at an international conference.",
+      "instructions": "Applicants must present proof of paper acceptance, ID card, and grant approval before travel. Reimbursement claims must adhere to institutional finance norms.",
+      "eligibleInstitutions": "all",
+      "steps": [
+        "Department HoD",
+        "Dean Academics & Research",
+        "Finance Officer",
+        "Principal"
+      ],
+      "attachments": [
+        "Staff ID & Designation",
+        "Proof of Acceptance",
+        "Research Abstract / Resume"
+      ],
+      "fields": [
+        {
+          "name": "Conference name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "Country / city",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "Travel start date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "Travel end date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "Grant requested",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "Purpose and expected outcomes",
+          "type": "textarea",
+          "required": true
+        }
+      ],
+      "status": "Published",
+      "version": "V1.0",
+      "createdBy": "usr-superadmin",
+      "createdAt": "2026-01-10T09:00:00Z"
+    },
+    {
+      "id": "tpl-academic-leave",
+      "title": "Academic Leave Request",
+      "category": "Faculty & Leave",
+      "code": "PT-HR-008",
+      "turnaround": "3 working days",
+      "purpose": "Apply for academic or personal leave under institutional policy with teaching work coverage.",
+      "instructions": "Submit at least 3 days prior. Work coverage arrangement must be signed off by department peer.",
+      "eligibleInstitutions": "all",
+      "steps": [
+        "Department HoD",
+        "Dean Academics"
+      ],
+      "attachments": [
+        "Staff ID",
+        "Leave supporting document"
+      ],
+      "fields": [
+        {
+          "name": "Leave type",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Casual Leave",
+            "Academic Duty",
+            "Medical Leave",
+            "Special Study Leave"
+          ]
+        },
+        {
+          "name": "Start date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "End date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "Work coverage plan",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "Reason for absence",
+          "type": "textarea",
+          "required": true
+        }
+      ],
+      "status": "Published",
+      "version": "V1.0",
+      "createdBy": "usr-superadmin",
+      "createdAt": "2026-01-10T09:00:00Z"
+    },
+    {
+      "id": "tpl-research-funding",
+      "title": "Research Funding Request",
+      "category": "Research & Grants",
+      "code": "PT-RD-021",
+      "turnaround": "7–10 working days",
+      "purpose": "Request institutional seed grant funding for an approved research project or scholarly investigation.",
+      "instructions": "Detailed budget breakdown and timeline must be attached for R&D Council verification.",
+      "eligibleInstitutions": [
+        "inst-sairam-eng",
+        "inst-sairam-tech"
+      ],
+      "steps": [
+        "Department HoD",
+        "Dean Academics & Research",
+        "Finance Officer",
+        "Principal"
+      ],
+      "attachments": [
+        "Project proposal",
+        "Budget estimate",
+        "Staff ID"
+      ],
+      "fields": [
+        {
+          "name": "Project title",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "Funding amount requested",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "Project duration (months)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "Research objectives & deliverables",
+          "type": "textarea",
+          "required": true
+        }
+      ],
+      "status": "Published",
+      "version": "V1.0",
+      "createdBy": "usr-superadmin",
+      "createdAt": "2026-01-12T09:00:00Z"
+    },
+    {
+      "id": "tpl-procurement",
+      "title": "Research Procurement & Equipment Request",
+      "category": "Finance",
+      "code": "PT-FN-012",
+      "turnaround": "5 working days",
+      "purpose": "Request hardware, specialized lab equipment, or research software licenses within approved budget limits.",
+      "instructions": "Attach three competitive vendor quotes if value exceeds ₹25,000.",
+      "eligibleInstitutions": "all",
+      "steps": [
+        "Department HoD",
+        "Finance Officer",
+        "Administrative Officer"
+      ],
+      "attachments": [
+        "Vendor quotation",
+        "Project approval",
+        "Budget code reference"
+      ],
+      "fields": [
+        {
+          "name": "Item description & specifications",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "Quantity",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "Estimated total cost (INR)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "Budget code / Cost center",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "status": "Published",
+      "version": "V1.0",
+      "createdBy": "usr-superadmin",
+      "createdAt": "2026-01-15T09:00:00Z"
+    },
+    {
+      "id": "tpl-event-booking",
+      "title": "Event & Auditorium Booking",
+      "category": "Events & Infrastructure",
+      "code": "PT-OP-006",
+      "turnaround": "3 working days",
+      "purpose": "Reserve campus auditoriums, seminar halls, and AV support for academic conferences or symposiums.",
+      "instructions": "Must be booked at least 10 days in advance of the scheduled event date.",
+      "eligibleInstitutions": "all",
+      "steps": [
+        "Department HoD",
+        "Administrative Officer",
+        "Principal"
+      ],
+      "attachments": [
+        "Event schedule",
+        "Guest list & itinerary"
+      ],
+      "fields": [
+        {
+          "name": "Event title",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "Venue requested",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Dr. Leo Muthu Indoor Stadium",
+            "Auditorium A",
+            "Mini Seminar Hall 1",
+            "Smart Audio Visual Lab"
+          ]
+        },
+        {
+          "name": "Event date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "Expected attendance",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "Facilities & AV requirements",
+          "type": "textarea",
+          "required": true
+        }
+      ],
+      "status": "Published",
+      "version": "V1.0",
+      "createdBy": "usr-superadmin",
+      "createdAt": "2026-01-20T09:00:00Z"
+    },
+    {
+      "id": "tpl-travel-noc",
+      "title": "Travel / Supervision No-Objection Certificate (NOC)",
+      "category": "Clearance & NOC",
+      "code": "PT-AC-019",
+      "turnaround": "4 working days",
+      "purpose": "Official clearance certificate for external doctoral viva supervision, evaluation duty, or industrial visits.",
+      "instructions": "Attach formal invitation letter from the requesting university or regulatory body.",
+      "eligibleInstitutions": "all",
+      "steps": [
+        "Department HoD",
+        "Dean Academics",
+        "Principal"
+      ],
+      "attachments": [
+        "Official invitation letter",
+        "Work coverage plan"
+      ],
+      "fields": [
+        {
+          "name": "Purpose of visit / examination",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "Host university / organization",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "Departure date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "Return date",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "status": "Published",
+      "version": "V1.0",
+      "createdBy": "usr-superadmin",
+      "createdAt": "2026-01-22T09:00:00Z"
+    }
+  ],
+  "templateNominations": [
+    {
+      "id": "nom-101",
+      "title": "Department Research Seminar Grant",
+      "category": "Research",
+      "uses": 14,
+      "institution": "Sri Sairam Engineering College",
+      "institutionId": "inst-sairam-eng",
+      "submittedBy": "Campus Admin",
+      "status": "pending",
+      "submittedAt": "2026-03-05T11:20:00Z",
+      "details": {
+        "steps": [
+          "Department HoD",
+          "Dean Academics & Research",
+          "Finance Officer",
+          "Principal"
+        ],
+        "fields": [
+          "Staff ID & Designation",
+          "Seminar theme & speaker profile",
+          "Estimated budget",
+          "Venue requirement"
+        ]
+      }
+    },
+    {
+      "id": "nom-102",
+      "title": "Lab Consumables Fast-Track Replenishment",
+      "category": "Finance",
+      "uses": 8,
+      "institution": "Sri Sairam Institute of Technology",
+      "institutionId": "inst-sairam-tech",
+      "submittedBy": "Technology Campus Admin",
+      "status": "pending",
+      "submittedAt": "2026-03-06T14:45:00Z",
+      "details": {
+        "steps": [
+          "Department HoD",
+          "Finance Officer"
+        ],
+        "fields": [
+          "Lab location & course",
+          "Consumables item list",
+          "Estimated expenditure",
+          "Invoice / quote"
+        ]
+      }
+    }
+  ],
+  "requests": [
+    {
+      "id": "PT-2084",
+      "templateId": "tpl-od-travel",
+      "templateTitle": "International Conference On-Duty (OD) Leave & Travel Grant",
+      "category": "Faculty & Leave",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "applicantId": "usr-staff-ananya",
+      "applicantName": "Ananya Sundaram",
+      "applicantRole": "Assistant Professor (Senior Grade)",
+      "applicantDept": "Electronics & Communication Engineering",
+      "submittedAt": "2026-03-10T09:42:00Z",
+      "status": "Pending",
+      "currentStageIndex": 1,
+      "currentStageName": "Department HoD",
+      "track": [
+        "Submitted",
+        "Department HoD",
+        "Dean Academics & Research",
+        "Finance Officer",
+        "Principal"
+      ],
+      "stages": [
+        {
+          "stepIndex": 0,
+          "name": "Application Submission",
+          "role": "Applicant",
+          "status": "approved",
+          "actedBy": "Ananya Sundaram",
+          "actedAt": "2026-03-10T09:42:00Z",
+          "remarks": "Submitted with IEEE conference acceptance letter."
+        },
+        {
+          "stepIndex": 1,
+          "name": "Department HoD",
+          "role": "Head of Department",
+          "assignedRole": "Head of Department",
+          "status": "pending"
+        },
+        {
+          "stepIndex": 2,
+          "name": "Dean Academics & Research",
+          "role": "Research council review",
+          "assignedRole": "Dean Academics & Research",
+          "status": "pending"
+        },
+        {
+          "stepIndex": 3,
+          "name": "Finance Officer",
+          "role": "Policy and budget check",
+          "assignedRole": "Finance Officer",
+          "status": "pending"
+        },
+        {
+          "stepIndex": 4,
+          "name": "Principal",
+          "role": "Final decision",
+          "assignedRole": "Principal",
+          "status": "pending"
+        }
+      ],
+      "formData": {
+        "Conference name": "IEEE International Conference on Smart Sensors & IoT 2026",
+        "Country / city": "Singapore",
+        "Travel start date": "2026-04-15",
+        "Travel end date": "2026-04-20",
+        "Grant requested": 45000,
+        "Purpose and expected outcomes": "Oral presentation of research paper on Edge computing sensor networks. Represents Sri Sairam Engineering College."
+      },
+      "attachments": [
+        "Proof_of_Acceptance_IEEE.pdf",
+        "Abstract_Paper_2084.pdf",
+        "Staff_ID_AS.pdf"
+      ],
+      "history": [
+        {
+          "action": "Request submitted",
+          "actor": "Ananya Sundaram",
+          "role": "Applicant",
+          "time": "2026-03-10T09:42:00Z",
+          "remarks": "Application initiated and assigned to Department HoD."
+        }
+      ]
+    },
+    {
+      "id": "PT-2079",
+      "templateId": "tpl-academic-leave",
+      "templateTitle": "Academic Leave Request",
+      "category": "Faculty & Leave",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "applicantId": "usr-staff-senthil",
+      "applicantName": "Dr. K. Senthil Nathan",
+      "applicantRole": "Assistant Professor",
+      "applicantDept": "Computer Science & Engineering",
+      "submittedAt": "2026-03-09T08:30:00Z",
+      "status": "In review",
+      "currentStageIndex": 2,
+      "currentStageName": "Dean Academics",
+      "track": [
+        "Submitted",
+        "Department HoD",
+        "Dean Academics",
+        "Principal"
+      ],
+      "stages": [
+        {
+          "stepIndex": 0,
+          "name": "Application Submission",
+          "role": "Applicant",
+          "status": "approved",
+          "actedBy": "Dr. K. Senthil Nathan",
+          "actedAt": "2026-03-09T08:30:00Z"
+        },
+        {
+          "stepIndex": 1,
+          "name": "Department HoD",
+          "role": "Head of Department",
+          "status": "approved",
+          "actedBy": "Dr. K. Meenakshi",
+          "actedAt": "2026-03-09T14:15:00Z",
+          "remarks": "Work coverage verified with Prof. Anitha. Recommended."
+        },
+        {
+          "stepIndex": 2,
+          "name": "Dean Academics",
+          "role": "Academic verification",
+          "status": "in_review"
+        }
+      ],
+      "formData": {
+        "Leave type": "Academic Duty",
+        "Start date": "2026-03-24",
+        "End date": "2026-03-27",
+        "Work coverage plan": "Prof. V. Anitha handles Distributed Systems lectures; Lab sessions covered by Er. Karthik.",
+        "Reason for absence": "Invited session speaker at National AI Summit, Anna University."
+      },
+      "attachments": [
+        "Invitation_Letter_AnnaUniv.pdf"
+      ],
+      "history": [
+        {
+          "action": "Request submitted",
+          "actor": "Dr. K. Senthil Nathan",
+          "role": "Applicant",
+          "time": "2026-03-09T08:30:00Z"
+        },
+        {
+          "action": "Approved & forwarded",
+          "actor": "Dr. K. Meenakshi",
+          "role": "Head of Department",
+          "time": "2026-03-09T14:15:00Z",
+          "remarks": "Work coverage verified. Passed to Dean Academics."
+        }
+      ]
+    },
+    {
+      "id": "PT-2075",
+      "templateId": "tpl-research-funding",
+      "templateTitle": "Research Funding Request",
+      "category": "Research & Grants",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "applicantId": "usr-staff-senthil",
+      "applicantName": "Dr. K. Senthil Nathan",
+      "applicantRole": "Assistant Professor",
+      "applicantDept": "Computer Science & Engineering",
+      "submittedAt": "2026-03-08T11:00:00Z",
+      "status": "Pending",
+      "currentStageIndex": 1,
+      "currentStageName": "Department HoD",
+      "track": [
+        "Submitted",
+        "Department HoD",
+        "Dean Academics & Research",
+        "Finance Officer",
+        "Principal"
+      ],
+      "stages": [
+        {
+          "stepIndex": 0,
+          "name": "Application Submission",
+          "role": "Applicant",
+          "status": "approved",
+          "actedBy": "Dr. K. Senthil Nathan",
+          "actedAt": "2026-03-08T11:00:00Z"
+        },
+        {
+          "stepIndex": 1,
+          "name": "Department HoD",
+          "role": "Head of Department",
+          "status": "pending"
+        }
+      ],
+      "formData": {
+        "Project title": "Autonomous Agricultural Drone Monitoring System",
+        "Funding amount requested": 120000,
+        "Project duration (months)": 12,
+        "Research objectives & deliverables": "Deployment of lightweight computer vision models on edge microcontrollers for precision crop health indexing."
+      },
+      "attachments": [
+        "AgriDrone_Proposal_Senthil.pdf",
+        "Budget_Estimate_Breakdown.pdf"
+      ],
+      "history": [
+        {
+          "action": "Request submitted",
+          "actor": "Dr. K. Senthil Nathan",
+          "role": "Applicant",
+          "time": "2026-03-08T11:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "PT-2068",
+      "templateId": "tpl-academic-leave",
+      "templateTitle": "Academic Leave Request",
+      "category": "Faculty & Leave",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "applicantId": "usr-staff-senthil",
+      "applicantName": "Dr. K. Senthil Nathan",
+      "applicantRole": "Assistant Professor",
+      "applicantDept": "Computer Science & Engineering",
+      "submittedAt": "2026-03-01T09:00:00Z",
+      "status": "Approved",
+      "currentStageIndex": 3,
+      "currentStageName": "Completed",
+      "track": [
+        "Submitted",
+        "Department HoD",
+        "Dean Academics",
+        "Principal",
+        "Approved"
+      ],
+      "stages": [
+        {
+          "stepIndex": 0,
+          "name": "Submission",
+          "role": "Applicant",
+          "status": "approved",
+          "actedBy": "Dr. K. Senthil Nathan",
+          "actedAt": "2026-03-01T09:00:00Z"
+        },
+        {
+          "stepIndex": 1,
+          "name": "Department HoD",
+          "role": "HoD",
+          "status": "approved",
+          "actedBy": "Dr. K. Meenakshi",
+          "actedAt": "2026-03-02T10:00:00Z"
+        },
+        {
+          "stepIndex": 2,
+          "name": "Dean Academics",
+          "role": "Dean",
+          "status": "approved",
+          "actedBy": "Dr. S. Rajendran",
+          "actedAt": "2026-03-03T11:00:00Z"
+        },
+        {
+          "stepIndex": 3,
+          "name": "Principal",
+          "role": "Principal",
+          "status": "approved",
+          "actedBy": "Dr. J. Raja",
+          "actedAt": "2026-03-04T15:30:00Z",
+          "remarks": "Approved as per institutional guidelines."
+        }
+      ],
+      "formData": {
+        "Leave type": "Casual Leave",
+        "Start date": "2026-03-05",
+        "End date": "2026-03-06",
+        "Work coverage plan": "Classes adjusted with Dr. Karthik Raman.",
+        "Reason for absence": "Personal family engagement."
+      },
+      "attachments": [
+        "Leave_Support.pdf"
+      ],
+      "history": [
+        {
+          "action": "Request submitted",
+          "actor": "Dr. K. Senthil Nathan",
+          "role": "Applicant",
+          "time": "2026-03-01T09:00:00Z"
+        },
+        {
+          "action": "Approved by HoD",
+          "actor": "Dr. K. Meenakshi",
+          "role": "Head of Department",
+          "time": "2026-03-02T10:00:00Z"
+        },
+        {
+          "action": "Approved by Dean",
+          "actor": "Dr. S. Rajendran",
+          "role": "Dean Academics",
+          "time": "2026-03-03T11:00:00Z"
+        },
+        {
+          "action": "Final Approval Granted",
+          "actor": "Dr. J. Raja",
+          "role": "Principal",
+          "time": "2026-03-04T15:30:00Z",
+          "remarks": "Sanctioned in full."
+        }
+      ]
+    },
+    {
+      "id": "PT-2083",
+      "templateId": "tpl-academic-leave",
+      "templateTitle": "Academic Leave Request",
+      "category": "Faculty & Leave",
+      "institutionId": "inst-sairam-tech",
+      "institutionName": "Sri Sairam Institute of Technology",
+      "applicantId": "usr-tech-staff-1",
+      "applicantName": "Karthik Raman",
+      "applicantRole": "Assistant Professor",
+      "applicantDept": "Information Technology",
+      "submittedAt": "2026-03-10T08:15:00Z",
+      "status": "In review",
+      "currentStageIndex": 1,
+      "currentStageName": "Department HoD",
+      "track": [
+        "Submitted",
+        "Department HoD",
+        "Dean Academics",
+        "Principal"
+      ],
+      "stages": [
+        {
+          "stepIndex": 0,
+          "name": "Submission",
+          "role": "Applicant",
+          "status": "approved",
+          "actedBy": "Karthik Raman",
+          "actedAt": "2026-03-10T08:15:00Z"
+        },
+        {
+          "stepIndex": 1,
+          "name": "Department HoD",
+          "role": "HoD",
+          "status": "in_review"
+        }
+      ],
+      "formData": {
+        "Leave type": "Special Study Leave",
+        "Start date": "2026-03-18",
+        "End date": "2026-03-21",
+        "Work coverage plan": "Peer teaching roster adjusted.",
+        "Reason for absence": "PhD Thesis defense preparation."
+      },
+      "attachments": [
+        "Defense_Notice.pdf"
+      ],
+      "history": [
+        {
+          "action": "Request submitted",
+          "actor": "Karthik Raman",
+          "role": "Applicant",
+          "time": "2026-03-10T08:15:00Z"
+        }
+      ]
+    },
+    {
+      "id": "PT-2082",
+      "templateId": "tpl-travel-noc",
+      "templateTitle": "Travel / Supervision No-Objection Certificate (NOC)",
+      "category": "Clearance & NOC",
+      "institutionId": "inst-sairam-siddha",
+      "institutionName": "Sri Sairam Siddha Medical College",
+      "applicantId": "usr-med-staff-1",
+      "applicantName": "Dr. Meena Prakash",
+      "applicantRole": "Clinical Professor",
+      "applicantDept": "Gunapadam (Pharmacology)",
+      "submittedAt": "2026-03-09T16:20:00Z",
+      "status": "Approved",
+      "currentStageIndex": 3,
+      "currentStageName": "Completed",
+      "track": [
+        "Submitted",
+        "Department HoD",
+        "Dean Academics",
+        "Principal",
+        "Approved"
+      ],
+      "stages": [
+        {
+          "stepIndex": 0,
+          "name": "Submission",
+          "role": "Applicant",
+          "status": "approved",
+          "actedBy": "Dr. Meena Prakash",
+          "actedAt": "2026-03-09T16:20:00Z"
+        },
+        {
+          "stepIndex": 1,
+          "name": "HoD Review",
+          "role": "HoD",
+          "status": "approved",
+          "actedBy": "Clinical Head",
+          "actedAt": "2026-03-09T17:00:00Z"
+        },
+        {
+          "stepIndex": 2,
+          "name": "Medical Dean Review",
+          "role": "Dean",
+          "status": "approved",
+          "actedBy": "Dean of Medical Studies",
+          "actedAt": "2026-03-10T10:00:00Z"
+        },
+        {
+          "stepIndex": 3,
+          "name": "Principal Approval",
+          "role": "Principal",
+          "status": "approved",
+          "actedBy": "Principal & Medical Superintendent",
+          "actedAt": "2026-03-10T11:45:00Z"
+        }
+      ],
+      "formData": {
+        "Purpose of visit / examination": "External Examiner for MD (Siddha) Clinical Practical Examinations",
+        "Host university / organization": "National Institute of Siddha, Tambaram",
+        "Departure date": "2026-03-15",
+        "Return date": "2026-03-16"
+      },
+      "attachments": [
+        "NIS_Invigilator_Letter.pdf"
+      ],
+      "history": [
+        {
+          "action": "Request submitted",
+          "actor": "Dr. Meena Prakash",
+          "role": "Applicant",
+          "time": "2026-03-09T16:20:00Z"
+        },
+        {
+          "action": "Final approval issued",
+          "actor": "Principal",
+          "role": "Medical Superintendent",
+          "time": "2026-03-10T11:45:00Z"
+        }
+      ]
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "aud-001",
+      "actorId": "usr-superadmin",
+      "actorName": "Dr. R. Arunachalam (CEO)",
+      "actorRole": "super_admin",
+      "institutionId": null,
+      "institutionName": "Central Organization",
+      "action": "SYSTEM_BOOTSTRAP",
+      "targetRecord": "Platform initialization",
+      "details": "Loopin multi-campus workflow engine initialized with standard hierarchy and security rules.",
+      "timestamp": "2026-01-01T08:00:00Z"
+    },
+    {
+      "id": "aud-002",
+      "actorId": "usr-admin-eng",
+      "actorName": "Campus Admin (K. Parthiban)",
+      "actorRole": "admin",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "action": "STAFF_RECORD_UPDATED",
+      "targetRecord": "Dr. K. Meenakshi · Head of Department",
+      "details": "Department leadership assignment updated for Electronics & Communication Engineering.",
+      "timestamp": "2026-03-01T10:00:00Z"
+    },
+    {
+      "id": "aud-003",
+      "actorId": "usr-staff-ananya",
+      "actorName": "Ananya Sundaram",
+      "actorRole": "staff",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "action": "REQUEST_SUBMITTED",
+      "targetRecord": "PT-2084",
+      "details": "Submitted OD Travel Grant application for Singapore IEEE conference.",
+      "timestamp": "2026-03-10T09:42:00Z"
+    },
+    {
+      "id": "aud-004",
+      "actorId": "usr-staff-hod",
+      "actorName": "Dr. K. Meenakshi",
+      "actorRole": "staff",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "action": "REQUEST_STAGE_APPROVED",
+      "targetRecord": "PT-2079",
+      "details": "HoD approval given for Dr. K. Senthil Nathan Academic Leave; passed to Dean Academics.",
+      "timestamp": "2026-03-09T14:15:00Z"
+    }
+  ],
+  "drafts": [],
+  "sessions": {}
+}

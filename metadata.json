@@ -1,0 +1,6 @@
+{
+  "name": "Loopin Workflow Management",
+  "description": "Multi-institution workflow and request management platform featuring unified authentication, role-based dashboards for Super Admin, Admin, and Staff, dynamic organogram hierarchy, approval routing, template builder, and immutable audit logs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
