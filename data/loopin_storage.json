@@ -257,83 +257,39 @@
         {
           "id": "h-eng-principal",
           "name": "Principal",
-          "role": "Head of Institution & Academic Council",
+          "role": "Academic & Institutional Head",
           "tier": 1,
           "count": 1,
           "children": [
             {
               "id": "h-eng-dean-acad",
-              "name": "Dean Academics & Autonomous Affairs",
-              "role": "Curriculum & Accreditation Lead",
+              "name": "Dean Academics & Research",
+              "role": "Academic Leadership",
               "tier": 2,
               "count": 1,
               "children": [
                 {
-                  "id": "h-eng-hod-cse",
-                  "name": "HOD Computer Science & Engineering",
-                  "role": "Department Head & Professor",
+                  "id": "h-eng-hods",
+                  "name": "Heads of Departments",
+                  "role": "Department Leadership",
                   "tier": 2,
-                  "count": 1,
+                  "count": 8,
                   "children": [
                     {
-                      "id": "h-eng-cse-prof",
-                      "name": "CSE Senior Faculty & Researchers",
-                      "role": "Professors & Associate Professors",
+                      "id": "h-eng-faculty",
+                      "name": "Faculty & Researchers",
+                      "role": "Teaching & Research Staff",
                       "tier": 3,
-                      "count": 24
-                    },
-                    {
-                      "id": "h-eng-cse-tech",
-                      "name": "Computing Lab Systems Staff",
-                      "role": "Lab Instructors & Technical Staff",
-                      "tier": 4,
-                      "count": 6
-                    }
-                  ]
-                },
-                {
-                  "id": "h-eng-hod-ece",
-                  "name": "HOD Electronics & Communication",
-                  "role": "Department Head & Professor",
-                  "tier": 2,
-                  "count": 1,
-                  "children": [
-                    {
-                      "id": "h-eng-ece-prof",
-                      "name": "ECE Faculty & Lab Guides",
-                      "role": "Assistant & Associate Professors",
-                      "tier": 3,
-                      "count": 22
-                    },
-                    {
-                      "id": "h-eng-ece-tech",
-                      "name": "VLSI & Embedded Lab Technicians",
-                      "role": "Technical Support Staff",
-                      "tier": 4,
-                      "count": 5
-                    }
-                  ]
-                },
-                {
-                  "id": "h-eng-hod-mech",
-                  "name": "HOD Mechanical Engineering",
-                  "role": "Department Head & Professor",
-                  "tier": 2,
-                  "count": 1,
-                  "children": [
-                    {
-                      "id": "h-eng-mech-prof",
-                      "name": "Mechanical & Thermal Faculty",
-                      "role": "Teaching Faculty",
-                      "tier": 3,
-                      "count": 18
-                    },
-                    {
-                      "id": "h-eng-mech-tech",
-                      "name": "Machine Workshop Superintendents",
-                      "role": "Workshop Technicians",
-                      "tier": 4,
-                      "count": 7
+                      "count": 120,
+                      "children": [
+                        {
+                          "id": "h-eng-lab-assistants",
+                          "name": "Lab Assistants",
+                          "role": "Technical Support",
+                          "tier": 4,
+                          "count": 24
+                        }
+                      ]
                     }
                   ]
                 }
@@ -341,24 +297,24 @@
             },
             {
               "id": "h-eng-vp",
-              "name": "Vice Principal & IQAC Director",
-              "role": "Quality Assurance & Student Progression",
+              "name": "Vice Principal",
+              "role": "Institutional Administration",
               "tier": 2,
               "count": 1,
               "children": [
                 {
                   "id": "h-eng-placement",
-                  "name": "Placement & Career Guidance Head",
-                  "role": "Corporate Relations & Training",
+                  "name": "Placement & Career Head",
+                  "role": "Corporate Training",
                   "tier": 3,
-                  "count": 5
+                  "count": 4
                 },
                 {
                   "id": "h-eng-library",
-                  "name": "Chief Librarian & Digital Resource Lead",
-                  "role": "Central Library Management",
+                  "name": "Chief Librarian",
+                  "role": "Information Services",
                   "tier": 3,
-                  "count": 4
+                  "count": 6
                 }
               ]
             }
@@ -373,22 +329,22 @@
           "children": [
             {
               "id": "h-eng-finance",
-              "name": "Financial Management Officer",
-              "role": "Finance Comptroller",
+              "name": "Financial Management Office",
+              "role": "Finance Officer & Comptroller",
               "tier": 2,
               "count": 1,
               "children": [
                 {
                   "id": "h-eng-accounts",
-                  "name": "Accounts & Audit Section",
-                  "role": "Payroll & Institutional Auditing",
+                  "name": "Accounts & Audit Team",
+                  "role": "Financial Operations",
                   "tier": 3,
                   "count": 5
                 },
                 {
                   "id": "h-eng-cashiers",
-                  "name": "Fee Collection & Cash Management",
-                  "role": "Cashiers & Billing",
+                  "name": "Fee Collection & Cashiers",
+                  "role": "Cash Management",
                   "tier": 4,
                   "count": 3
                 }
@@ -397,30 +353,46 @@
             {
               "id": "h-eng-admin-off",
               "name": "Administrative Officer",
-              "role": "Campus Facilities & Operations",
+              "role": "Campus Operations Officer",
               "tier": 2,
               "count": 1,
               "children": [
                 {
                   "id": "h-eng-estate",
                   "name": "Estate & Infrastructure Manager",
-                  "role": "Civil Maintenance & Security",
+                  "role": "Maintenance & Security",
                   "tier": 3,
                   "count": 8
                 },
                 {
                   "id": "h-eng-transport",
-                  "name": "Transport & Fleet Manager",
-                  "role": "Logistics & Fleet Incharge",
+                  "name": "Transport Manager",
+                  "role": "Fleet Operations",
                   "tier": 3,
                   "count": 6
                 },
                 {
                   "id": "h-eng-clerks",
-                  "name": "Records & Office Administration",
-                  "role": "Senior Office Assistants",
+                  "name": "Records & Office Clerks",
+                  "role": "Documentation",
                   "tier": 4,
                   "count": 9
+                }
+              ]
+            },
+            {
+              "id": "h-eng-incubation",
+              "name": "Incubation Head",
+              "role": "Innovation & Startup Center",
+              "tier": 2,
+              "count": 1,
+              "children": [
+                {
+                  "id": "h-eng-mentors",
+                  "name": "External Mentors & Advisors",
+                  "role": "Advisory Panel (Configurable)",
+                  "tier": 3,
+                  "count": 5
                 }
               ]
             }
@@ -430,203 +402,108 @@
     },
     "inst-sairam-tech": {
       "id": "h-tech-dir",
-      "name": "Director of Institute",
-      "role": "Governing Executive Head",
+      "name": "Institute Director",
+      "role": "Executive Head",
       "tier": 1,
       "count": 1,
       "children": [
         {
-          "id": "h-tech-principal",
+          "id": "h-tech-prin",
           "name": "Principal",
-          "role": "Academic & Research In-charge",
+          "role": "Academic Head",
           "tier": 1,
           "count": 1,
           "children": [
             {
-              "id": "h-tech-dean-innov",
-              "name": "Dean Innovation & Technology Incubation",
-              "role": "Emerging Tech & R&D Lead",
+              "id": "h-tech-deans",
+              "name": "Dean Academics",
+              "role": "Curriculum & R&D",
               "tier": 2,
               "count": 1,
               "children": [
                 {
-                  "id": "h-tech-hod-ai",
-                  "name": "HOD Artificial Intelligence & Data Science",
-                  "role": "Department Head & Professor",
+                  "id": "h-tech-hods",
+                  "name": "Department HoDs",
+                  "role": "Department Leadership",
                   "tier": 2,
-                  "count": 1,
+                  "count": 6,
                   "children": [
                     {
-                      "id": "h-tech-ai-prof",
-                      "name": "AI & Data Science Research Faculty",
-                      "role": "Teaching & Project Faculty",
+                      "id": "h-tech-fac",
+                      "name": "Faculty & Lab Coordinators",
+                      "role": "Academic Operations",
                       "tier": 3,
-                      "count": 18
-                    },
-                    {
-                      "id": "h-tech-ai-lab",
-                      "name": "High-Performance Cloud Lab Engineers",
-                      "role": "GPU Cluster Administrators",
-                      "tier": 4,
-                      "count": 4
+                      "count": 95
                     }
                   ]
-                },
-                {
-                  "id": "h-tech-hod-it",
-                  "name": "HOD Information Technology",
-                  "role": "Department Head & Professor",
-                  "tier": 2,
-                  "count": 1,
-                  "children": [
-                    {
-                      "id": "h-tech-it-prof",
-                      "name": "IT & Software Engineering Faculty",
-                      "role": "Professors & Lecturers",
-                      "tier": 3,
-                      "count": 20
-                    },
-                    {
-                      "id": "h-tech-it-tech",
-                      "name": "Network & Systems Administrators",
-                      "role": "Technical Specialists",
-                      "tier": 4,
-                      "count": 5
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "id": "h-tech-dean-student",
-              "name": "Dean Student Affairs & Proctor",
-              "role": "Campus Discipline & Welfare",
-              "tier": 2,
-              "count": 1,
-              "children": [
-                {
-                  "id": "h-tech-sports",
-                  "name": "Physical Education & Sports Director",
-                  "role": "Athletic Department",
-                  "tier": 3,
-                  "count": 4
-                },
-                {
-                  "id": "h-tech-welfare",
-                  "name": "Student Counseling & Mentorship Lead",
-                  "role": "Advisory Panel",
-                  "tier": 3,
-                  "count": 3
                 }
               ]
             }
           ]
         },
         {
-          "id": "h-tech-cao",
-          "name": "Campus Administrative Officer",
-          "role": "General Campus Operations",
+          "id": "h-tech-admin",
+          "name": "Administrative Officer",
+          "role": "Operations & Facilities",
           "tier": 2,
           "count": 1,
           "children": [
             {
-              "id": "h-tech-finance",
-              "name": "Finance & Purchase Section",
-              "role": "Accounts & Vendor Procurement",
+              "id": "h-tech-ops",
+              "name": "Campus Services & Technicians",
+              "role": "Local Technical Services",
               "tier": 3,
-              "count": 4
-            },
-            {
-              "id": "h-tech-security",
-              "name": "Campus Maintenance & Security Unit",
-              "role": "Facilities Management",
-              "tier": 3,
-              "count": 7
+              "count": 18
             }
           ]
         }
       ]
     },
     "inst-sairam-siddha": {
-      "id": "h-siddha-council",
-      "name": "Medical Director & Governing Council",
-      "role": "Healthcare Executive Head",
+      "id": "h-med-prin",
+      "name": "Principal & Medical Superintendent",
+      "role": "Clinical & Institutional Executive",
       "tier": 1,
       "count": 1,
       "children": [
         {
-          "id": "h-siddha-principal",
-          "name": "Principal & Chief Physician",
-          "role": "Academic & Clinical Head",
-          "tier": 1,
+          "id": "h-med-dean",
+          "name": "Dean of Medical Studies",
+          "role": "Medical Academic Leadership",
+          "tier": 2,
           "count": 1,
           "children": [
             {
-              "id": "h-siddha-supt",
-              "name": "Hospital Superintendent",
-              "role": "Clinical Operations & Inpatient Care",
+              "id": "h-med-clinical-heads",
+              "name": "Clinical Department Heads",
+              "role": "Hospital & Department Units",
               "tier": 2,
-              "count": 1,
+              "count": 6,
               "children": [
                 {
-                  "id": "h-siddha-rmo",
-                  "name": "Resident Medical Officers (RMOs)",
-                  "role": "Clinical Duty Doctors",
+                  "id": "h-med-doctors",
+                  "name": "Resident Physicians & Tutors",
+                  "role": "Medical Faculty & Hospital Staff",
                   "tier": 3,
-                  "count": 8
-                },
-                {
-                  "id": "h-siddha-nursing",
-                  "name": "Inpatient & IPD Nursing Supervisors",
-                  "role": "Ward Nursing Staff",
-                  "tier": 3,
-                  "count": 14
-                },
-                {
-                  "id": "h-siddha-pharmacy",
-                  "name": "Siddha Pharmacy & Herbarium Curator",
-                  "role": "Botanical & Formulation Chemists",
-                  "tier": 3,
-                  "count": 6
-                },
-                {
-                  "id": "h-siddha-lab-tech",
-                  "name": "Diagnostic & Pathology Technicians",
-                  "role": "Lab Technicians",
-                  "tier": 4,
-                  "count": 5
+                  "count": 52
                 }
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "h-med-hosp-admin",
+          "name": "Hospital Administrator",
+          "role": "Hospital Services & Pharmacy",
+          "tier": 2,
+          "count": 1,
+          "children": [
             {
-              "id": "h-siddha-dean",
-              "name": "Dean Indian Medicine & AYUSH Council",
-              "role": "Traditional Medicine Academics",
-              "tier": 2,
-              "count": 1,
-              "children": [
-                {
-                  "id": "h-siddha-gunapadam",
-                  "name": "HOD Gunapadam (Pharmacology)",
-                  "role": "Department Head & Professor",
-                  "tier": 3,
-                  "count": 6
-                },
-                {
-                  "id": "h-siddha-maruthuvam",
-                  "name": "HOD Maruthuvam (Medicine)",
-                  "role": "Department Head & Professor",
-                  "tier": 3,
-                  "count": 8
-                },
-                {
-                  "id": "h-siddha-med-lib",
-                  "name": "Medical Manuscript & Rare Herbs Library",
-                  "role": "Archival Documentation Staff",
-                  "tier": 4,
-                  "count": 4
-                }
-              ]
+              "id": "h-med-nursing",
+              "name": "Nursing & Dispensing Leads",
+              "role": "Healthcare Operations",
+              "tier": 3,
+              "count": 34
             }
           ]
         }
@@ -772,11 +649,11 @@
   "templates": [
     {
       "id": "tpl-od-travel",
-      "title": "On-Duty (OD) Request",
+      "title": "International Conference On-Duty (OD) Leave & Travel Grant",
       "category": "Faculty & Leave",
       "code": "PT-AC-014",
       "turnaround": "5–7 working days",
-      "purpose": "Standard institutional request workflow template.",
+      "purpose": "Request on-duty leave and eligible travel grant support for presenting an accepted research paper at an international conference.",
       "instructions": "Applicants must present proof of paper acceptance, ID card, and grant approval before travel. Reimbursement claims must adhere to institutional finance norms.",
       "eligibleInstitutions": "all",
       "steps": [
@@ -829,11 +706,11 @@
     },
     {
       "id": "tpl-academic-leave",
-      "title": "Leave Request",
+      "title": "Academic Leave Request",
       "category": "Faculty & Leave",
       "code": "PT-HR-008",
       "turnaround": "3 working days",
-      "purpose": "Standard institutional request workflow template.",
+      "purpose": "Apply for academic or personal leave under institutional policy with teaching work coverage.",
       "instructions": "Submit at least 3 days prior. Work coverage arrangement must be signed off by department peer.",
       "eligibleInstitutions": "all",
       "steps": [
@@ -888,7 +765,7 @@
       "category": "Research & Grants",
       "code": "PT-RD-021",
       "turnaround": "7–10 working days",
-      "purpose": "Standard institutional request workflow template.",
+      "purpose": "Request institutional seed grant funding for an approved research project or scholarly investigation.",
       "instructions": "Detailed budget breakdown and timeline must be attached for R&D Council verification.",
       "eligibleInstitutions": [
         "inst-sairam-eng",
@@ -934,11 +811,11 @@
     },
     {
       "id": "tpl-procurement",
-      "title": "Procurement Request",
+      "title": "Research Procurement & Equipment Request",
       "category": "Finance",
       "code": "PT-FN-012",
       "turnaround": "5 working days",
-      "purpose": "Standard institutional request workflow template.",
+      "purpose": "Request hardware, specialized lab equipment, or research software licenses within approved budget limits.",
       "instructions": "Attach three competitive vendor quotes if value exceeds ₹25,000.",
       "eligibleInstitutions": "all",
       "steps": [
@@ -980,11 +857,11 @@
     },
     {
       "id": "tpl-event-booking",
-      "title": "Event Organization Request",
+      "title": "Event & Auditorium Booking",
       "category": "Events & Infrastructure",
       "code": "PT-OP-006",
       "turnaround": "3 working days",
-      "purpose": "Standard institutional request workflow template.",
+      "purpose": "Reserve campus auditoriums, seminar halls, and AV support for academic conferences or symposiums.",
       "instructions": "Must be booked at least 10 days in advance of the scheduled event date.",
       "eligibleInstitutions": "all",
       "steps": [
@@ -1036,11 +913,11 @@
     },
     {
       "id": "tpl-travel-noc",
-      "title": "NOC Request",
+      "title": "Travel / Supervision No-Objection Certificate (NOC)",
       "category": "Clearance & NOC",
       "code": "PT-AC-019",
       "turnaround": "4 working days",
-      "purpose": "Standard institutional request workflow template.",
+      "purpose": "Official clearance certificate for external doctoral viva supervision, evaluation duty, or industrial visits.",
       "instructions": "Attach formal invitation letter from the requesting university or regulatory body.",
       "eligibleInstitutions": "all",
       "steps": [
@@ -1134,7 +1011,7 @@
     {
       "id": "PT-2084",
       "templateId": "tpl-od-travel",
-      "templateTitle": "On-Duty (OD) Request",
+      "templateTitle": "International Conference On-Duty (OD) Leave & Travel Grant",
       "category": "Faculty & Leave",
       "institutionId": "inst-sairam-eng",
       "institutionName": "Sri Sairam Engineering College",
@@ -1218,7 +1095,7 @@
     {
       "id": "PT-2079",
       "templateId": "tpl-academic-leave",
-      "templateTitle": "Leave Request",
+      "templateTitle": "Academic Leave Request",
       "category": "Faculty & Leave",
       "institutionId": "inst-sairam-eng",
       "institutionName": "Sri Sairam Engineering College",
@@ -1347,7 +1224,7 @@
     {
       "id": "PT-2068",
       "templateId": "tpl-academic-leave",
-      "templateTitle": "Leave Request",
+      "templateTitle": "Academic Leave Request",
       "category": "Faculty & Leave",
       "institutionId": "inst-sairam-eng",
       "institutionName": "Sri Sairam Engineering College",
@@ -1442,7 +1319,7 @@
     {
       "id": "PT-2083",
       "templateId": "tpl-academic-leave",
-      "templateTitle": "Leave Request",
+      "templateTitle": "Academic Leave Request",
       "category": "Faculty & Leave",
       "institutionId": "inst-sairam-tech",
       "institutionName": "Sri Sairam Institute of Technology",
@@ -1577,6 +1454,30 @@
     }
   ],
   "auditLogs": [
+    {
+      "actorId": "usr-staff-senthil",
+      "actorName": "Dr. K. Senthil Nathan",
+      "actorRole": "staff",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "action": "USER_LOGIN",
+      "targetRecord": "senthil.nathan@sairam.edu.in",
+      "details": "User signed in successfully with role: staff.",
+      "id": "aud-1791709536825-1w28",
+      "timestamp": "2026-10-11T09:05:36.825Z"
+    },
+    {
+      "actorId": "usr-admin-eng",
+      "actorName": "K. Parthiban",
+      "actorRole": "admin",
+      "institutionId": "inst-sairam-eng",
+      "institutionName": "Sri Sairam Engineering College",
+      "action": "USER_LOGIN",
+      "targetRecord": "admin@sairam.edu.in",
+      "details": "User signed in successfully with role: admin.",
+      "id": "aud-1791709526727-ig3n",
+      "timestamp": "2026-10-11T09:05:26.727Z"
+    },
     {
       "actorId": "usr-superadmin",
       "actorName": "Dr. R. Arunachalam",
@@ -1780,6 +1681,16 @@
       "userId": "usr-superadmin",
       "createdAt": "2026-10-11T08:25:39.595Z",
       "expiresAt": "2026-10-18T08:25:39.595Z"
+    },
+    "lp_tok_1791709526727_9k5qhomier": {
+      "userId": "usr-admin-eng",
+      "createdAt": "2026-10-11T09:05:26.727Z",
+      "expiresAt": "2026-10-18T09:05:26.727Z"
+    },
+    "lp_tok_1791709536824_qorio9xmf1": {
+      "userId": "usr-staff-senthil",
+      "createdAt": "2026-10-11T09:05:36.824Z",
+      "expiresAt": "2026-10-18T09:05:36.824Z"
     }
   }
 }

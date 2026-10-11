@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api.ts';
 import { useToast } from './Toast.tsx';
 import {
@@ -99,6 +99,53 @@ export const SuperAdminDashboard: React.FC<Props> = ({
   const toggleExpandTemplate = (id: string) => {
     setExpandedTemplateIds(prev => ({ ...prev, [id]: !prev[id] }));
   };
+
+  // Organogram Zoom & Fit to Screen controls
+  const [zoomLevel, setZoomLevel] = useState<number>(100);
+  const [isFitChart, setIsFitChart] = useState<boolean>(false);
+  const treeContainerRef = useRef<HTMLDivElement>(null);
+  const treeContentRef = useRef<HTMLDivElement>(null);
+
+  const handleFitChart = () => {
+    if (!treeContainerRef.current || !treeContentRef.current) return;
+    const containerWidth = treeContainerRef.current.clientWidth - 48;
+    const contentWidth = treeContentRef.current.scrollWidth;
+    if (contentWidth > 0 && containerWidth > 0) {
+      const calculatedRatio = Math.min(1, Math.max(0.3, containerWidth / contentWidth));
+      const fitPct = Math.round(calculatedRatio * 100);
+      setZoomLevel(fitPct);
+      setIsFitChart(true);
+      showToast(`Fit chart to screen (${fitPct}%)`);
+    } else {
+      setZoomLevel(65);
+      setIsFitChart(true);
+      showToast('Fit chart to screen (65%)');
+    }
+  };
+
+  const handleResetZoom = () => {
+    setZoomLevel(100);
+    setIsFitChart(false);
+  };
+
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(150, prev + 10));
+    setIsFitChart(false);
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => Math.max(25, prev - 10));
+    setIsFitChart(false);
+  };
+
+  useEffect(() => {
+    if (isFitChart) {
+      const timer = setTimeout(() => {
+        handleFitChart();
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [hierarchyTree, selectedCampusId]);
 
   // New Institution form
   const [newSchoolName, setNewSchoolName] = useState('');
@@ -1490,19 +1537,68 @@ export const SuperAdminDashboard: React.FC<Props> = ({
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-600">Institution:</span>
-                <select
-                  value={selectedCampusId}
-                  onChange={e => setSelectedCampusId(e.target.value)}
-                  className="text-xs px-3 py-1.5 border border-slate-300 rounded-lg font-medium bg-white"
-                >
-                  {institutions.map(inst => (
-                    <option key={inst.id} value={inst.id}>
-                      {inst.name}
-                    </option>
-                  ))}
-                </select>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-slate-600">Institution:</span>
+                  <select
+                    value={selectedCampusId}
+                    onChange={e => setSelectedCampusId(e.target.value)}
+                    className="text-xs px-3 py-1.5 border border-slate-300 rounded-lg font-medium bg-white"
+                  >
+                    {institutions.map(inst => (
+                      <option key={inst.id} value={inst.id}>
+                        {inst.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Organogram Fit & Zoom Controls */}
+                <div className="flex items-center gap-1 bg-[#F3F4F6] p-1 rounded-lg border border-[#E5E7EB]">
+                  <button
+                    type="button"
+                    onClick={handleFitChart}
+                    title="Fit whole organogram to screen"
+                    className={`px-3 py-1 rounded text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs ${
+                      isFitChart
+                        ? 'bg-[#123B6D] text-white'
+                        : 'bg-white text-[#123B6D] hover:bg-slate-50 border border-[#E5E7EB]'
+                    }`}
+                  >
+                    <span className="text-[13px] leading-none">⛶</span> Fit Chart
+                  </button>
+
+                  <div className="h-4 w-px bg-slate-300 mx-0.5" />
+
+                  <button
+                    type="button"
+                    onClick={handleZoomOut}
+                    title="Zoom Out"
+                    className="w-7 h-6 bg-white hover:bg-slate-50 border border-[#E5E7EB] text-[#3F4A5A] rounded flex items-center justify-center text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    −
+                  </button>
+                  <span className="text-[11px] font-bold text-[#123B6D] px-1.5 min-w-[38px] text-center">
+                    {zoomLevel}%
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleZoomIn}
+                    title="Zoom In"
+                    className="w-7 h-6 bg-white hover:bg-slate-50 border border-[#E5E7EB] text-[#3F4A5A] rounded flex items-center justify-center text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    +
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleResetZoom}
+                    title="Reset to 100% scale"
+                    className="px-2 py-1 bg-white hover:bg-slate-50 border border-[#E5E7EB] text-[#3F4A5A] rounded text-[11px] font-semibold transition-colors cursor-pointer"
+                  >
+                    100%
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1522,9 +1618,20 @@ export const SuperAdminDashboard: React.FC<Props> = ({
               </div>
             </div>
 
-            <div className="p-8 bg-gradient-to-b from-white to-slate-50/50 rounded-xl border border-slate-200 overflow-x-auto min-h-[360px] flex justify-center items-start">
+            <div
+              ref={treeContainerRef}
+              className="p-8 bg-gradient-to-b from-white to-slate-50/50 rounded-xl border border-slate-200 overflow-auto min-h-[420px] flex justify-center items-start transition-all relative"
+            >
               {hierarchyTree ? (
-                <div className="flex justify-center min-w-max pb-4">
+                <div
+                  ref={treeContentRef}
+                  style={{
+                    transform: `scale(${zoomLevel / 100})`,
+                    transformOrigin: 'top center',
+                    transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  }}
+                  className="flex justify-center min-w-max pb-8"
+                >
                   {renderTreeNode(hierarchyTree)}
                 </div>
               ) : (
