@@ -44,24 +44,36 @@ function AppContent() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Check stored session on mount
+  // Check stored session on mount with safety timeout
   useEffect(() => {
+    let isMounted = true;
+    const safetyTimer = setTimeout(() => {
+      if (isMounted) setIsInitializing(false);
+    }, 2000);
+
     const token = getStoredToken();
     if (token) {
       api.getMe()
         .then(res => {
-          setUser(res.user);
+          if (isMounted) setUser(res.user);
         })
         .catch(err => {
           console.warn('[Auth] Stored session invalid, resetting token:', err);
           setStoredToken(null);
         })
         .finally(() => {
-          setIsInitializing(false);
+          if (isMounted) setIsInitializing(false);
+          clearTimeout(safetyTimer);
         });
     } else {
       setIsInitializing(false);
+      clearTimeout(safetyTimer);
     }
+
+    return () => {
+      isMounted = false;
+      clearTimeout(safetyTimer);
+    };
   }, []);
 
   const handleLoginSuccess = (authenticatedUser: User, token: string) => {
@@ -117,10 +129,22 @@ function AppContent() {
 
   if (isInitializing) {
     return (
-      <div className="min-h-screen bg-[#f5f7fc] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-9 h-9 border-3 border-[#123b6d]/30 border-t-[#123b6d] rounded-full animate-spin"></div>
-          <div className="text-xs font-semibold text-slate-500">Connecting to Loopin Workflow Engine...</div>
+      <div className="min-h-screen bg-[#f5f7fc] flex items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-4 text-center max-w-sm">
+          <div className="w-12 h-12 rounded-xl bg-[#123b6d] text-white flex items-center justify-center font-bold text-xl shadow-md tracking-tight">
+            L
+          </div>
+          <div className="w-8 h-8 border-[3px] border-[#123b6d]/20 border-t-[#123b6d] rounded-full animate-spin"></div>
+          <div>
+            <div className="text-sm font-semibold text-slate-800">Initializing Loopin Engine</div>
+            <div className="text-xs text-slate-500 mt-0.5">Connecting to institutional workflow services...</div>
+          </div>
+          <button
+            onClick={() => setIsInitializing(false)}
+            className="text-[11px] text-[#123b6d] hover:underline font-medium mt-1 cursor-pointer"
+          >
+            Continue to Portal &rarr;
+          </button>
         </div>
       </div>
     );
@@ -283,10 +307,82 @@ function AppContent() {
   );
 }
 
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, ErrorBoundaryState> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('[Loopin ErrorBoundary]', error, errorInfo);
+  }
+
+  handleReset = () => {
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch {
+      // ignore
+    }
+    window.location.href = '/';
+  };
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-[#f5f7fc] flex items-center justify-center p-6">
+          <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 text-center space-y-4">
+            <div className="w-12 h-12 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold text-xl mx-auto">
+              !
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Application Notice</h2>
+              <p className="text-xs text-slate-500 mt-1">
+                A client-side state issue was detected. You can instantly restore default settings below.
+              </p>
+            </div>
+            {this.state.error && (
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-left text-[11px] font-mono text-slate-700 overflow-x-auto max-h-24">
+                {this.state.error.message || String(this.state.error)}
+              </div>
+            )}
+            <div className="flex flex-col sm:flex-row gap-2 pt-2">
+              <button
+                onClick={() => window.location.reload()}
+                className="flex-1 px-4 py-2 bg-[#123b6d] text-white rounded-lg text-xs font-semibold hover:bg-[#0e2d50] cursor-pointer"
+              >
+                Reload Page
+              </button>
+              <button
+                onClick={this.handleReset}
+                className="flex-1 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-200 cursor-pointer"
+              >
+                Reset Session
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   return (
-    <ToastProvider>
-      <AppContent />
-    </ToastProvider>
+    <ErrorBoundary>
+      <ToastProvider>
+        <AppContent />
+      </ToastProvider>
+    </ErrorBoundary>
   );
 }
