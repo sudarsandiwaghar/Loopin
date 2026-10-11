@@ -46,15 +46,26 @@ export const StaffDashboard: React.FC<Props> = ({
   const { showToast } = useToast();
 
   const [activeTab, setActiveTab] = useState<'home' | 'templates' | 'applications' | 'inbox' | 'settings'>(() => {
-    if (typeof window !== 'undefined' && window.location.hash === '#templates') return 'templates';
+    if (typeof window !== 'undefined') {
+      const h = window.location.hash.replace('#', '');
+      if (['home', 'templates', 'applications', 'inbox', 'settings'].includes(h)) {
+        return h as any;
+      }
+    }
     return 'home';
   });
-  const [templateView, setTemplateView] = useState<'cards' | 'catalog'>('cards');
+
+  const navigateToTab = (tab: 'home' | 'templates' | 'applications' | 'inbox' | 'settings') => {
+    setActiveTab(tab);
+    window.location.hash = `#${tab}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const handleHash = () => {
-      if (window.location.hash === '#templates') {
-        setActiveTab('templates');
+      const h = window.location.hash.replace('#', '');
+      if (['home', 'templates', 'applications', 'inbox', 'settings'].includes(h)) {
+        setActiveTab(h as any);
       }
     };
     window.addEventListener('hashchange', handleHash);
@@ -367,7 +378,7 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
           {/* Navigation Links — Dedicated Landing Page per tab */}
           <nav className="flex flex-col gap-1 mt-1 text-xs">
             <button
-              onClick={() => { setActiveTab('home'); window.location.hash = ''; }}
+              onClick={() => navigateToTab('home')}
               className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeTab === 'home'
                   ? 'bg-[#123B6D] text-white font-bold shadow-xs'
@@ -379,7 +390,7 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
             </button>
 
             <button
-              onClick={() => { setActiveTab('templates'); window.location.hash = '#templates'; }}
+              onClick={() => navigateToTab('templates')}
               className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeTab === 'templates'
                   ? 'bg-[#123B6D] text-white font-bold shadow-xs'
@@ -391,7 +402,7 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
             </button>
 
             <button
-              onClick={() => { setActiveTab('applications'); window.location.hash = ''; }}
+              onClick={() => navigateToTab('applications')}
               className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeTab === 'applications'
                   ? 'bg-[#123B6D] text-white font-bold shadow-xs'
@@ -403,7 +414,7 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
             </button>
 
             <button
-              onClick={() => { setActiveTab('inbox'); window.location.hash = ''; }}
+              onClick={() => navigateToTab('inbox')}
               className={`flex items-center justify-between px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeTab === 'inbox'
                   ? 'bg-[#123B6D] text-white font-bold shadow-xs'
@@ -424,7 +435,7 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
             </button>
 
             <button
-              onClick={() => { setActiveTab('settings'); window.location.hash = ''; }}
+              onClick={() => navigateToTab('settings')}
               className={`flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-left transition-colors cursor-pointer ${
                 activeTab === 'settings'
                   ? 'bg-[#123B6D] text-white font-bold shadow-xs'
@@ -532,180 +543,162 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
         <main className="p-6 max-w-[1450px] mx-auto w-full space-y-6">
           {/* TAB 1: DASHBOARD / MY REQUESTS */}
           {activeTab === 'home' && (
-            <div className="space-y-6">
-              {/* Welcome Banner */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-6 animate-fade-in">
+              {/* Executive Welcome Banner */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs">
                 <div>
-                  <div className="text-[9px] font-bold uppercase tracking-widest text-[#2b5e98]">
-                    {currentUser.institutionName} · Staff workspace
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-[#123B6D]">
+                    {currentUser.institutionName || 'Sri Sairam Engineering College'} · Staff Workspace
                   </div>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-[#1d2f45] tracking-tight mt-0.5">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#123B6D] tracking-tight mt-1">
                     Good morning, {currentUser.name.split(' ')[1] || currentUser.name}
                   </h1>
-                  <p className="text-xs text-[#748196] mt-0.5">
-                    Keep track of your requests, assigned reviews, and campus updates.
+                  <p className="text-xs text-[#3F4A5A] mt-1">
+                    Manage institutional applications, track stage approvals, and access campus workflow templates.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2.5 shrink-0">
                   <button
                     onClick={() => setIsCircularModalOpen(true)}
-                    className="px-3 py-1.5 bg-white border border-[#e2e8f0] text-slate-700 rounded text-xs font-semibold hover:bg-slate-50"
+                    className="px-3.5 py-2 bg-white border border-[#E5E7EB] text-[#123B6D] hover:bg-[#F3F4F6] rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
                   >
                     ▤ Campus circulars
                   </button>
                   <button
-                    onClick={() => setActiveTab('applications')}
-                    className="px-3.5 py-1.5 bg-[#123b6d] text-white rounded text-xs font-semibold hover:bg-[#0d2c50] shadow-xs"
+                    onClick={() => navigateToTab('applications')}
+                    className="px-4 py-2 bg-[#123B6D] hover:bg-[#0e2f57] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
                   >
                     ＋ New application
+                  </button>
+                  <button
+                    onClick={() => navigateToTab('inbox')}
+                    className="px-3.5 py-2 bg-[#F3F4F6] border border-[#E5E7EB] text-[#123B6D] hover:bg-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                  >
+                    Approvals inbox {inboxTasks.length > 0 && `(${inboxTasks.length})`}
                   </button>
                 </div>
               </div>
 
-              {/* Notice Banner */}
+              {/* Action Banner for Pending Reviews */}
               {inboxTasks.length > 0 && (
-                <div className="p-3 bg-[#eef5ff] border border-[#d9e5f3] rounded flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-6 h-6 rounded bg-[#dce9fb] text-[#123b6d] flex items-center justify-center font-bold text-xs shrink-0">
+                <div className="p-4 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                  <div className="flex items-start gap-3">
+                    <span className="w-8 h-8 rounded-lg bg-[#123B6D] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
                       ◷
                     </span>
                     <div>
-                      <b className="text-xs text-[#1d2f45]">You have {inboxTasks.length} approval tasks that need attention</b>
-                      <p className="text-[10px] text-[#647891] mt-0.5">Review the request details in your approvals inbox.</p>
+                      <b className="text-xs text-[#123B6D]">
+                        You have {inboxTasks.length} approval task{inboxTasks.length > 1 ? 's' : ''} assigned to your role ({currentUser.designation})
+                      </b>
+                      <p className="text-[11px] text-[#3F4A5A] mt-0.5">
+                        Please review and sign off pending applications in your approvals inbox.
+                      </p>
                     </div>
                   </div>
                   <button
-                    onClick={() => setActiveTab('inbox')}
-                    className="px-3 py-1 bg-[#eaf1fb] text-[#123b6d] border border-[#d7e4f5] rounded text-xs font-semibold hover:bg-[#dce9fb] shrink-0"
+                    onClick={() => navigateToTab('inbox')}
+                    className="px-4 py-2 bg-[#123B6D] text-white rounded-lg text-xs font-semibold hover:bg-[#0e2f57] shrink-0 cursor-pointer shadow-xs transition-colors"
                   >
                     Open inbox →
                   </button>
                 </div>
               )}
 
-              {/* Metrics */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                <div className="p-3.5 bg-white rounded border border-[#e2e8f0] shadow-xs">
-                  <div className="flex justify-between text-xs text-[#748196]">
-                    <span>Active requests</span>
-                    <span className="text-[#123b6d]">▤</span>
-                  </div>
-                  <strong className="block text-2xl font-bold text-[#213b5c] mt-1.5">{activeCount}</strong>
-                  <small className="text-[10px] text-[#748196]">Across your current applications</small>
-                </div>
-
-                <div className="p-3.5 bg-white rounded border border-[#e2e8f0] shadow-xs">
-                  <div className="flex justify-between text-xs text-[#748196]">
-                    <span>Pending sign-offs</span>
-                    <span className="text-amber-600">✍</span>
-                  </div>
-                  <strong className="block text-2xl font-bold text-[#213b5c] mt-1.5">{inboxTasks.length}</strong>
-                  <small className="text-[10px] text-amber-700">Assigned to your role</small>
-                </div>
-
-                <div className="p-3.5 bg-white rounded border border-[#e2e8f0] shadow-xs">
-                  <div className="flex justify-between text-xs text-[#748196]">
-                    <span>Approved applications</span>
-                    <span className="text-emerald-600">✓</span>
-                  </div>
-                  <strong className="block text-2xl font-bold text-[#213b5c] mt-1.5">{approvedCount}</strong>
-                  <small className="text-[10px] text-emerald-700">This academic year</small>
-                </div>
-
-                <div className="p-3.5 bg-white rounded border border-[#e2e8f0] shadow-xs">
-                  <div className="flex justify-between text-xs text-[#748196]">
-                    <span>Average turnaround</span>
-                    <span className="text-[#123b6d]">◷</span>
-                  </div>
-                  <strong className="block text-2xl font-bold text-[#213b5c] mt-1.5">4.2 <span className="text-sm font-normal text-slate-400">days</span></strong>
-                  <small className="text-[10px] text-[#748196]">For your submitted requests</small>
-                </div>
-              </div>
-
-              {/* Grid: My Requests + Side Cards */}
+              {/* Main Workspace Grid: My Requests + Sidebar Panels */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <div className="lg:col-span-8 space-y-6">
                   {/* My Requests Card */}
-                  <div className="bg-white border border-[#e2e8f0] rounded p-5 shadow-xs space-y-3">
-                    <div className="flex items-center justify-between">
+                  <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E5E7EB]/60 pb-3">
                       <div>
-                        <h2 className="text-base font-bold text-[#26384f]">My requests</h2>
-                        <p className="text-[11px] text-[#748196]">Follow your submitted applications through the campus approval route</p>
+                        <h2 className="text-base font-bold text-[#123B6D]">My requests</h2>
+                        <p className="text-xs text-[#3F4A5A]">
+                          Track submitted applications across institutional verification stages
+                        </p>
                       </div>
                       <button
-                        onClick={() => onNavigateToTemplates ? onNavigateToTemplates() : setActiveTab('applications')}
-                        className="text-xs text-[#123b6d] font-semibold hover:underline"
+                        onClick={() => navigateToTab('templates')}
+                        className="text-xs text-[#123B6D] font-semibold hover:underline cursor-pointer"
                       >
                         Browse templates →
                       </button>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-4 pt-1">
                       {myRequests.length > 0 ? (
                         myRequests.map(req => (
-                          <div key={req.id} className="p-4 rounded border border-slate-200 bg-white space-y-3">
-                            <div className="flex justify-between items-start">
+                          <div
+                            key={req.id}
+                            className="p-5 rounded-xl border border-[#E5E7EB] bg-white space-y-3.5 hover:border-[#123B6D]/40 transition-colors shadow-xs"
+                          >
+                            <div className="flex justify-between items-start gap-3">
                               <div>
-                                <div className="text-xs font-bold text-[#2e4057]">{req.templateTitle}</div>
-                                <div className="text-[10px] text-[#748196]">
-                                  {req.id} · Submitted {new Date(req.submittedAt).toLocaleDateString()} · {req.category}
+                                <div className="text-sm font-bold text-[#123B6D]">{req.templateTitle}</div>
+                                <div className="text-[11px] text-[#3F4A5A] mt-0.5">
+                                  <span className="font-semibold text-[#123B6D]">{req.id}</span> · Submitted {new Date(req.submittedAt).toLocaleDateString()} · {req.category}
                                 </div>
                               </div>
                               <span
-                                className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
+                                className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${
                                   req.status === 'Approved'
-                                    ? 'bg-[#e9f5ef] text-[#247853]'
+                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                                     : req.status === 'In review'
-                                    ? 'bg-[#edf3fc] text-[#2b5e98]'
-                                    : 'bg-[#fff4dc] text-[#9a6b16]'
+                                    ? 'bg-[#123B6D]/10 text-[#123B6D] border-[#123B6D]/20'
+                                    : 'bg-amber-50 text-amber-700 border-amber-200'
                                 }`}
                               >
                                 {req.status}
                               </span>
                             </div>
 
-                            {/* Sequential Pipeline */}
-                            <div className="flex items-center justify-between text-center relative py-1 before:absolute before:top-2 before:left-3 before:right-3 before:h-0.5 before:bg-slate-200">
+                            {/* Sequential Pipeline Progress */}
+                            <div className="flex items-center justify-between text-center relative py-2 before:absolute before:top-4 before:left-3 before:right-3 before:h-0.5 before:bg-[#E5E7EB]">
                               {req.track.map((step, idx) => {
                                 const isDone = idx < req.currentStageIndex;
                                 const isCurrent = idx === req.currentStageIndex;
                                 return (
                                   <div key={idx} className="flex-1 flex flex-col items-center relative z-10">
                                     <div
-                                      className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold ${
+                                      className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold transition-all ${
                                         isDone
-                                          ? 'bg-[#247853] text-white'
+                                          ? 'bg-emerald-600 text-white'
                                           : isCurrent
-                                          ? 'bg-[#123b6d] text-white ring-2 ring-[#e5eef9]'
-                                          : 'bg-slate-200 text-slate-500'
+                                          ? 'bg-[#123B6D] text-white ring-2 ring-[#123B6D]/20 shadow-xs'
+                                          : 'bg-[#F3F4F6] text-slate-400 border border-[#E5E7EB]'
                                       }`}
                                     >
                                       {isDone ? '✓' : idx + 1}
                                     </div>
-                                    <div className="text-[8px] text-slate-500 mt-1 truncate max-w-[65px]">{step}</div>
+                                    <div className="text-[9px] text-[#3F4A5A] mt-1.5 truncate max-w-[80px]" title={step}>
+                                      {step}
+                                    </div>
                                   </div>
                                 );
                               })}
                             </div>
 
-                            <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
-                              <small className="text-[#748196]">
-                                {req.status === 'Approved' ? 'Completed' : `Current authority: ${req.currentStageName}`}
-                              </small>
+                            <div className="flex items-center justify-between pt-3 border-t border-[#E5E7EB] text-xs">
+                              <span className="text-[#3F4A5A] text-[11px]">
+                                {req.status === 'Approved' ? (
+                                  <b className="text-emerald-700">✓ Fully Approved & Certified</b>
+                                ) : (
+                                  <>Current authority: <b className="text-[#123B6D]">{req.currentStageName}</b></>
+                                )}
+                              </span>
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => setDetailRequest(req)}
-                                  className="px-2.5 py-1 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded text-[11px] font-semibold"
+                                  className="px-3 py-1.5 text-[#3F4A5A] bg-[#F3F4F6] hover:bg-[#E5E7EB] rounded-lg text-xs font-semibold cursor-pointer transition-colors"
                                 >
                                   Details & audit
                                 </button>
                                 {req.status === 'Approved' && (
                                   <button
                                     onClick={() => downloadReceipt(req)}
-                                    className="px-2.5 py-1 text-[#123b6d] bg-[#eaf1fb] hover:bg-[#dce8f8] rounded text-[11px] font-semibold flex items-center gap-1"
+                                    className="px-3 py-1.5 text-white bg-[#123B6D] hover:bg-[#0e2f57] rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer transition-colors"
                                   >
-                                    <Download size={11} /> Download receipt
+                                    <Download size={12} /> Download receipt
                                   </button>
                                 )}
                               </div>
@@ -713,54 +706,60 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                           </div>
                         ))
                       ) : (
-                        <div className="text-center py-8 text-slate-400 text-xs">
-                          No applications yet. Browse available templates to get started.
+                        <div className="text-center py-10 text-[#3F4A5A] text-xs bg-[#F3F4F6]/50 rounded-xl border border-dashed border-[#E5E7EB]">
+                          No applications submitted yet. Browse available templates to submit your first request.
                         </div>
                       )}
                     </div>
                   </div>
 
                   {/* Saved Drafts Card */}
-                  <div className="bg-white border border-[#e2e8f0] rounded p-5 shadow-xs space-y-3">
-                    <div className="flex items-center justify-between">
+                  <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between border-b border-[#E5E7EB]/60 pb-3">
                       <div>
-                        <h2 className="text-base font-bold text-[#26384f]">Saved drafts</h2>
-                        <p className="text-[11px] text-[#748196]">Continue applications you have not submitted</p>
+                        <h2 className="text-base font-bold text-[#123B6D]">Saved drafts</h2>
+                        <p className="text-xs text-[#3F4A5A]">Continue applications you have started and saved</p>
                       </div>
-                      <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                      <span className="text-xs font-bold text-[#123B6D] bg-[#F3F4F6] border border-[#E5E7EB] px-2.5 py-1 rounded-full">
                         {drafts.length} drafts
                       </span>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2.5 pt-1">
                       {drafts.length > 0 ? (
                         drafts.map(d => {
                           const tpl = templates.find(t => t.id === d.templateId);
                           return (
-                            <div key={d.id} className="p-3 bg-slate-50 border rounded flex justify-between items-center text-xs">
+                            <div
+                              key={d.id}
+                              className="p-3.5 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl flex justify-between items-center text-xs hover:border-[#123B6D]/30 transition-colors"
+                            >
                               <div>
-                                <b>{d.title}</b>
-                                <small className="block text-slate-400 text-[10px]">Saved {new Date(d.savedAt).toLocaleDateString()} · {d.category}</small>
+                                <b className="text-sm text-[#123B6D]">{d.title}</b>
+                                <small className="block text-[#3F4A5A] text-[11px] mt-0.5">
+                                  Saved {new Date(d.savedAt).toLocaleDateString()} · {d.category}
+                                </small>
                               </div>
-                              <div className="flex gap-2">
+                              <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => { if (tpl) openApplyModal(tpl, d); }}
-                                  className="px-2.5 py-1 bg-[#123b6d] text-white rounded text-[11px] font-semibold"
+                                  className="px-3 py-1.5 bg-[#123B6D] text-white rounded-lg text-xs font-semibold hover:bg-[#0e2f57] cursor-pointer shadow-xs transition-colors"
                                 >
                                   Continue
                                 </button>
                                 <button
                                   onClick={() => handleDeleteDraft(d.id)}
-                                  className="p-1 text-slate-400 hover:text-rose-600"
+                                  className="p-1.5 text-slate-400 hover:text-rose-600 rounded cursor-pointer transition-colors"
+                                  title="Delete draft"
                                 >
-                                  <Trash2 size={13} />
+                                  <Trash2 size={14} />
                                 </button>
                               </div>
                             </div>
                           );
                         })
                       ) : (
-                        <div className="text-center py-6 text-slate-400 text-xs">
+                        <div className="text-center py-8 text-[#3F4A5A] text-xs bg-[#F3F4F6]/50 rounded-xl border border-dashed border-[#E5E7EB]">
                           No saved drafts. Start an application and choose Save as draft.
                         </div>
                       )}
@@ -768,93 +767,114 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                   </div>
                 </div>
 
-                {/* Right: Inbox tasks + Updates */}
+                {/* Right Column: Approvals Inbox Quick Panel + Campus Updates */}
                 <div className="lg:col-span-4 space-y-6">
-                  <div className="bg-white border border-[#e2e8f0] rounded p-5 shadow-xs space-y-3">
-                    <div className="flex items-center justify-between">
+                  {/* Approvals Inbox Quick Review */}
+                  <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between border-b border-[#E5E7EB]/60 pb-3">
                       <div>
-                        <h2 className="text-base font-bold text-[#26384f]">Approvals inbox</h2>
-                        <p className="text-[11px] text-[#748196]">Tasks assigned to your roles</p>
+                        <h2 className="text-base font-bold text-[#123B6D]">Approvals inbox</h2>
+                        <p className="text-xs text-[#3F4A5A]">Tasks assigned to your role</p>
                       </div>
                       <button
-                        onClick={() => setActiveTab('inbox')}
-                        className="text-xs text-[#123b6d] font-semibold hover:underline"
+                        onClick={() => navigateToTab('inbox')}
+                        className="text-xs text-[#123B6D] font-semibold hover:underline cursor-pointer"
                       >
                         View all →
                       </button>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2.5 pt-1">
                       {inboxTasks.length > 0 ? (
                         inboxTasks.slice(0, 3).map(task => (
-                          <div key={task.id} className="p-3 bg-[#f8fafc] border rounded flex justify-between items-center text-xs">
+                          <div
+                            key={task.id}
+                            className="p-3.5 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl flex justify-between items-center text-xs"
+                          >
                             <div>
-                              <b>{task.templateTitle}</b>
-                              <small className="block text-slate-400 text-[10px]">{task.applicantName} · {task.currentStageName}</small>
+                              <b className="text-xs text-[#123B6D]">{task.templateTitle}</b>
+                              <small className="block text-[#3F4A5A] text-[10px] mt-0.5">
+                                {task.applicantName} · {task.currentStageName}
+                              </small>
                             </div>
                             <button
                               onClick={() => { setSelectedTask(task); setIsTaskModalOpen(true); }}
-                              className="px-2.5 py-1 bg-[#eaf1fb] text-[#123b6d] border border-[#d7e4f5] rounded text-[11px] font-semibold hover:bg-[#dce9fb]"
+                              className="px-3 py-1.5 bg-[#123B6D] text-white rounded-lg text-xs font-semibold hover:bg-[#0e2f57] cursor-pointer shadow-xs transition-colors shrink-0"
                             >
                               Review
                             </button>
                           </div>
                         ))
                       ) : (
-                        <div className="text-center py-6 text-slate-400 text-xs">
-                          You are all caught up!
+                        <div className="text-center py-6 text-[#3F4A5A] text-xs bg-[#F3F4F6]/50 rounded-xl border border-dashed border-[#E5E7EB]">
+                          You are all caught up! No open tasks are assigned to you.
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="bg-white border border-[#e2e8f0] rounded p-5 shadow-xs space-y-3 text-xs">
-                    <h2 className="text-base font-bold text-[#26384f]">Institution updates</h2>
-                    <div className="space-y-2 divide-y divide-slate-100">
-                      <div className="pt-2">
-                        <b>Research travel claim checklist</b>
-                        <small className="block text-slate-500 text-[10px]">Finance Office · Attach original receipts</small>
+                  {/* Institution Updates & Guidelines */}
+                  <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-4 text-xs">
+                    <h2 className="text-base font-bold text-[#123B6D] border-b border-[#E5E7EB]/60 pb-3">
+                      Institution updates
+                    </h2>
+                    <div className="space-y-3 divide-y divide-[#E5E7EB]">
+                      <div className="pt-1">
+                        <b className="text-[#123B6D]">Research travel claim checklist</b>
+                        <small className="block text-[#3F4A5A] text-[11px] mt-0.5">
+                          Finance Office · Attach original receipts and attendance certificates
+                        </small>
                       </div>
-                      <div className="pt-2">
-                        <b>Conference OD documentation</b>
-                        <small className="block text-slate-500 text-[10px]">R&D Council · Circular PT-AC-024</small>
+                      <div className="pt-3">
+                        <b className="text-[#123B6D]">Conference OD documentation</b>
+                        <small className="block text-[#3F4A5A] text-[11px] mt-0.5">
+                          R&D Council · Circular PT-AC-024 · Effective this semester
+                        </small>
                       </div>
-                      <div className="pt-2">
-                        <b>Need help with an application?</b>
-                        <small className="block text-slate-500 text-[10px]">Staff Help Desk · helpdesk@sairam.edu.in</small>
+                      <div className="pt-3">
+                        <b className="text-[#123B6D]">Staff Help Desk & Assistance</b>
+                        <small className="block text-[#3F4A5A] text-[11px] mt-0.5">
+                          helpdesk@sairam.edu.in · Ext. 224
+                        </small>
                       </div>
                     </div>
+                    <button
+                      onClick={() => setIsCircularModalOpen(true)}
+                      className="w-full py-2 bg-[#F3F4F6] text-[#123B6D] border border-[#E5E7EB] hover:bg-[#E5E7EB] rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                    >
+                      View all campus circulars →
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* TAB: DEDICATED REQUEST TEMPLATES DIRECTORY LANDING PAGE */}
+          {/* TAB 2: DEDICATED REQUEST TEMPLATES DIRECTORY LANDING PAGE */}
           {activeTab === 'templates' && (
             <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-6 animate-fade-in">
               {/* Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E5E7EB]/60 pb-5">
                 <div>
                   <div className="flex items-center gap-2.5">
                     <h2 className="text-xl sm:text-2xl font-bold text-[#123B6D] tracking-tight">
-                      Admin template requests
+                      Request Templates Directory
                     </h2>
                     <span className="text-xs font-semibold text-[#123B6D] bg-[#F3F4F6] px-2.5 py-0.5 rounded-full border border-[#E5E7EB]">
                       {templates.length} available
                     </span>
                   </div>
-                  <p className="text-xs text-[#3F4A5A] mt-0.5">
-                    Frequently used custom workflows awaiting submission
+                  <p className="text-xs text-[#3F4A5A] mt-1">
+                    Standardized campus workflow forms and sequential approval routes for your institution
                   </p>
                 </div>
 
                 {/* Search Bar */}
-                <div className="relative w-full sm:w-64">
+                <div className="relative w-full sm:w-72">
                   <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
                   <input
                     type="text"
-                    placeholder="Search templates..."
+                    placeholder="Search templates by code or title..."
                     value={globalSearch}
                     onChange={e => setGlobalSearch(e.target.value)}
                     className="w-full text-xs pl-9 pr-3 py-2 border border-[#E5E7EB] bg-white text-[#3F4A5A] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
@@ -863,9 +883,9 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
               </div>
 
               {/* Category Filter Pills */}
-              <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-[#E5E7EB]/60">
+              <div className="flex flex-wrap items-center gap-2 pt-1">
                 <span className="text-[10px] uppercase font-bold text-[#3F4A5A]/70 mr-1">Category:</span>
-                {['All', 'Faculty & Leave', 'Research & Grants', 'Finance & Accounts', 'Events & Infrastructure', 'Clearance & NOC', 'Academic & Exams', 'People & HR'].map(cat => (
+                {['All', 'Faculty & Leave', 'Research & Grants', 'Finance & Accounts', 'Events & Infrastructure', 'Clearance & NOC', 'People & HR'].map(cat => (
                   <button
                     key={cat}
                     onClick={() => setCategoryFilter(cat)}
@@ -880,18 +900,18 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                 ))}
               </div>
 
-              {/* Standard Templates from Loopin_Request_Templates */}
+              {/* Templates Catalog */}
               <div className="space-y-4 pt-1">
                 <div>
                   <h3 className="font-bold text-sm text-[#123B6D]">
-                    Standard templates from Loopin_Request_Templates
+                    Authorized Campus Request Templates
                   </h3>
                   <p className="text-xs text-[#3F4A5A] mt-0.5">
-                    Review these supplied request formats and submit an application for your institution.
+                    Select any template below to view approval track requirements or start an application.
                   </p>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                   {templates
                     .filter(t => categoryFilter === 'All' || t.category === categoryFilter || (categoryFilter === 'Finance & Accounts' && t.category === 'Finance'))
                     .filter(t => {
@@ -906,21 +926,28 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                     .map(tpl => (
                       <div
                         key={tpl.id}
-                        className="p-4 sm:p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-xs space-y-3 hover:border-[#123B6D]/40 transition-colors"
+                        className="p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-xs space-y-3.5 hover:border-[#123B6D]/40 transition-colors"
                       >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                          <div>
-                            <h4 className="font-bold text-sm sm:text-base text-[#123B6D]">{tpl.title}</h4>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-[#123B6D] bg-[#123B6D]/10 px-2.5 py-0.5 rounded text-[11px]">
+                                Form {tpl.code}
+                              </span>
+                              <span className="text-slate-500 text-xs font-medium">{tpl.turnaround}</span>
+                              <span className="text-[#3F4A5A] text-xs font-medium">· {tpl.category}</span>
+                            </div>
+                            <h4 className="font-bold text-base text-[#123B6D]">{tpl.title}</h4>
                           </div>
                           <button
                             onClick={() => openApplyModal(tpl)}
-                            className="px-4 py-2 border border-[#E5E7EB] bg-white text-[#123B6D] hover:bg-[#F3F4F6] text-xs font-semibold rounded-lg shadow-xs transition-colors shrink-0 cursor-pointer"
+                            className="px-4 py-2 border border-[#123B6D] bg-white text-[#123B6D] hover:bg-[#F3F4F6] text-xs font-semibold rounded-lg shadow-xs transition-colors shrink-0 cursor-pointer"
                           >
                             Apply with this template
                           </button>
                         </div>
 
-                        <div className="border-t border-[#E5E7EB] pt-2">
+                        <div className="border-t border-[#E5E7EB] pt-2.5">
                           <button
                             type="button"
                             onClick={() => toggleExpandTemplate(tpl.id)}
@@ -934,7 +961,7 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                           </button>
 
                           {expandedTemplateIds[tpl.id] && (
-                            <div className="mt-2.5 p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-lg text-xs text-[#3F4A5A] space-y-1.5 animate-fade-in">
+                            <div className="mt-3 p-4 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl text-xs text-[#3F4A5A] space-y-2 animate-fade-in">
                               <div>
                                 <span className="font-bold text-[#123B6D]">Mandatory Fields: </span>
                                 <span>{tpl.fields.map(f => f.name).join(', ')}</span>
@@ -957,29 +984,47 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
             </div>
           )}
 
-          {/* TAB 2: NEW APPLICATION */}
+          {/* TAB 3: NEW APPLICATION */}
           {activeTab === 'applications' && (
-            <div className="space-y-6">
-              <div>
-                <div className="text-[9px] uppercase font-bold tracking-widest text-[#2b5e98]">
-                  Institution-approved forms
+            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-6 animate-fade-in">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E5E7EB]/60 pb-5">
+                <div>
+                  <div className="text-[10px] uppercase font-bold tracking-widest text-[#123B6D]">
+                    Institution-Approved Forms · Quick Submission
+                  </div>
+                  <h1 className="text-xl sm:text-2xl font-bold text-[#123B6D] tracking-tight mt-1">
+                    New Application
+                  </h1>
+                  <p className="text-xs text-[#3F4A5A] mt-1">
+                    Select an authorized template to initiate an official request routed through your campus administration.
+                  </p>
                 </div>
-                <h1 className="text-2xl font-bold text-[#1d2f45] tracking-tight mt-0.5">New application</h1>
-                <p className="text-xs text-[#748196]">
-                  Browse available templates and submit a request using your campus approval flow.
-                </p>
+
+                {/* Search Bar */}
+                <div className="relative w-full sm:w-72">
+                  <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search forms by name or code..."
+                    value={globalSearch}
+                    onChange={e => setGlobalSearch(e.target.value)}
+                    className="w-full text-xs pl-9 pr-3 py-2 border border-[#E5E7EB] bg-white text-[#3F4A5A] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
+                  />
+                </div>
               </div>
 
-              {/* Category Chips */}
-              <div className="flex flex-wrap gap-2">
-                {['All', 'Faculty & Leave', 'Research & Grants', 'Events & Infrastructure', 'Clearance & NOC'].map(cat => (
+              {/* Category Pills */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <span className="text-[10px] uppercase font-bold text-[#3F4A5A]/70 mr-1">Filter:</span>
+                {['All', 'Faculty & Leave', 'Research & Grants', 'Finance & Accounts', 'Events & Infrastructure', 'Clearance & NOC', 'People & HR'].map(cat => (
                   <button
                     key={cat}
                     onClick={() => setCategoryFilter(cat)}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                       categoryFilter === cat
-                        ? 'bg-[#123b6d] text-white'
-                        : 'bg-white border text-slate-600 hover:bg-slate-50'
+                        ? 'bg-[#123B6D] text-white shadow-xs'
+                        : 'bg-white border border-[#E5E7EB] text-[#3F4A5A] hover:border-[#123B6D] hover:text-[#123B6D]'
                     }`}
                   >
                     {cat}
@@ -987,99 +1032,150 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                 ))}
               </div>
 
-              {/* Template Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredTemplates.map(tpl => (
-                  <div key={tpl.id} className="p-4 bg-white border border-[#E5E7EB] rounded-xl shadow-xs flex flex-col justify-between space-y-3 hover:border-[#123B6D]/40 transition-colors">
-                    <div>
-                      <div className="flex justify-between items-center text-[10px] text-slate-400 mb-1.5">
-                        <span className="font-bold text-[#123b6d] bg-[#eaf1fb] px-2 py-0.5 rounded">Form {tpl.code}</span>
-                        <span>{tpl.turnaround}</span>
-                      </div>
-                      <h3 className="font-bold text-sm text-slate-900">{tpl.title}</h3>
-                    </div>
-
-                    <button
-                      onClick={() => openApplyModal(tpl)}
-                      className="w-full py-2 bg-[#123b6d] hover:bg-[#0d2c50] text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+              {/* 3-Column Template Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-1">
+                {templates
+                  .filter(t => categoryFilter === 'All' || t.category === categoryFilter || (categoryFilter === 'Finance & Accounts' && t.category === 'Finance'))
+                  .filter(t => {
+                    if (!globalSearch.trim()) return true;
+                    const q = globalSearch.toLowerCase();
+                    return (
+                      t.title.toLowerCase().includes(q) ||
+                      t.code.toLowerCase().includes(q) ||
+                      t.category.toLowerCase().includes(q)
+                    );
+                  })
+                  .map(tpl => (
+                    <div
+                      key={tpl.id}
+                      className="p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-xs flex flex-col justify-between space-y-4 hover:border-[#123B6D] hover:shadow-md transition-all group"
                     >
-                      Apply with this Template →
-                    </button>
-                  </div>
-                ))}
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="font-bold text-[#123B6D] bg-[#123B6D]/10 px-2.5 py-0.5 rounded text-[11px]">
+                            Form {tpl.code}
+                          </span>
+                          <span className="text-slate-500 text-[11px] font-medium">{tpl.turnaround}</span>
+                        </div>
+                        <h3 className="font-bold text-base text-[#123B6D] group-hover:text-[#0d2c50] transition-colors">
+                          {tpl.title}
+                        </h3>
+                        <div className="pt-2.5 border-t border-[#E5E7EB]/60">
+                          <span className="text-[10px] uppercase font-bold text-[#3F4A5A]/70 block mb-1">
+                            Approval Flow:
+                          </span>
+                          <div className="text-xs text-[#3F4A5A] truncate font-medium" title={tpl.steps.join(' → ')}>
+                            {tpl.steps.join(' → ')}
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => openApplyModal(tpl)}
+                        className="w-full py-2.5 bg-[#123B6D] hover:bg-[#0e2f57] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                      >
+                        <span>Apply with this Template</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+                  ))}
               </div>
 
-              <p className="text-[10px] text-slate-400">
-                Templates and approval routes are configured for your institution by the Super Admin. Staff can submit applications but cannot create or edit templates.
-              </p>
+              {/* Informational Footer */}
+              <div className="p-4 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl text-xs text-[#3F4A5A] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <span>
+                  All applications submitted through Loopin are cryptographically timestamped and sequentially routed through your campus administration according to the verified organogram.
+                </span>
+                <button
+                  onClick={() => navigateToTab('templates')}
+                  className="text-xs text-[#123B6D] font-bold hover:underline shrink-0 cursor-pointer"
+                >
+                  View full template details &rarr;
+                </button>
+              </div>
             </div>
           )}
 
-          {/* TAB 3: APPROVALS INBOX */}
+          {/* TAB 4: APPROVALS INBOX */}
           {activeTab === 'inbox' && (
-            <div className="space-y-6">
-              <div className="flex justify-between items-center">
+            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-6 animate-fade-in">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E5E7EB]/60 pb-5">
                 <div>
-                  <div className="text-[9px] uppercase font-bold tracking-widest text-[#2b5e98]">
-                    Assigned responsibilities
+                  <div className="text-[10px] uppercase font-bold tracking-widest text-[#123B6D]">
+                    Assigned Responsibilities · Role Sign-Off
                   </div>
-                  <h1 className="text-2xl font-bold text-[#1d2f45] tracking-tight mt-0.5">Approvals inbox</h1>
-                  <p className="text-xs text-[#748196]">Only tasks assigned to your role ({currentUser.designation}) appear here.</p>
+                  <h1 className="text-xl sm:text-2xl font-bold text-[#123B6D] tracking-tight mt-1">
+                    Approvals Inbox
+                  </h1>
+                  <p className="text-xs text-[#3F4A5A] mt-1">
+                    Requests currently awaiting your evaluation and formal sign-off as <b className="text-[#123B6D]">{currentUser.designation}</b> ({currentUser.department}).
+                  </p>
                 </div>
                 <button
                   onClick={() => setShowSignedHistory(!showSignedHistory)}
-                  className="px-3 py-1.5 bg-white border rounded text-xs text-slate-700 hover:bg-slate-50"
+                  className="px-3.5 py-2 bg-white border border-[#E5E7EB] rounded-lg text-xs font-semibold text-[#123B6D] hover:bg-[#F3F4F6] shadow-xs cursor-pointer transition-colors shrink-0"
                 >
                   {showSignedHistory ? 'Hide signed history' : 'View signed history'}
                 </button>
               </div>
 
-              <div className="bg-white border rounded p-5 shadow-xs space-y-4">
-                <h2 className="text-base font-bold text-[#26384f]">Tasks needing action ({inboxTasks.length})</h2>
+              {/* Tasks Needing Action */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-base font-bold text-[#123B6D]">
+                    Tasks needing action ({inboxTasks.length})
+                  </h2>
+                  <span className="text-xs text-[#3F4A5A]">
+                    {inboxTasks.length > 0 ? `${inboxTasks.length} pending task(s)` : 'All tasks cleared'}
+                  </span>
+                </div>
 
-                <div className="overflow-x-auto border rounded">
+                <div className="overflow-x-auto border border-[#E5E7EB] rounded-xl shadow-xs">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="bg-slate-50 text-slate-500 uppercase text-[9px] border-b">
-                        <th className="py-2.5 px-3">Request</th>
-                        <th className="py-2.5 px-3">Applicant</th>
-                        <th className="py-2.5 px-3">Assigned role</th>
-                        <th className="py-2.5 px-3">Status</th>
-                        <th className="py-2.5 px-3">Action</th>
+                      <tr className="bg-[#F3F4F6] text-[#3F4A5A] uppercase text-[10px] font-bold border-b border-[#E5E7EB]">
+                        <th className="py-3 px-4">Request & Code</th>
+                        <th className="py-3 px-4">Applicant</th>
+                        <th className="py-3 px-4">Current Authority Stage</th>
+                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3 px-4 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y">
+                    <tbody className="divide-y divide-[#E5E7EB] bg-white">
                       {inboxTasks.length > 0 ? (
                         inboxTasks.map(t => (
-                          <tr key={t.id} className="hover:bg-slate-50">
-                            <td className="py-2.5 px-3">
-                              <span className="font-bold text-[#123b6d]">{t.id}</span>
-                              <div>{t.templateTitle}</div>
+                          <tr key={t.id} className="hover:bg-[#F3F4F6]/50 transition-colors">
+                            <td className="py-3 px-4">
+                              <span className="font-bold text-[#123B6D]">{t.id}</span>
+                              <div className="font-semibold text-slate-800 mt-0.5">{t.templateTitle}</div>
                             </td>
-                            <td className="py-2.5 px-3">
-                              <b>{t.applicantName}</b>
-                              <small className="block text-slate-400 text-[10px]">{t.applicantDept}</small>
+                            <td className="py-3 px-4">
+                              <b className="text-[#123B6D]">{t.applicantName}</b>
+                              <small className="block text-[#3F4A5A] text-[11px] mt-0.5">{t.applicantDept}</small>
                             </td>
-                            <td className="py-2.5 px-3">{t.currentStageName}</td>
-                            <td className="py-2.5 px-3">
-                              <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700">
+                            <td className="py-3 px-4">
+                              <span className="font-medium text-[#3F4A5A]">{t.currentStageName}</span>
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
                                 Pending action
                               </span>
                             </td>
-                            <td className="py-2.5 px-3">
+                            <td className="py-3 px-4 text-right">
                               <button
                                 onClick={() => { setSelectedTask(t); setIsTaskModalOpen(true); }}
-                                className="px-3 py-1 bg-[#123b6d] text-white rounded text-xs font-semibold"
+                                className="px-3.5 py-1.5 bg-[#123B6D] text-white rounded-lg text-xs font-semibold hover:bg-[#0e2f57] cursor-pointer shadow-xs transition-colors"
                               >
-                                Review
+                                Review & Sign
                               </button>
                             </td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={5} className="text-center py-6 text-slate-400">
-                            No open tasks are assigned to you.
+                          <td colSpan={5} className="text-center py-10 text-[#3F4A5A] text-xs">
+                            You are all caught up! No pending approvals are currently assigned to your role.
                           </td>
                         </tr>
                       )}
@@ -1088,132 +1184,188 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                 </div>
               </div>
 
+              {/* Signed History Panel */}
               {showSignedHistory && (
-                <div className="bg-white border rounded p-4 text-xs space-y-2">
-                  <h3 className="font-bold text-slate-800">Signed request history</h3>
-                  {requests.filter(r => r.stages.some(s => s.actedBy === currentUser.name)).map(r => (
-                    <div key={r.id} className="p-2 bg-slate-50 border rounded flex justify-between">
-                      <div><b>{r.id}</b> · {r.templateTitle} · Applicant: {r.applicantName}</div>
-                      <span className="font-bold text-emerald-700">{r.status}</span>
+                <div className="bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl p-5 text-xs space-y-3 animate-fade-in">
+                  <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-2">
+                    <h3 className="font-bold text-[#123B6D]">Signed Request History</h3>
+                    <span className="text-[10px] text-[#3F4A5A]">Archived institutional sign-offs</span>
+                  </div>
+                  {requests.filter(r => r.stages.some(s => s.actedBy === currentUser.name)).length > 0 ? (
+                    <div className="space-y-2">
+                      {requests.filter(r => r.stages.some(s => s.actedBy === currentUser.name)).map(r => (
+                        <div key={r.id} className="p-3 bg-white border border-[#E5E7EB] rounded-lg flex justify-between items-center">
+                          <div>
+                            <span className="font-bold text-[#123B6D]">{r.id}</span> · {r.templateTitle} · <span className="text-[#3F4A5A]">Applicant: {r.applicantName}</span>
+                          </div>
+                          <span className={`font-bold text-[10px] px-2 py-0.5 rounded-full border ${
+                            r.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-700 border-slate-200'
+                          }`}>
+                            {r.status}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  ) : (
+                    <div className="text-center py-4 text-[#3F4A5A]">
+                      No previous sign-offs recorded in this session.
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           )}
 
-          {/* TAB 4: SETTINGS / PROFILE */}
+          {/* TAB 5: SETTINGS / PROFILE */}
           {activeTab === 'settings' && (
-            <div className="space-y-6">
-              <div>
-                <div className="text-[9px] uppercase font-bold tracking-widest text-[#2b5e98]">
-                  Your account and preferences
+            <div className="space-y-6 animate-fade-in">
+              {/* Header */}
+              <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs">
+                <div className="text-[10px] uppercase font-bold tracking-widest text-[#123B6D]">
+                  Account Credentials & Institutional Authority
                 </div>
-                <h1 className="text-2xl font-bold text-[#1d2f45] tracking-tight mt-0.5">Settings / Profile</h1>
-                <p className="text-xs text-[#748196]">
-                  Manage your staff profile, notifications, and permitted proxy delegation.
+                <h1 className="text-xl sm:text-2xl font-bold text-[#123B6D] tracking-tight mt-1">
+                  Settings / Profile
+                </h1>
+                <p className="text-xs text-[#3F4A5A] mt-1">
+                  Manage verified staff employment details, digital sign-off authority, proxy approver delegation, and notification preferences.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Staff Profile Card */}
-                <div className="bg-white border rounded p-5 shadow-xs space-y-4">
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-base font-bold text-slate-800">Staff profile</h2>
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">Verified</span>
+                <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-5">
+                  <div className="flex justify-between items-center border-b border-[#E5E7EB]/60 pb-3">
+                    <div>
+                      <h2 className="text-base font-bold text-[#123B6D]">Staff Profile</h2>
+                      <p className="text-xs text-[#3F4A5A]">Verified employment credentials</p>
+                    </div>
+                    <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      ✓ Verified · Active Staff
+                    </span>
                   </div>
 
-                  <form onSubmit={handleSaveProfile} className="space-y-3 text-xs">
+                  <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
                     <div>
-                      <label className="block text-slate-600 font-semibold mb-1">Full name</label>
+                      <label className="block text-[#3F4A5A] font-semibold mb-1">Full name</label>
                       <input
                         type="text"
                         value={profileName}
                         onChange={e => setProfileName(e.target.value)}
-                        className="w-full px-3 py-1.5 border rounded"
+                        className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg bg-white text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
                       />
                     </div>
-                    <div>
-                      <label className="block text-slate-600 font-semibold mb-1">Employee code</label>
-                      <input
-                        type="text"
-                        value={profileCode}
-                        onChange={e => setProfileCode(e.target.value)}
-                        className="w-full px-3 py-1.5 border rounded"
-                      />
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[#3F4A5A] font-semibold mb-1">Employee code</label>
+                        <input
+                          type="text"
+                          value={profileCode}
+                          onChange={e => setProfileCode(e.target.value)}
+                          className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg bg-white text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[#3F4A5A] font-semibold mb-1">Designation</label>
+                        <input
+                          type="text"
+                          value={profileRole}
+                          onChange={e => setProfileRole(e.target.value)}
+                          className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg bg-white text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
+                        />
+                      </div>
                     </div>
                     <div>
-                      <label className="block text-slate-600 font-semibold mb-1">Designation</label>
-                      <input
-                        type="text"
-                        value={profileRole}
-                        onChange={e => setProfileRole(e.target.value)}
-                        className="w-full px-3 py-1.5 border rounded"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-slate-600 font-semibold mb-1">Department</label>
+                      <label className="block text-[#3F4A5A] font-semibold mb-1">Department</label>
                       <input
                         type="text"
                         value={profileDept}
                         onChange={e => setProfileDept(e.target.value)}
-                        className="w-full px-3 py-1.5 border rounded"
+                        className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg bg-white text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-600 font-semibold mb-1">Institutional email</label>
+                      <label className="block text-[#3F4A5A] font-semibold mb-1">Institutional email</label>
                       <input
                         type="email"
                         disabled
                         value={currentUser.email}
-                        className="w-full px-3 py-1.5 border rounded bg-slate-100 text-slate-400"
+                        className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg bg-[#F3F4F6] text-slate-500 cursor-not-allowed"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-600 font-semibold mb-1">Institution</label>
+                      <label className="block text-[#3F4A5A] font-semibold mb-1">Institution</label>
                       <input
                         type="text"
                         disabled
                         value={currentUser.institutionName || 'Sri Sairam Engineering College'}
-                        className="w-full px-3 py-1.5 border rounded bg-slate-100 text-slate-400"
+                        className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg bg-[#F3F4F6] text-slate-500 cursor-not-allowed"
                       />
                     </div>
+
+                    {/* Official Digital Sign-off Seal Preview */}
+                    <div className="p-4 bg-[#F3F4F6] border border-[#123B6D]/30 rounded-xl space-y-1.5 text-center font-mono text-[11px] text-[#123B6D]">
+                      <div className="font-bold tracking-wider">OFFICIAL DIGITAL APPROVAL SEAL</div>
+                      <div className="text-[10px] text-[#3F4A5A]">
+                        SIGNATORY: {profileName.toUpperCase()} · {profileCode}
+                      </div>
+                      <div className="text-[10px] text-[#3F4A5A]">
+                        ROLE: {profileRole.toUpperCase()} · {profileDept.toUpperCase()}
+                      </div>
+                      <div className="text-[10px] text-[#3F4A5A]">
+                        INSTITUTION: {(currentUser.institutionName || 'Sri Sairam Engineering College').toUpperCase()}
+                      </div>
+                      <div className="text-[9px] text-emerald-700 font-bold mt-1">
+                        ✓ CRYPTOGRAPHIC AUDIT KEY: SHA-256 VERIFIED
+                      </div>
+                    </div>
+
                     <button
                       type="submit"
-                      className="px-4 py-1.5 bg-[#123b6d] text-white text-xs font-bold rounded"
+                      className="w-full py-2.5 bg-[#123B6D] text-white text-xs font-bold rounded-lg hover:bg-[#0e2f57] cursor-pointer shadow-xs transition-colors"
                     >
-                      Save profile
+                      Save Profile & Stamp
                     </button>
                   </form>
                 </div>
 
-                {/* Proxy & Notifications */}
+                {/* Proxy Delegation & Notifications */}
                 <div className="space-y-6">
                   {/* Out of Office & Proxy */}
-                  <div className="bg-white border rounded p-5 shadow-xs space-y-4 text-xs">
-                    <h2 className="text-base font-bold text-slate-800">Out-of-office & proxy</h2>
-                    <form onSubmit={handleSaveDelegation} className="space-y-3">
-                      <div className="flex justify-between items-center p-2.5 bg-slate-50 border rounded">
+                  <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-4 text-xs">
+                    <div className="border-b border-[#E5E7EB]/60 pb-3">
+                      <h2 className="text-base font-bold text-[#123B6D]">Out-of-office & proxy</h2>
+                      <p className="text-xs text-[#3F4A5A] mt-0.5">
+                        Forward approval responsibilities during scheduled leave or off-campus duty
+                      </p>
+                    </div>
+
+                    <form onSubmit={handleSaveDelegation} className="space-y-3.5">
+                      <div className="flex justify-between items-center p-3 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl">
                         <div>
-                          <b>Enable approval forwarding</b>
-                          <small className="block text-slate-500 text-[10px]">Forward approvals during an absence</small>
+                          <b className="text-[#123B6D]">Enable approval forwarding</b>
+                          <small className="block text-[#3F4A5A] text-[10px] mt-0.5">
+                            Automatically forward inbox approvals to designated colleague
+                          </small>
                         </div>
                         <input
                           type="checkbox"
                           checked={proxyEnabled}
                           onChange={e => setProxyEnabled(e.target.checked)}
-                          className="w-4 h-4 accent-[#123b6d]"
+                          className="w-4 h-4 accent-[#123B6D] cursor-pointer"
                         />
                       </div>
 
                       {proxyEnabled && (
-                        <div className="space-y-3 pt-1">
+                        <div className="space-y-3 pt-1 animate-fade-in">
                           <div>
-                            <label className="block font-semibold mb-1">Eligible proxy approver</label>
+                            <label className="block font-semibold text-[#3F4A5A] mb-1">
+                              Eligible proxy approver
+                            </label>
                             <select
                               value={proxyName}
                               onChange={e => setProxyName(e.target.value)}
-                              className="w-full px-3 py-1.5 border rounded bg-white"
+                              className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg bg-white text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
                             >
                               <option value="">Choose an eligible staff member</option>
                               <option value="Dr. S. Rajendran · Dean Academics">Dr. S. Rajendran · Dean Academics</option>
@@ -1221,23 +1373,23 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                               <option value="R. Prakash · Administrative Officer">R. Prakash · Administrative Officer</option>
                             </select>
                           </div>
-                          <div className="grid grid-cols-2 gap-2">
+                          <div className="grid grid-cols-2 gap-3">
                             <div>
-                              <label className="block font-semibold mb-1">Delegation starts</label>
+                              <label className="block font-semibold text-[#3F4A5A] mb-1">Delegation starts</label>
                               <input
                                 type="date"
                                 value={proxyStartDate}
                                 onChange={e => setProxyStartDate(e.target.value)}
-                                className="w-full px-2 py-1.5 border rounded"
+                                className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg bg-white text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
                               />
                             </div>
                             <div>
-                              <label className="block font-semibold mb-1">Delegation ends</label>
+                              <label className="block font-semibold text-[#3F4A5A] mb-1">Delegation ends</label>
                               <input
                                 type="date"
                                 value={proxyEndDate}
                                 onChange={e => setProxyEndDate(e.target.value)}
-                                className="w-full px-2 py-1.5 border rounded"
+                                className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg bg-white text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
                               />
                             </div>
                           </div>
@@ -1246,7 +1398,7 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
 
                       <button
                         type="submit"
-                        className="px-4 py-1.5 bg-[#123b6d] text-white text-xs font-bold rounded"
+                        className="px-4 py-2 bg-[#123B6D] text-white text-xs font-bold rounded-lg hover:bg-[#0e2f57] cursor-pointer shadow-xs transition-colors"
                       >
                         Save delegation period
                       </button>
@@ -1254,37 +1406,51 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                   </div>
 
                   {/* Notification Preferences */}
-                  <div className="bg-white border rounded p-5 shadow-xs space-y-3 text-xs">
-                    <h2 className="text-base font-bold text-slate-800">Notification preferences</h2>
+                  <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs space-y-4 text-xs">
+                    <div className="border-b border-[#E5E7EB]/60 pb-3">
+                      <h2 className="text-base font-bold text-[#123B6D]">Notification preferences</h2>
+                      <p className="text-xs text-[#3F4A5A] mt-0.5">
+                        Configure institutional alerts and digests
+                      </p>
+                    </div>
+
                     <div className="space-y-2">
-                      <label className="flex justify-between items-center p-2 rounded hover:bg-slate-50 cursor-pointer">
-                        <span>Requests awaiting my action</span>
+                      <label className="flex justify-between items-center p-2.5 rounded-lg hover:bg-[#F3F4F6] cursor-pointer transition-colors">
+                        <span className="text-[#3F4A5A] font-medium">Requests awaiting my action</span>
                         <input
                           type="checkbox"
                           checked={notifyAssigned}
                           onChange={e => setNotifyAssigned(e.target.checked)}
-                          className="accent-[#123b6d]"
+                          className="accent-[#123B6D] cursor-pointer w-4 h-4"
                         />
                       </label>
-                      <label className="flex justify-between items-center p-2 rounded hover:bg-slate-50 cursor-pointer">
-                        <span>Daily pending-work summary</span>
+                      <label className="flex justify-between items-center p-2.5 rounded-lg hover:bg-[#F3F4F6] cursor-pointer transition-colors">
+                        <span className="text-[#3F4A5A] font-medium">Daily pending-work summary</span>
                         <input
                           type="checkbox"
                           checked={notifyDaily}
                           onChange={e => setNotifyDaily(e.target.checked)}
-                          className="accent-[#123b6d]"
+                          className="accent-[#123B6D] cursor-pointer w-4 h-4"
                         />
                       </label>
-                      <label className="flex justify-between items-center p-2 rounded hover:bg-slate-50 cursor-pointer">
-                        <span>Urgent institutional escalations</span>
+                      <label className="flex justify-between items-center p-2.5 rounded-lg hover:bg-[#F3F4F6] cursor-pointer transition-colors">
+                        <span className="text-[#3F4A5A] font-medium">Urgent institutional escalations</span>
                         <input
                           type="checkbox"
                           checked={notifyUrgent}
                           onChange={e => setNotifyUrgent(e.target.checked)}
-                          className="accent-[#123b6d]"
+                          className="accent-[#123B6D] cursor-pointer w-4 h-4"
                         />
                       </label>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() => showToast('Notification preferences saved.')}
+                      className="px-4 py-2 bg-[#F3F4F6] text-[#123B6D] border border-[#E5E7EB] hover:bg-[#E5E7EB] text-xs font-bold rounded-lg cursor-pointer transition-colors shadow-xs"
+                    >
+                      Save alert preferences
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1295,37 +1461,37 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
 
       {/* Dynamic Application Modal */}
       {isApplyModalOpen && selectedTemplate && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-xs">
           <form
             onSubmit={handleSubmitApplication}
-            className="bg-white rounded shadow-2xl border w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 space-y-4"
+            className="bg-white rounded-xl shadow-2xl border border-[#E5E7EB] w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 space-y-4"
           >
-            <div className="flex justify-between items-start border-b pb-3">
+            <div className="flex justify-between items-start border-b border-[#E5E7EB] pb-3">
               <div>
-                <h3 className="font-bold text-base text-slate-900">{selectedTemplate.title}</h3>
-                <small className="text-slate-500">{selectedTemplate.category} · Form {selectedTemplate.code}</small>
+                <h3 className="font-bold text-base text-[#123B6D]">{selectedTemplate.title}</h3>
+                <small className="text-[#3F4A5A]">{selectedTemplate.category} · Form {selectedTemplate.code}</small>
               </div>
-              <button type="button" onClick={() => setIsApplyModalOpen(false)}>
-                <XCircle size={18} className="text-slate-400" />
+              <button type="button" onClick={() => setIsApplyModalOpen(false)} className="text-slate-400 hover:text-slate-600 cursor-pointer">
+                <XCircle size={18} />
               </button>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded border text-xs space-y-1">
-              <b>Approval path:</b>
-              <div className="text-[#123b6d]">{selectedTemplate.steps.join(' → ')}</div>
+            <div className="p-3.5 bg-[#F3F4F6] rounded-xl border border-[#E5E7EB] text-xs space-y-1">
+              <b className="text-[#123B6D]">Approval path:</b>
+              <div className="text-[#3F4A5A] font-medium">{selectedTemplate.steps.join(' → ')}</div>
             </div>
 
-            <div className="space-y-3 text-xs">
+            <div className="space-y-3.5 text-xs">
               {selectedTemplate.fields.map((f, i) => (
                 <div key={i}>
-                  <label className="block font-semibold mb-1">{f.name}</label>
+                  <label className="block font-semibold text-[#3F4A5A] mb-1">{f.name}</label>
                   {f.type === 'textarea' ? (
                     <textarea
                       required={f.required}
                       rows={2}
                       value={formData[f.name] || ''}
                       onChange={e => setFormData({ ...formData, [f.name]: e.target.value })}
-                      className="w-full px-3 py-1.5 border rounded"
+                      className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg text-xs bg-white text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
                     />
                   ) : (
                     <input
@@ -1333,18 +1499,18 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                       required={f.required}
                       value={formData[f.name] || ''}
                       onChange={e => setFormData({ ...formData, [f.name]: e.target.value })}
-                      className="w-full px-3 py-1.5 border rounded"
+                      className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg text-xs bg-white text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
                     />
                   )}
                 </div>
               ))}
             </div>
 
-            <div className="flex justify-between items-center pt-3 border-t">
+            <div className="flex justify-between items-center pt-3 border-t border-[#E5E7EB]">
               <button
                 type="button"
                 onClick={handleSaveDraft}
-                className="px-3 py-1.5 bg-slate-100 text-slate-700 text-xs font-semibold rounded"
+                className="px-3.5 py-2 bg-[#F3F4F6] text-[#123B6D] border border-[#E5E7EB] hover:bg-[#E5E7EB] text-xs font-semibold rounded-lg cursor-pointer transition-colors shadow-xs"
               >
                 Save as draft
               </button>
@@ -1352,14 +1518,14 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                 <button
                   type="button"
                   onClick={() => setIsApplyModalOpen(false)}
-                  className="px-3 py-1.5 text-xs text-slate-600 rounded"
+                  className="px-3.5 py-2 text-xs text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-1.5 bg-[#123b6d] text-white text-xs font-bold rounded"
+                  className="px-4 py-2 bg-[#123B6D] text-white text-xs font-bold rounded-lg hover:bg-[#0e2f57] cursor-pointer shadow-xs transition-colors"
                 >
                   Submit application
                 </button>
@@ -1371,39 +1537,39 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
 
       {/* Task Review Modal */}
       {isTaskModalOpen && selectedTask && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded shadow-xl border w-full max-w-lg p-6 space-y-4">
-            <div className="flex justify-between items-start border-b pb-3">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-xs">
+          <div className="bg-white rounded-xl shadow-2xl border border-[#E5E7EB] w-full max-w-lg p-6 space-y-4">
+            <div className="flex justify-between items-start border-b border-[#E5E7EB] pb-3">
               <div>
-                <h3 className="font-bold text-base text-slate-900">{selectedTask.templateTitle}</h3>
-                <small className="text-slate-500">{selectedTask.id} · {selectedTask.applicantName}</small>
+                <h3 className="font-bold text-base text-[#123B6D]">{selectedTask.templateTitle}</h3>
+                <small className="text-[#3F4A5A]">{selectedTask.id} · {selectedTask.applicantName}</small>
               </div>
-              <button onClick={() => setIsTaskModalOpen(false)}>
-                <XCircle size={18} className="text-slate-400" />
+              <button onClick={() => setIsTaskModalOpen(false)} className="text-slate-400 hover:text-slate-600 cursor-pointer">
+                <XCircle size={18} />
               </button>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded border text-xs space-y-1">
-              <div><b>Current review stage:</b> {selectedTask.currentStageName}</div>
-              <div><b>Department:</b> {selectedTask.applicantDept}</div>
+            <div className="p-3.5 bg-[#F3F4F6] rounded-xl border border-[#E5E7EB] text-xs space-y-1">
+              <div><b className="text-[#123B6D]">Current review stage:</b> {selectedTask.currentStageName}</div>
+              <div><b className="text-[#123B6D]">Department:</b> {selectedTask.applicantDept}</div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1">Remarks or clarification note</label>
+              <label className="block text-xs font-semibold text-[#3F4A5A] mb-1">Remarks or clarification note</label>
               <textarea
                 rows={2}
                 value={taskRemark}
                 onChange={e => setTaskRemark(e.target.value)}
                 placeholder="Add note for applicant or next approver..."
-                className="w-full text-xs px-3 py-1.5 border rounded"
+                className="w-full text-xs px-3 py-2 border border-[#E5E7EB] rounded-lg bg-white text-[#3F4A5A] focus:outline-none focus:ring-2 focus:ring-[#123B6D]/30"
               />
             </div>
 
-            <div className="flex justify-between pt-3 border-t">
+            <div className="flex justify-between items-center pt-3 border-t border-[#E5E7EB]">
               <button
                 type="button"
                 onClick={() => handleTaskAction('Declined')}
-                className="px-3 py-1.5 text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded font-semibold"
+                className="px-3.5 py-2 text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-lg font-semibold hover:bg-rose-100 cursor-pointer transition-colors"
               >
                 Decline
               </button>
@@ -1411,14 +1577,14 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
                 <button
                   type="button"
                   onClick={() => handleTaskAction('Clarification requested')}
-                  className="px-3 py-1.5 text-xs bg-slate-100 text-slate-700 rounded font-semibold"
+                  className="px-3.5 py-2 text-xs bg-[#F3F4F6] text-[#3F4A5A] border border-[#E5E7EB] hover:bg-[#E5E7EB] rounded-lg font-semibold cursor-pointer transition-colors"
                 >
                   Request clarification
                 </button>
                 <button
                   type="button"
                   onClick={() => handleTaskAction('Approved')}
-                  className="px-4 py-1.5 bg-[#123b6d] text-white text-xs font-bold rounded"
+                  className="px-4 py-2 bg-[#123B6D] text-white text-xs font-bold rounded-lg hover:bg-[#0e2f57] cursor-pointer shadow-xs transition-colors"
                 >
                   Approve & pass on
                 </button>
@@ -1430,45 +1596,45 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
 
       {/* Request Details Modal */}
       {detailRequest && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded shadow-xl border w-full max-w-lg p-6 space-y-4 max-h-[85vh] overflow-y-auto">
-            <div className="flex justify-between items-start border-b pb-3">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-xs">
+          <div className="bg-white rounded-xl shadow-2xl border border-[#E5E7EB] w-full max-w-lg p-6 space-y-4 max-h-[85vh] overflow-y-auto">
+            <div className="flex justify-between items-start border-b border-[#E5E7EB] pb-3">
               <div>
-                <h3 className="font-bold text-base text-slate-900">{detailRequest.id} · Details</h3>
-                <small className="text-slate-500">{detailRequest.templateTitle}</small>
+                <h3 className="font-bold text-base text-[#123B6D]">{detailRequest.id} · Details</h3>
+                <small className="text-[#3F4A5A]">{detailRequest.templateTitle}</small>
               </div>
-              <button onClick={() => setDetailRequest(null)}>
-                <XCircle size={18} className="text-slate-400" />
+              <button onClick={() => setDetailRequest(null)} className="text-slate-400 hover:text-slate-600 cursor-pointer">
+                <XCircle size={18} />
               </button>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded border text-xs space-y-1">
-              <div><b>Status:</b> {detailRequest.status}</div>
-              <div><b>Current stage:</b> {detailRequest.currentStageName}</div>
-              <div><b>Submitted:</b> {new Date(detailRequest.submittedAt).toLocaleString()}</div>
+            <div className="p-3.5 bg-[#F3F4F6] rounded-xl border border-[#E5E7EB] text-xs space-y-1">
+              <div><b className="text-[#123B6D]">Status:</b> {detailRequest.status}</div>
+              <div><b className="text-[#123B6D]">Current stage:</b> {detailRequest.currentStageName}</div>
+              <div><b className="text-[#123B6D]">Submitted:</b> {new Date(detailRequest.submittedAt).toLocaleString()}</div>
             </div>
 
-            <div className="space-y-1 text-xs">
-              <b>Approval track:</b>
-              <div className="space-y-1">
+            <div className="space-y-2 text-xs">
+              <b className="text-[#123B6D]">Approval track:</b>
+              <div className="space-y-1.5">
                 {detailRequest.track.map((t, i) => (
                   <div key={i} className="flex gap-2 items-center">
-                    <span className={`w-4 h-4 rounded-full text-[8px] flex items-center justify-center font-bold ${
-                      i < detailRequest.currentStageIndex ? 'bg-emerald-500 text-white' : 'bg-slate-200'
+                    <span className={`w-5 h-5 rounded-full text-[9px] flex items-center justify-center font-bold ${
+                      i < detailRequest.currentStageIndex ? 'bg-emerald-600 text-white' : 'bg-[#F3F4F6] border border-[#E5E7EB] text-slate-500'
                     }`}>
                       {i < detailRequest.currentStageIndex ? '✓' : i + 1}
                     </span>
-                    <span>{t}</span>
+                    <span className="text-[#3F4A5A] font-medium">{t}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex justify-end pt-2 border-t">
+            <div className="flex justify-end pt-3 border-t border-[#E5E7EB]">
               <button
                 type="button"
                 onClick={() => setDetailRequest(null)}
-                className="px-4 py-1.5 bg-slate-100 text-slate-700 text-xs rounded"
+                className="px-4 py-2 bg-[#F3F4F6] hover:bg-[#E5E7EB] text-[#123B6D] text-xs font-semibold rounded-lg border border-[#E5E7EB] cursor-pointer transition-colors"
               >
                 Close
               </button>
@@ -1479,28 +1645,33 @@ Certified by Loopin Workflow Engine (ISO 9001:2015)`;
 
       {/* Circulars Modal */}
       {isCircularModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded shadow-xl border p-6 w-full max-w-md space-y-4">
-            <h3 className="font-bold text-base text-slate-900">Campus circulars</h3>
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 backdrop-blur-xs">
+          <div className="bg-white rounded-xl shadow-2xl border border-[#E5E7EB] p-6 w-full max-w-md space-y-4">
+            <div className="flex justify-between items-center border-b border-[#E5E7EB] pb-3">
+              <h3 className="font-bold text-base text-[#123B6D]">Campus circulars</h3>
+              <button onClick={() => setIsCircularModalOpen(false)} className="text-slate-400 hover:text-slate-600 cursor-pointer">
+                <XCircle size={18} />
+              </button>
+            </div>
             <div className="space-y-3 text-xs">
-              <div className="p-3 bg-slate-50 border rounded">
-                <b>Research travel claim checklist</b>
-                <p className="text-slate-500 mt-1">Attach original tickets and proof of presentation.</p>
+              <div className="p-3.5 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl space-y-1">
+                <b className="text-[#123B6D]">Research travel claim checklist</b>
+                <p className="text-[#3F4A5A]">Attach original tickets, attendance certificate, and payment vouchers.</p>
               </div>
-              <div className="p-3 bg-slate-50 border rounded">
-                <b>Conference OD documentation</b>
-                <p className="text-slate-500 mt-1">R&D Council · Circular PT-AC-024 · Effective this semester.</p>
+              <div className="p-3.5 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl space-y-1">
+                <b className="text-[#123B6D]">Conference OD documentation</b>
+                <p className="text-[#3F4A5A]">R&D Council · Circular PT-AC-024 · Effective this semester.</p>
               </div>
-              <div className="p-3 bg-slate-50 border rounded">
-                <b>Staff Help Desk</b>
-                <p className="text-slate-500 mt-1">helpdesk@sairam.edu.in · Ext. 224</p>
+              <div className="p-3.5 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl space-y-1">
+                <b className="text-[#123B6D]">Staff Help Desk</b>
+                <p className="text-[#3F4A5A]">helpdesk@sairam.edu.in · Ext. 224</p>
               </div>
             </div>
-            <div className="flex justify-end pt-2 border-t">
+            <div className="flex justify-end pt-3 border-t border-[#E5E7EB]">
               <button
                 type="button"
                 onClick={() => setIsCircularModalOpen(false)}
-                className="px-4 py-1.5 text-xs bg-slate-100 text-slate-700 rounded"
+                className="px-4 py-2 text-xs bg-[#123B6D] text-white font-semibold rounded-lg hover:bg-[#0e2f57] cursor-pointer transition-colors"
               >
                 Close
               </button>
